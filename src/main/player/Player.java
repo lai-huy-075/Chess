@@ -2,6 +2,8 @@ package main.player;
 
 import java.util.Objects;
 
+import main.Chess;
+import main.board.Tile;
 import main.piece.Bishop;
 import main.piece.King;
 import main.piece.Knight;
@@ -12,6 +14,9 @@ import main.piece.Queen;
 import main.piece.Rook;
 
 public class Player {
+	public static final Player default_white = new Player("White", PieceColor.White);
+	public static final Player default_black = new Player("Black", PieceColor.Black);
+	
 	public static final Piece[] black;
 	public static final Piece[] white;
 
@@ -59,18 +64,35 @@ public class Player {
 		return this.score;
 	}
 	
+	@Deprecated
 	public void incrementScore(int score) {
 		this.score += score;
 	}
+	
+	public void incrementScore(Piece piece) {
+		if (piece == null)
+			return;
+		Chess.logger.info("Capturing " + piece.toString());
+		this.score += piece.getValue();
+	}
 
+	public boolean movingAlly(Tile tile) {
+		try {
+			return this.color == tile.getPiece().color;
+		} catch (NullPointerException npe) {
+			return false;
+		}
+	}
+	
 	public void reset() {
 		this.score = 0;
 	}
 
+	@Deprecated
 	public void setScore(int score) {
 		this.score = score;
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("%-15s:%d", this.name, this.score);

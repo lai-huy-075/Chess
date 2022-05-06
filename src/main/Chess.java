@@ -24,21 +24,21 @@ public class Chess {
 	public static final String fen = "out.fen";
 	public static final File fen_file;
 	public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+	public static final ImageIcon icon;
 	public static final Image icon_image;
+	public static final Logger logger;
 	public static final LocalDateTime now = LocalDateTime.now();
 	public static final String pgn = "out.pgn";
 	public static final File pgn_file;
-	
-	public static final Logger logger;
 
 	static {
 		FileHandler file = null;
 		try {
 			file = new FileHandler("./out.log", false);
-		} catch (SecurityException e2) {
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			e2.printStackTrace();
+		} catch (SecurityException e) {
+			Chess.logger.severe(e.getLocalizedMessage());
+		} catch (IOException e) {
+			Chess.logger.severe(e.getLocalizedMessage());
 		}
 		file.setFormatter(new CustomFormatter());
 		
@@ -47,7 +47,8 @@ public class Chess {
 		logger.setUseParentHandlers(false);
 		logger.addHandler(file);
 		
-		icon_image = new ImageIcon("./src/resources/icon.png").getImage();
+		icon = new ImageIcon("./src/resources/icon.png");
+		icon_image = icon.getImage();
 
 		File pgn_dir = new File("./pgn/");
 		if (!pgn_dir.exists())
@@ -57,14 +58,14 @@ public class Chess {
 		if (!pgn_file.exists())
 			try {
 				pgn_file.createNewFile();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			} catch (IOException e) {
+				Chess.logger.severe(e.getLocalizedMessage());
 			}
 
 		try {
 			Chess.logger.info(pgn_file.getCanonicalPath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Chess.logger.severe(e.getLocalizedMessage());
 		}
 
 		File fen_dir = new File("./fen/");
@@ -75,14 +76,15 @@ public class Chess {
 		if (!fen_file.exists())
 			try {
 				fen_file.createNewFile();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			} catch (IOException e) {
+				Chess.logger.severe(e.getLocalizedMessage());
 			}
 
 		try {
 			Chess.logger.info(fen_file.getCanonicalPath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			for (StackTraceElement element : e.getStackTrace())
+				Chess.logger.severe(element.toString());
 		}
 	}
 
@@ -105,10 +107,36 @@ public class Chess {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		frame.addWindowListener(new Window());
+		frame.addWindowListener(new Window(panel));
+	}
+	
+	private static final void mainMenu() {
+		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, icon, new String[] {"New Game", "Place pieces"}, "New Game")) {
+		case 0:
+			createChessBoard();
+			return;
+		case 1:
+			placePieces();
+		default:
+			Chess.logger.info("Picked Illegal Option");
+		}
+	}
+	
+	private static final void placePieces() {
+		Panel panel = new Panel();
+		
+		JFrame frame = new JFrame("Chess");
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		frame.add(panel);
+		frame.pack();
+		frame.setIconImage(icon_image);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.addWindowListener(new Window(panel));
 	}
 
 	public static void main(String[] args) {
-		createChessBoard();
+		mainMenu();
 	}
 }

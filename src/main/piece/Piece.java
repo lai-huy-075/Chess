@@ -16,7 +16,20 @@ public abstract class Piece {
 		}
 	}
 	
+	protected static final String black_bishop = "\u265D";
+	protected static final String black_king = "\u265A";
+	protected static final String black_knight = "\u265E";
+	protected static final String black_pawn = "\u265F";
+	protected static final String black_queen = "\u265B";
+	protected static final String black_rook = "\u265C";
 	protected static final String default_name = "\uFFFD";
+	protected static final String white_bishop = "\u2657";
+	protected static final String white_king = "\u2654";
+	protected static final String white_knight = "\u2658";
+	protected static final String white_pawn = "\u2659";
+	protected static final String white_queen = "\u2655";
+	protected static final String white_rook = "\u2656";
+	protected static final Tile[] empty = new Tile[] {};
 
 	public final PieceColor color;
 
@@ -26,6 +39,8 @@ public abstract class Piece {
 	}
 
 	public abstract int getValue();
+	
+	public abstract Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest);
 
 	/**
 	 * Determine if a {@link Piece} is an <i>ally</i>.

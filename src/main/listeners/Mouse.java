@@ -26,10 +26,11 @@ public class Mouse implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Chess.logger.info("Clicked:\t" + this.tile.toString());
 		switch (e.getButton()) {
 		case MouseEvent.BUTTON1:
+			Chess.logger.info("Clicked :\t" + this.tile.toString());
 			this.panel.board.tileClicked(this.tile);
+			this.panel.board.debugTiles();
 			return;
 		case MouseEvent.BUTTON2:
 			String tileText = this.tile.getText();
@@ -81,7 +82,7 @@ public class Mouse implements MouseListener {
 		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
 		
-		Chess.logger.info("Pressed:\t" + this.tile.toString());
+		Chess.logger.info("Pressed :\t" + this.tile.toString());
 	}
 
 	@Override

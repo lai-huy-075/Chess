@@ -2,10 +2,16 @@ package main.listeners;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Objects;
 
 import main.board.Panel;
 
 public class Window implements WindowListener {
+	public final Panel panel;
+	public Window(Panel panel) {
+		this.panel = Objects.requireNonNull(panel, "Panel cannot be null");
+	}
+	
 	@Override
 	public void windowActivated(WindowEvent e) {
 	}
@@ -16,7 +22,7 @@ public class Window implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		Panel.quitOption();
+		this.panel.quitOption();
 	}
 
 	@Override

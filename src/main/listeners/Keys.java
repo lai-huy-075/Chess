@@ -31,27 +31,27 @@ public class Keys implements KeyListener {
 		case KeyEvent.VK_ESCAPE:
 			this.panel.displayMenu();
 			return;
+		case 'c':
+			this.panel.controlsOption();
+			return;
+		case 'd':
+			this.panel.drawOption();
 		case 'e':
 			JOptionPane.showMessageDialog(this.panel, "Piece deselected", "", JOptionPane.PLAIN_MESSAGE);
 			this.panel.board.resetTiles();
 			return;
-		case 's':
-			this.panel.scoresOption();
+		case 'f':
+			this.panel.resignOption();
+			return;
+		case 'q':
+			this.panel.quitOption();
 			return;
 		case 'r':
 			this.panel.resetOption();
 			return;
-		case 'q':
-			Panel.quitOption();
+		case 's':
+			this.panel.scoresOption();
 			return;
-		case 'f':
-			this.panel.resignOption();
-			return;
-		case 'c':
-			Panel.controlsOption();
-			return;
-		case 'b':
-			this.panel.drawOption();
 		default:
 			return;
 		}

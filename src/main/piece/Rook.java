@@ -28,12 +28,16 @@ public class Rook extends Piece {
 	public String toString() {
 		switch (this.color) {
 		case White:
-			return "\u2656";
+			return white_rook;
 		case Black:
-			return "\u265C";
+			return black_rook;
 		default:
-			return "\uFFFD";
+			return default_name;
 		}
 	}
 
+	@Override
+	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		return null;
+	}
 }

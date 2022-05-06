@@ -2,13 +2,20 @@ package main.board;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 import main.Chess;
+import main.piece.King;
+import main.piece.Knight;
 import main.piece.Piece;
+import main.piece.Piece.PieceColor;
 import main.player.Player;
 
-public class Chessboard {
+public final class Chessboard {
+	/**
+	 * {@link Player} with the {@link PieceColor#Black} pieces
+	 */
 	public final Player black;
 
 	private final Tile[][] board;
@@ -17,17 +24,30 @@ public class Chessboard {
 	 */
 	private Player currentPlayer;
 
-	private boolean gameover;
+	/**
+	 * Destination {@link Tile}
+	 */
+	private Tile destination;
+
+	/**
+	 * Determine if the game is over
+	 */
+	private Panel.Mode mode;
 
 	/**
 	 * A reference to the next {@link Player}.
 	 */
 	private Player nextPlayer;
 
-	public final Player white;
-
+	/**
+	 * Source {@link Tile}
+	 */
 	private Tile source;
-	private Tile destination;
+
+	/**
+	 * {@link Player} with the {@link PieceColor#White}
+	 */
+	public final Player white;
 
 	public Chessboard(Player white, Player black) {
 		this.white = Objects.requireNonNull(white, "White player cannot be null");
@@ -38,12 +58,137 @@ public class Chessboard {
 	}
 
 	/**
+	 * Move the selected {@link Piece} from {@link #source} to {@link #destination}
+	 */
+	private void advancePiece() {
+		Chess.logger.info("Advancing piece");
+		Piece piece = this.source.getPiece();
+
+		this.currentPlayer.incrementScore(this.destination.getPiece());
+
+		this.destination.setPiece(piece);
+		this.destination.setText(piece.toString());
+		this.destination.setForeground(piece.color.color);
+		this.source.reset();
+
+		Player temp = this.currentPlayer;
+		this.currentPlayer = this.nextPlayer;
+		this.nextPlayer = temp;
+	}
+
+	private void checkKnights(Tile tile) {
+		King king = (King) tile.getPiece();
+
+		for (int x = -2; x < 3; ++x) {
+			int y = 0;
+			switch (x) {
+			case -2:
+				y = 1;
+				break;
+			case -1:
+				y = 2;
+				break;
+			case 1:
+				y = 2;
+				break;
+			case 2:
+				y = 1;
+				break;
+			default:
+				continue;
+			}
+
+			Tile tile0;
+			try {
+				tile0 = this.getTileOffset(tile, x, -y);
+			} catch (ArrayIndexOutOfBoundsException aioobe) {
+				continue;
+			}
+
+			Tile tile1;
+			try {
+				tile1 = this.getTileOffset(tile, x, y);
+			} catch (ArrayIndexOutOfBoundsException aioobe) {
+				continue;
+			}
+
+			for (Piece piece : new Piece[] { tile0.getPiece(), tile1.getPiece() })
+				if (piece != null)
+					if (!king.isAlly(piece))
+						if (piece instanceof Knight) {
+							king.setCheck(true);
+							return;
+						}
+		}
+	}
+
+	/**
+	 * Determine if a piece collided with any other piece when moving from
+	 * {@link #source} to {@link #destination}
+	 * 
+	 * @param traversed privative array of {@link Tile}
+	 * @return true if a piece collides with another. false otherwise.
+	 */
+	private boolean collide(Tile[] traversed) {
+		Objects.requireNonNull(traversed, "Traversal cannot be null");
+		for (Tile tile : traversed) {
+			if (tile.equals(this.source))
+				continue;
+
+			if (tile.equals(this.destination))
+				continue;
+
+			if (tile.getPiece() != null)
+				return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Initialize and add {@link Tile} to the {@link #board}.
 	 */
 	private void createBoard() {
+		Chess.logger.info("Creating board");
 		for (int row = 0; row < this.board.length; ++row)
 			for (int col = 0; col < this.board[row].length; ++col)
 				this.board[row][col] = new Tile(row, col);
+	}
+
+	/**
+	 * Debugs {@link #source} and {@link #destination} to {@link Chess#logger}
+	 */
+	public void debugTiles() {
+		Chess.logger.info("Source:\t" + (this.source == null ? "null" : this.source.toString()));
+		Chess.logger.info("Dest:\t" + (this.destination == null ? "null" : this.destination.toString()));
+	}
+
+	/**
+	 * Finds the {@link King} on this board.
+	 * 
+	 * @param isAlly true if finding {@link #currentPlayer} King false if finding
+	 *               {@link #nextPlayer} King
+	 * @return {@link Tile} King is currently on.
+	 */
+	private Tile findKing(boolean isAlly) {
+		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
+		for (Tile[] row : this.board)
+			for (Tile tile : row) {
+				Piece piece = tile.getPiece();
+				if (piece == null)
+					continue;
+				if (!(piece instanceof King))
+					continue;
+				if (isAlly) {
+					if (piece.color == this.currentPlayer.color) {
+						Chess.logger.info(String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
+						return tile;
+					}
+				} else if (piece.color == this.nextPlayer.color) {
+					Chess.logger.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
+					return tile;
+				}
+			}
+		throw new IllegalStateException("Cannot find King");
 	}
 
 	public Tile[][] getBoard() {
@@ -63,11 +208,71 @@ public class Chessboard {
 	}
 
 	public boolean isGameOver() {
-		return this.gameover;
+		return this.mode == Panel.Mode.Over;
 	}
 
-	/** Place the {@link Piece} on {@link #board} */
+	/**
+	 * Determine if the piece moved out of a pin.
+	 * 
+	 * @return
+	 */
+	private boolean moveOutOfPin() {
+		return false;
+	}
+
+	/**
+	 * Handling logic of moving a piece.<br>
+	 * Actual updating is done in {@link #advancePiece()}
+	 */
+	private void movePiece() {
+		if (this.source == null)
+			return;
+
+		if (this.destination == null)
+			return;
+
+		Piece src_piece = this.source.getPiece();
+		if (src_piece == null)
+			return;
+
+		Chess.logger.info(String.format("Moving %s from %s to %s", src_piece.toString(), this.source.toString(),
+				this.destination.toString()));
+
+		if (this.source.equals(this.destination)) {
+			Chess.logger.info("No movement detected.");
+			return;
+		}
+
+		boolean legal = src_piece.isLegal(this.source, this.destination);
+		Chess.logger.info(legal ? "Move is legal" : "Move is not legal");
+		if (!legal)
+			return;
+
+		Tile[] traversed = src_piece.getTileTraversed(this.board, this.source, this.destination);
+		Chess.logger.info("Traversed:\t" + Arrays.deepToString(traversed));
+		boolean collide = this.collide(traversed);
+		Chess.logger.info(
+				src_piece.toString() + (collide ? " collided on its journey" : " did not collide on its journey"));
+		if (collide)
+			return;
+		
+		
+		
+		
+		
+		
+		
+
+		this.advancePiece();
+		this.updateKing();
+	}
+
+	/**
+	 * Place the {@link Piece} on {@link #board}
+	 */
 	private void placePieces() {
+		Chess.logger.info("Placing pieces on the Chessboard");
+
 		int indexInList = 0;
 		Tile tile;
 		Piece piece;
@@ -101,38 +306,67 @@ public class Chessboard {
 	}
 
 	/**
-	 * Reset the board
+	 * Reset the board and all attributes.
 	 */
 	public void reset() {
-		Chess.logger.entering("Chessboard", "reset()");
+		Chess.logger.info("Reset Chessboard");
 		this.resetBoard();
 		this.resetTiles();
+		this.placePieces();
+		this.white.reset();
+		this.black.reset();
 		this.currentPlayer = this.white;
 		this.nextPlayer = this.black;
 	}
 
+	/**
+	 * Reset {@link #board}
+	 */
 	private void resetBoard() {
+		Chess.logger.info("Reset board array");
 		for (Tile[] row : this.board)
 			for (Tile tile : row)
 				tile.reset();
-
-		white.reset();
-		black.reset();
-
-		this.placePieces();
 	}
 
+	/**
+	 * Set {@link #source} and {@link #destination} to null
+	 */
 	public void resetTiles() {
+		Chess.logger.info("Reseting Tiles");
 		this.source = null;
 		this.destination = null;
 	}
-
-	public void setGameOver(boolean bool) {
-		this.gameover = bool;
+	
+	public void setMode(Panel.Mode mode) {
+		this.mode = Objects.requireNonNull(mode, "New mode cannot be null");
 	}
 
+	/**
+	 * This method is called whenever a {@link Tile} is clicked.
+	 * 
+	 * @param tile Tile clicked
+	 */
 	public void tileClicked(Tile tile) {
+		Piece tile_piece = tile.getPiece();
+		boolean moving_ally = this.currentPlayer.movingAlly(tile);
+
 		if (this.source == null) {
+			if (tile_piece == null) {
+				Chess.logger.info("Not moving a piece");
+				return;
+			}
+
+			if (!moving_ally) {
+				Chess.logger.info("Moving enemy piece");
+				return;
+			}
+
+			this.source = tile;
+			return;
+		}
+
+		if (moving_ally) {
 			this.source = tile;
 			return;
 		}
@@ -140,47 +374,20 @@ public class Chessboard {
 		this.destination = tile;
 
 		this.movePiece();
-	}
-
-	private void movePiece() {
-		if (this.source == null)
-			return;
-
-		if (this.destination == null)
-			return;
-
-		Piece src_piece = this.source.getPiece();
-		if (src_piece == null)
-			return;
-
-		Chess.logger.info(String.format("Moving %s from %s to %s", src_piece.toString(), source.toString(),
-				destination.toString()));
-		boolean legal = src_piece.isLegal(this.source, this.destination);
-		Chess.logger.info(legal ? "Move is legal" : "Move is not legal");
-		if (!legal) {
-			this.resetTiles();
-			return;
-		}
-
-		this.advancePiece();
-	}
-
-	private void advancePiece() {
-		Chess.logger.info("Advancing piece");
-		Piece piece = this.source.getPiece();
-		this.destination.setPiece(piece);
-		this.destination.setText(piece.toString());
-		this.destination.setForeground(piece.color.color);
-		this.source.reset();
-
-		Player temp = this.currentPlayer;
-		this.currentPlayer = this.nextPlayer;
-		this.nextPlayer = temp;
-
 		this.resetTiles();
 	}
 
+	private void updateKing() {
+		Chess.logger.info("Updating King");
+		Tile king_tile = this.findKing(true);
+		this.checkKnights(king_tile);
+	}
+
+	/**
+	 * Write {@link Chess#pgn_file} with details of the game
+	 */
 	public final void write() {
+		Chess.logger.info("Writting pgn started...");
 		String date = Chess.now.format(Chess.format);
 
 		try (FileWriter writer = new FileWriter(Chess.pgn_file)) {
@@ -194,7 +401,7 @@ public class Chessboard {
 			return;
 		}
 
-		Chess.logger.info("Writting pgn complete");
+		Chess.logger.info("Writting pgn complete!");
 
 		try (FileWriter writer = new FileWriter(Chess.fen_file)) {
 

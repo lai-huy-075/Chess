@@ -25,11 +25,16 @@ public class Knight extends Piece {
 	public String toString() {
 		switch (this.color) {
 		case White:
-			return "\u2658";
+			return white_knight;
 		case Black:
-			return "\u265E";
+			return black_knight;
 		default:
 			return default_name;
 		}
+	}
+
+	@Override
+	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		return empty;
 	}
 }
