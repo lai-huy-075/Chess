@@ -3,9 +3,13 @@ package main.board;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.JButton;
@@ -22,43 +26,102 @@ import main.listeners.Mouse;
 import main.player.Player;
 
 public class Panel extends JPanel implements ActionListener {
+	/**
+	 * Game mode
+	 */
 	public static enum Mode {
-		Debug, Normal, Funny, Over;
+		Debug, Funny, Normal, Over;
 	}
 
-	private static final String[] columns = new String[] { "a", "b", "c", "d", "e", "f", "g", "h" };
-	private static final String[] rows = new String[] { "1", "2", "3", "4", "5", "6", "7", "8" };
-
-	public static final Font arial = new Font("Arial", Font.PLAIN, 20);
-	public static final JTextArea controls = new JTextArea(
-			"Escape:\tPause\ne:\tdeselect piece\ns:\tScores\nr:\tReset\nq:\tQuit\nf:\tResign\nd:\tDraw\nc:\tControls");
 	/**
-	 * Standard {@link Font}
+	 * Arial {@link Font}
 	 */
-	public static final Font default_font = new Font("", Font.PLAIN, 20);
+	public static final Font arial = new Font("Arial", Font.PLAIN, 30);
+
+	/**
+	 * Primitive type array of {@link String} holding column names
+	 */
+	private static final String[] columns = new String[] { "a", "b", "c", "d", "e", "f", "g", "h" };
+
+	/**
+	 * {@link Map} mapping {@link #options} to their respective keyboard shortcuts
+	 */
+	private static final Map<String, String> controlMap;
+
+	/**
+	 * {@link JTextArea} to display keyboard shortcutes
+	 */
+	public static final JTextArea controls;
+
+	/**
+	 * Default {@link Font}
+	 */
+	public static final Font default_font = new Font("", Font.PLAIN, 30);
 
 	/**
 	 * {@link Dimension} of all elements in this.
 	 */
+	@Deprecated
 	public static final Dimension dim = new Dimension(70, 70);
+
+	/**
+	 * Grid Layout
+	 */
+	private static final GridBagLayout grid = new GridBagLayout();
+
+	/**
+	 * {@link Insets}
+	 */
+	private static final Insets inset = new Insets(0, 0, 0, 0);
+
+	/**
+	 * {@link JButton} that handles displaying the menu
+	 */
+	private static final JButton menuButton;
+
+	/**
+	 * Primitive type array of {@link String} to pick from when
+	 * {@link #displayMenu()} is called
+	 */
+	private static final String[] options;
+
+	/**
+	 * Primitive type array of {@link String} holding row names
+	 */
+	private static final String[] rows = new String[] { "1", "2", "3", "4", "5", "6", "7", "8" };
 
 	/**
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = 5953984732261423629L;
 
-	private static final JButton menuButton;
-
 	/**
 	 * Versus {@link JLabel}
 	 */
 	private static final JLabel vs = new JLabel("vs", SwingConstants.CENTER);
 
-	private static final GridLayout grid = new GridLayout(10, 9);
-
 	static {
+		controlMap = new HashMap<>();
+		controlMap.put("Pause", "Escape");
+		controlMap.put("Scores", "s");
+		controlMap.put("Reset", "r");
+		controlMap.put("Draw", "d");
+		controlMap.put("Resign", "f");
+		controlMap.put("Quit", "q");
+		controlMap.put("Controls", "c");
+		controlMap.put("Deslect Piece", "e");
+
+		String cont = "";
+		for (String key : controlMap.keySet())
+			cont += key + "\t" + controlMap.get(key) + "\n";
+
+		options = new String[] { "Controls", "Reset", "Resign", "Draw", "Quit", "Deslect Piece", "Scores" };
+
 		vs.setPreferredSize(dim);
 		vs.setFont(arial);
+
+		controls = new JTextArea(cont);
+		controls.setColumns(15);
 		controls.setOpaque(false);
 		controls.setEditable(false);
 		controls.setFont(arial);
@@ -81,14 +144,14 @@ public class Panel extends JPanel implements ActionListener {
 	public final Chessboard board;
 
 	/**
-	 * Current {@link Mode} of gameplay
-	 */
-	public final Mode mode;
-
-	/**
 	 * {@link Keys} listener
 	 */
 	public final Keys keys;
+
+	/**
+	 * Current {@link Mode} of gameplay
+	 */
+	public final Mode mode;
 
 	/**
 	 * {@link JLabel} for {@link Chessboard#white}i
@@ -99,15 +162,9 @@ public class Panel extends JPanel implements ActionListener {
 		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(Player.default_white, Player.default_black);
 		this.keys = new Keys(this);
-		// Set Default GUI Elements
-		this.setLayout(grid);
 
-		UIManager.put("OptionPane.messageFont", arial);
-		UIManager.put("OptionPane.buttonFont", arial);
-		UIManager.put("Button.font", arial);
-		UIManager.put("Label.font", arial);
-		UIManager.put("Label.background", null);
-		UIManager.put("Label.foreground", Color.BLACK);
+		this.setLayout(grid);
+		this.setDefaultGUIElements();
 
 		// Creates other GUI elements
 		this.createLabels();
@@ -118,15 +175,10 @@ public class Panel extends JPanel implements ActionListener {
 		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(white, black);
 		this.keys = new Keys(this);
+
 		// Set Default GUI Elements
 		this.setLayout(grid);
-
-		UIManager.put("OptionPane.messageFont", arial);
-		UIManager.put("OptionPane.buttonFont", arial);
-		UIManager.put("Button.font", arial);
-		UIManager.put("Label.font", arial);
-		UIManager.put("Label.background", null);
-		UIManager.put("Label.foreground", Color.BLACK);
+		this.setDefaultGUIElements();
 
 		// Creates other GUI elements
 		this.createLabels();
@@ -156,30 +208,14 @@ public class Panel extends JPanel implements ActionListener {
 	 */
 	private void createLabels() {
 		this.white = new JLabel(this.board.white.name, SwingConstants.CENTER);
-		this.white.setPreferredSize(dim);
 		this.black = new JLabel(this.board.black.name, SwingConstants.CENTER);
-		this.black.setPreferredSize(dim);
 
-		// Empty Space
-		for (int i = 0; i < 3; ++i) {
-			JLabel blank = new JLabel("", SwingConstants.CENTER);
-			blank.setPreferredSize(dim);
-			blank.setFont(arial);
-			this.add(blank);
-		}
-
-		// Display all {@link Player}
-		this.add(this.white);
-		this.add(vs);
-		this.add(this.black);
-
-		// Empty Space
-		for (int i = 0; i < 3; ++i) {
-			JLabel blank = new JLabel("", SwingConstants.CENTER);
-			blank.setPreferredSize(dim);
-			blank.setFont(arial);
-			this.add(blank);
-		}
+		this.add(this.white, new GridBagConstraints(1, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
+				GridBagConstraints.HORIZONTAL, inset, 0, 0));
+		this.add(vs, new GridBagConstraints(4, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+				inset, 0, 0));
+		this.add(this.black, new GridBagConstraints(5, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
+				GridBagConstraints.HORIZONTAL, inset, 0, 0));
 	}
 
 	/**
@@ -188,60 +224,85 @@ public class Panel extends JPanel implements ActionListener {
 	private void createTiles() {
 		int num = columns.length - 1;
 
-		for (Tile[] row : this.board.getBoard()) {
+		Tile[][] board = this.board.getBoard();
+		for (int i = 0; i < board.length; ++i) {
 			JLabel col = new JLabel(rows[num], SwingConstants.CENTER);
-			col.setPreferredSize(dim);
-			this.add(col);
 			--num;
-			for (Tile tile : row) {
+			this.add(col, new GridBagConstraints(0, 1 + i, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, inset, 0, 0));
+
+			for (int j = 0; j < board[i].length; ++j) {
+				Tile tile = board[i][j];
 				tile.addKeyListener(this.keys);
 				tile.addMouseListener(new Mouse(this, tile));
-				this.add(tile);
+				this.add(tile, new GridBagConstraints(1 + j, 1 + i, 1, 1, 0, 0, GridBagConstraints.CENTER,
+						GridBagConstraints.CENTER, inset, 0, 0));
 			}
 		}
 
 		menuButton.addActionListener(this);
 		menuButton.addKeyListener(this.keys);
-		this.add(menuButton);
+		this.add(menuButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER,
+				GridBagConstraints.CENTER, inset, 0, 0));
 
-		for (String c : columns) {
-			JLabel row = new JLabel(c, SwingConstants.CENTER);
-			row.setPreferredSize(dim);
-			this.add(row);
+		for (int i = 0; i < columns.length; ++i) {
+			JLabel row = new JLabel(columns[i], SwingConstants.CENTER);
+			this.add(row, new GridBagConstraints(1 + i, 10, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.CENTER, inset, 0, 0));
 		}
 	}
 
+	/**
+	 * Display menu
+	 */
 	public void displayMenu() {
 		Chess.logger.info("Display Menu");
-		switch (JOptionPane.showOptionDialog(this, "Pick an option", "Menu", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, Chess.icon, new String[] { "Scores", "Reset", "Quit", "Resign", "Controls" },
-				"Controls")) {
+		final int selection = JOptionPane.showOptionDialog(this, "Pick an option", "Menu", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, Chess.icon, options, "Controls");
+
+		try {
+			Chess.logger.info(options[selection] + " selected");
+		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			return;
+		}
+
+		switch (selection) {
 		case 0:
-			this.scoresOption();
+			this.controlsOption();
 			return;
 		case 1:
 			this.resetOption();
 			return;
 		case 2:
-			quitOption();
-			return;
-		case 3:
 			this.resignOption();
 			return;
+		case 3:
+			this.drawOption();
+			return;
 		case 4:
-			controlsOption();
+			this.quitOption();
+			return;
+		case 5:
+			this.board.resetTiles();
+			return;
+		case 6:
+			this.scoresOption();
 			return;
 		default:
 			return;
 		}
 	}
 
+	/**
+	 * Draw the game
+	 */
 	public void drawOption() {
 		Chess.logger.info("Draw offered.");
 		switch (JOptionPane.showConfirmDialog(this, "Would you like to accept the draw offer?", "Draw Offered",
 				JOptionPane.YES_NO_OPTION)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Draw accepted.");
+			this.board.draw();
 		default:
 			Chess.logger.info("Draw declined");
 			return;
@@ -274,6 +335,7 @@ public class Panel extends JPanel implements ActionListener {
 			Chess.logger.info("Reset board.");
 			this.board.reset();
 			JOptionPane.showMessageDialog(this, "Board has been Reset", "", JOptionPane.PLAIN_MESSAGE, Chess.icon);
+			return;
 		default:
 			return;
 		}
@@ -309,5 +371,17 @@ public class Panel extends JPanel implements ActionListener {
 		JOptionPane.showMessageDialog(this,
 				String.format("%s%n%s", this.board.white.toString(), this.board.black.toString()), "Scores",
 				JOptionPane.PLAIN_MESSAGE, Chess.icon);
+	}
+
+	/**
+	 * Set default GUI elements using {@link UIManager#put}
+	 */
+	private void setDefaultGUIElements() {
+		UIManager.put("OptionPane.messageFont", arial);
+		UIManager.put("OptionPane.buttonFont", arial);
+		UIManager.put("Button.font", arial);
+		UIManager.put("Label.font", arial);
+		UIManager.put("Label.background", null);
+		UIManager.put("Label.foreground", Color.BLACK);
 	}
 }

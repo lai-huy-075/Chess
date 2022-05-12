@@ -2,14 +2,18 @@ package main.board;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import main.Chess;
+import main.board.Panel.Mode;
 import main.piece.King;
 import main.piece.Knight;
 import main.piece.Piece;
 import main.piece.Piece.PieceColor;
+import main.piece.Rook;
 import main.player.Player;
 
 public final class Chessboard {
@@ -17,12 +21,12 @@ public final class Chessboard {
 	 * {@link Player} with the {@link PieceColor#Black} pieces
 	 */
 	public final Player black;
-	
+
 	/**
 	 * 2d array holding the location of all the pieces.
 	 */
 	private final Tile[][] board;
-	
+
 	/**
 	 * A reference to the current {@link Player}.
 	 */
@@ -44,6 +48,11 @@ public final class Chessboard {
 	private Player nextPlayer;
 
 	/**
+	 * {@link String} holding the result.
+	 */
+	private String result;
+
+	/**
 	 * Source {@link Tile}
 	 */
 	private Tile source;
@@ -52,17 +61,18 @@ public final class Chessboard {
 	 * {@link Player} with the {@link PieceColor#White}
 	 */
 	public final Player white;
-	
+
 	public Chessboard(Panel.Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
 		this.white = Player.default_white;
 		this.black = Player.default_black;
 		this.board = new Tile[8][8];
-		
+
 		this.createBoard();
 	}
 
 	public Chessboard(Player white, Player black) {
+		this.mode = Mode.Normal;
 		this.white = Objects.requireNonNull(white, "White player cannot be null");
 		this.black = Objects.requireNonNull(black, "Blackplayer cannot be null");
 		this.board = new Tile[8][8];
@@ -84,13 +94,7 @@ public final class Chessboard {
 		this.destination.setForeground(piece.color.color);
 		this.source.reset();
 	}
-	
-	private void updatePlayers() {
-		Player temp = this.currentPlayer;
-		this.currentPlayer = this.nextPlayer;
-		this.nextPlayer = temp;
-	}
-	
+
 	/**
 	 * Determine if enemy Knights are able to Check the King.<br>
 	 * If an enemy Knight is found
@@ -103,6 +107,24 @@ public final class Chessboard {
 		Objects.requireNonNull(tile, "Tile cannot be null");
 		King king = (King) tile.getPiece();
 		Objects.requireNonNull(king, "King cannot be null");
+
+		for (Tile t : this.findKnights(tile)) {
+			if (t == null)
+				continue;
+
+			Chess.logger.info("Checking tile " + t.toString());
+			Piece piece = t.getPiece();
+			if (piece != null)
+				if (!king.isAlly(piece))
+					if (piece instanceof Knight) {
+						king.setCheck(true);
+						return;
+					}
+		}
+	}
+
+	private Tile[] findKnights(Tile tile) {
+		List<Tile> temp = new ArrayList<>();
 
 		for (int x = -2; x < 3; ++x) {
 			int y = 0;
@@ -137,24 +159,11 @@ public final class Chessboard {
 				continue;
 			}
 
-			for (Tile t : new Tile[] { tile0, tile1 }) {
-				if (t == null)
-					continue;
-								
-				Chess.logger.info("Checking tile " + t.toString());
-				Piece piece = t.getPiece();
-				if (piece != null)
-					if (!king.isAlly(piece))
-						if (piece instanceof Knight) {
-							king.setCheck(true);
-							return;
-						}
-			}
+			temp.add(tile0);
+			temp.add(tile1);
 		}
-	}
-	
-	private void checkRooks() {
-		
+
+		return temp.toArray(new Tile[temp.size()]);
 	}
 
 	/**
@@ -197,6 +206,11 @@ public final class Chessboard {
 		Chess.logger.info("Dest:\t" + (this.destination == null ? "null" : this.destination.toString()));
 	}
 
+	public void draw() {
+		this.mode = Panel.Mode.Over;
+		this.result = "1/2-1/2";
+	}
+
 	/**
 	 * Finds the {@link King} on this board.
 	 * 
@@ -215,11 +229,13 @@ public final class Chessboard {
 					continue;
 				if (isAlly) {
 					if (piece.color == this.currentPlayer.color) {
-						Chess.logger.info(String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
+						Chess.logger.info(
+								String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
 						return tile;
 					}
 				} else if (piece.color == this.nextPlayer.color) {
-					Chess.logger.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
+					Chess.logger
+							.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
 					return tile;
 				}
 			}
@@ -249,6 +265,10 @@ public final class Chessboard {
 		default:
 			return false;
 		}
+	}
+
+	private boolean kingMoveIntoCheck() {
+		return false;
 	}
 
 	/**
@@ -295,13 +315,14 @@ public final class Chessboard {
 				src_piece.toString() + (collide ? " collided on its journey" : " did not collide on its journey"));
 		if (collide)
 			return;
-		
-		
+
 		boolean unpin = this.moveOutOfPin();
 		Chess.logger.info(unpin ? "Move out of pin" : "Did not move out of pin");
 		if (unpin)
 			return;
-		
+
+		boolean kingMoveIntoCheck = this.kingMoveIntoCheck();
+		Chess.logger.info(kingMoveIntoCheck ? "King moved into Check" : "King did not move into Check");
 
 		this.advancePiece();
 		this.updateKing();
@@ -378,7 +399,11 @@ public final class Chessboard {
 		this.source = null;
 		this.destination = null;
 	}
-	
+
+	public String result() {
+		return this.result;
+	}
+
 	public void setMode(Panel.Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "New mode cannot be null");
 	}
@@ -418,12 +443,38 @@ public final class Chessboard {
 		this.resetTiles();
 	}
 
+	/**
+	 * Check for ally rooks and update {@link King#king} and {@link King#queen}
+	 */
+	private void updateCastle(Tile tile) {
+		Piece piece = this.source.getPiece();
+		King king = (King) tile.getPiece();
+
+		if (piece instanceof King) {
+			king.setKingside(false);
+			king.setQueenside(false);
+		}
+
+		if (piece instanceof Rook) {
+
+		}
+	}
+
 	private void updateKing() {
 		Chess.logger.info("Updating King");
-		
+
 		Tile king_tile = this.findKing(false);
 		this.checkKnights(king_tile);
-		this.checkRooks();
+		this.updateCastle(king_tile);
+	}
+
+	/**
+	 * Swap {@link #currentPlayer} and {@link #nextPlayer}
+	 */
+	private void updatePlayers() {
+		Player temp = this.currentPlayer;
+		this.currentPlayer = this.nextPlayer;
+		this.nextPlayer = temp;
 	}
 
 	/**

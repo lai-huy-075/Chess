@@ -42,11 +42,24 @@ public class Queen extends Piece {
 
 	@Override
 	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		Tile[] temp;
+		int dx, dy;
 		if (rook) {
-			return empty;
+			dx = dest.col - src.col;
+			dy = dest.row - src.row;
+
+			int mx = Math.abs(dx);
+			int my = Math.abs(dy);
+			temp = new Tile[Math.max(mx, my)];
+
+			for (int i = 0; i < temp.length; ++i)
+				temp[i] = board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)];
+
+			return temp;
 		} else if (bishop) {
-			Tile[] temp = new Tile[Math.abs(src.col - dest.col)];
-			int dx = dest.col < src.col ? 1 : -1, dy = dest.row < src.row ? 1 : -1;
+			temp = new Tile[Math.abs(src.col - dest.col)];
+			dx = dest.col < src.col ? -1 : 1;
+			dy = dest.row < src.row ? -1 : 1;
 			for (int i = 0; i < temp.length; ++i)
 				temp[i] = board[src.row + i * dy][src.col + i * dx];
 			return temp;

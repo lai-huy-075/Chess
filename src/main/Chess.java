@@ -41,12 +41,12 @@ public class Chess {
 			Chess.logger.severe(e.getLocalizedMessage());
 		}
 		file.setFormatter(new CustomFormatter());
-		
+
 		logger = Logger.getLogger("Chess");
 		logger.setLevel(Level.ALL);
 		logger.setUseParentHandlers(false);
 		logger.addHandler(file);
-		
+
 		icon = new ImageIcon("./src/resources/icon.png");
 		icon_image = icon.getImage();
 
@@ -89,45 +89,57 @@ public class Chess {
 	}
 
 	private static final void createChessBoard() {
-		String white_name = JOptionPane.showInputDialog(null, "White, enter you name", "White", JOptionPane.INFORMATION_MESSAGE);
+		logger.info("Normal Game");
+
+		String white_name = JOptionPane.showInputDialog(null, "White, enter you name", "White",
+				JOptionPane.INFORMATION_MESSAGE);
 		if (white_name == null || white_name.isEmpty())
 			return;
-		
-		String black_name = JOptionPane.showInputDialog(null, "Black, enter you name", "Black", JOptionPane.INFORMATION_MESSAGE);
+
+		String black_name = JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
+				JOptionPane.INFORMATION_MESSAGE);
 		if (black_name == null || black_name.isEmpty())
 			return;
 
 		Panel panel = new Panel(new Player(white_name, PieceColor.White), new Player(black_name, PieceColor.Black));
 
-		JFrame frame = new JFrame("Chess");
-		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.add(panel);
-		frame.pack();
-		frame.setIconImage(icon_image);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		frame.addWindowListener(new Window(panel));
+		createFrame(panel);
 	}
-	
+
 	private static final void mainMenu() {
-		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, icon, new String[] {"New Standard Game", "Funny Game", "Place pieces"}, "New Standard Game")) {
+		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.QUESTION_MESSAGE, icon, new String[] { "New Standard Game", "Funny Game", "Place pieces" },
+				"New Standard Game")) {
 		case 0:
 			createChessBoard();
 			return;
 		case 1:
+			funny();
 			return;
 		case 2:
 			placePieces();
 			return;
 		default:
 			Chess.logger.info("Picked Illegal Option");
+			return;
 		}
 	}
-	
+
+	private static final void funny() {
+		Chess.logger.info("Funny Mode");
+		Panel panel = new Panel(Panel.Mode.Funny);
+
+		createFrame(panel);
+	}
+
 	private static final void placePieces() {
+		logger.info("Debug Mode");
 		Panel panel = new Panel(Panel.Mode.Debug);
-		
+
+		createFrame(panel);
+	}
+
+	private static final void createFrame(Panel panel) {
 		JFrame frame = new JFrame("Chess");
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.add(panel);

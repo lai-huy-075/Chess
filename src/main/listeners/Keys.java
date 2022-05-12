@@ -26,7 +26,7 @@ public class Keys implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		Chess.logger.info(e.getKeyChar() + " pressed");
+		Chess.logger.info(String.format("%s=%d selected", e.getKeyChar(), (int) e.getKeyChar()));
 		switch (e.getKeyChar()) {
 		case KeyEvent.VK_ESCAPE:
 			this.panel.displayMenu();

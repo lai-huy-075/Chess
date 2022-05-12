@@ -43,9 +43,8 @@ public class Rook extends Piece {
 		int my = Math.abs(dy);
 		Tile[] temp = new Tile[Math.max(mx, my)];
 		
-		for (int i = 0; i < temp.length; ++i) {
-			temp[i] = board[src.row + i * dy][src.col + i * dx];
-		}
+		for (int i = 0; i < temp.length; ++i)
+			temp[i] = board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)];
 		
 		return temp;
 	}

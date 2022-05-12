@@ -9,19 +9,44 @@ import javax.swing.SwingConstants;
 import main.piece.Piece;
 
 public final class Tile extends JButton {
+	/**
+	 * {@link Color} of the Dark Squares
+	 */
 	public static final Color dark = new Color(0x73463C);
-
-	private static final Font default_font = new Font("", Font.PLAIN, 40);
-
+	
+	/**
+	 * Default {@link Font}
+	 */
+	private static final Font default_font = new Font("", Font.PLAIN, 60);
+	
+	/**
+	 * {@link Color} of the Light Squares
+	 */
 	public static final Color light = new Color(0xC89669);
 	/**
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = -3879009674513449749L;
+	
+	/**
+	 * {@link Color} of text to display on this
+	 */
 	public static final Color text = new Color(0x333333);
 
+	/**
+	 * Column this is in
+	 */
 	public final int col;
+	
+	/**
+	 * {@link Piece} this currently has on it.<br>
+	 * Null if there is no piece
+	 */
 	private Piece piece;
+	
+	/**
+	 * Row this is in
+	 */
 	public final int row;
 
 	public Tile(int row, int col) {
@@ -47,7 +72,8 @@ public final class Tile extends JButton {
 
 		this.setFocusable(true);
 	}
-
+	
+	@Override
 	public boolean equals(Object other) {
 		if (this == other)
 			return true;
@@ -61,16 +87,27 @@ public final class Tile extends JButton {
 		return true;
 	}
 
+	/**
+	 * Retrieves {@link #piece}
+	 * @return {@link #piece}
+	 */
 	public Piece getPiece() {
 		return this.piece;
 	}
-
+	
+	/**
+	 * Reset the tile
+	 */
 	public void reset() {
 		this.piece = null;
 		this.setForeground(null);
 		this.setText("");
 	}
-
+	
+	/**
+	 * The the {@link Piece} on this
+	 * @param piece Piece to set
+	 */
 	public void setPiece(Piece piece) {
 		this.piece = piece;
 	}

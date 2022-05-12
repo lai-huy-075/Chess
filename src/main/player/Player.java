@@ -14,10 +14,24 @@ import main.piece.Queen;
 import main.piece.Rook;
 
 public class Player {
+	/**
+	 * Default {@link PieceColor#White} Player
+	 */
 	public static final Player default_white = new Player("White", PieceColor.White);
+	
+	/**
+	 * Default {@link PieceColor#Black} Player
+	 */
 	public static final Player default_black = new Player("Black", PieceColor.Black);
 	
+	/**
+	 * Primitive type array of {@link Piece} holding {@link PieceColor#Black} Pieces
+	 */
 	public static final Piece[] black;
+	
+	/**
+	 * Primitive type array of {@link Piece} holding {@link PieceColor#White} Pieces
+	 */
 	public static final Piece[] white;
 
 	static {
@@ -49,9 +63,20 @@ public class Player {
 		black[14] = new Knight(PieceColor.Black);
 		black[15] = new Rook(PieceColor.Black);
 	}
-
+	
+	/**
+	 * {@link PieceColor} that this player controls
+	 */
 	public final PieceColor color;
+	
+	/**
+	 * {@link String} holding the name of this player
+	 */
 	public final String name;
+	
+	/**
+	 * Current score
+	 */
 	private int score;
 
 	public Player(String name, PieceColor color) {
@@ -85,6 +110,7 @@ public class Player {
 	}
 	
 	public void reset() {
+		Chess.logger.info("Reseting " + this.name);
 		this.score = 0;
 	}
 

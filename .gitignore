@@ -5,4 +5,4 @@ pgn/
 
 .classpath
 .project
-out.log
+out.*
