@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,11 +23,12 @@ import main.player.Player;
 
 public class Panel extends JPanel implements ActionListener {
 	public static enum Mode {
-		Debug,
-		Normal,
-		Over;
+		Debug, Normal, Funny, Over;
 	}
-	
+
+	private static final String[] columns = new String[] { "a", "b", "c", "d", "e", "f", "g", "h" };
+	private static final String[] rows = new String[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+
 	public static final Font arial = new Font("Arial", Font.PLAIN, 20);
 	public static final JTextArea controls = new JTextArea(
 			"Escape:\tPause\ne:\tdeselect piece\ns:\tScores\nr:\tReset\nq:\tQuit\nf:\tResign\nd:\tDraw\nc:\tControls");
@@ -40,19 +41,19 @@ public class Panel extends JPanel implements ActionListener {
 	 * {@link Dimension} of all elements in this.
 	 */
 	public static final Dimension dim = new Dimension(70, 70);
-	
+
 	/**
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = 5953984732261423629L;
-	
+
 	private static final JButton menuButton;
-	
+
 	/**
 	 * Versus {@link JLabel}
 	 */
 	private static final JLabel vs = new JLabel("vs", SwingConstants.CENTER);
-	
+
 	private static final GridLayout grid = new GridLayout(10, 9);
 
 	static {
@@ -61,47 +62,60 @@ public class Panel extends JPanel implements ActionListener {
 		controls.setOpaque(false);
 		controls.setEditable(false);
 		controls.setFont(arial);
-		
+
 		menuButton = new JButton("\u2261");
 		menuButton.setFont(arial);
 		menuButton.setOpaque(false);
 		menuButton.setContentAreaFilled(false);
 		menuButton.setPreferredSize(dim);
 	}
-	
+
 	/**
 	 * {@link JLabel} holding {@link Chessboard#black}'s name.
 	 */
 	private JLabel black;
-	
+
 	/**
 	 * {@link Chessboard} on this
 	 */
 	public final Chessboard board;
-	
+
 	/**
 	 * Current {@link Mode} of gameplay
 	 */
 	public final Mode mode;
-	
+
 	/**
 	 * {@link Keys} listener
 	 */
 	public final Keys keys;
-	
+
 	/**
 	 * {@link JLabel} for {@link Chessboard#white}i
 	 */
 	private JLabel white;
 
-	public Panel() {
-		this.mode = Mode.Debug;
+	public Panel(Mode mode) {
+		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(Player.default_white, Player.default_black);
 		this.keys = new Keys(this);
+		// Set Default GUI Elements
+		this.setLayout(grid);
+
+		UIManager.put("OptionPane.messageFont", arial);
+		UIManager.put("OptionPane.buttonFont", arial);
+		UIManager.put("Button.font", arial);
+		UIManager.put("Label.font", arial);
+		UIManager.put("Label.background", null);
+		UIManager.put("Label.foreground", Color.BLACK);
+
+		// Creates other GUI elements
+		this.createLabels();
+		this.createTiles();
 	}
-	
-	public Panel(Player white, Player black) {
-		this.mode = Mode.Normal;
+
+	public Panel(Mode mode, Player white, Player black) {
+		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(white, black);
 		this.keys = new Keys(this);
 		// Set Default GUI Elements
@@ -117,6 +131,10 @@ public class Panel extends JPanel implements ActionListener {
 		// Creates other GUI elements
 		this.createLabels();
 		this.createTiles();
+	}
+
+	public Panel(Player white, Player black) {
+		this(Mode.Normal, white, black);
 	}
 
 	@Override
@@ -168,11 +186,10 @@ public class Panel extends JPanel implements ActionListener {
 	 * Adds {@link Tile} to this.
 	 */
 	private void createTiles() {
-		char[] columnDictation = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-		int num = columnDictation.length;
+		int num = columns.length - 1;
 
 		for (Tile[] row : this.board.getBoard()) {
-			JLabel col = new JLabel(String.valueOf(num), SwingConstants.CENTER);
+			JLabel col = new JLabel(rows[num], SwingConstants.CENTER);
 			col.setPreferredSize(dim);
 			this.add(col);
 			--num;
@@ -186,9 +203,9 @@ public class Panel extends JPanel implements ActionListener {
 		menuButton.addActionListener(this);
 		menuButton.addKeyListener(this.keys);
 		this.add(menuButton);
-		
-		for (char c : columnDictation) {
-			JLabel row = new JLabel(String.valueOf(c), SwingConstants.CENTER);
+
+		for (String c : columns) {
+			JLabel row = new JLabel(c, SwingConstants.CENTER);
 			row.setPreferredSize(dim);
 			this.add(row);
 		}
@@ -197,7 +214,8 @@ public class Panel extends JPanel implements ActionListener {
 	public void displayMenu() {
 		Chess.logger.info("Display Menu");
 		switch (JOptionPane.showOptionDialog(this, "Pick an option", "Menu", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, new String[] { "Scores", "Reset", "Quit", "Resign", "Controls" }, 0)) {
+				JOptionPane.PLAIN_MESSAGE, Chess.icon, new String[] { "Scores", "Reset", "Quit", "Resign", "Controls" },
+				"Controls")) {
 		case 0:
 			this.scoresOption();
 			return;
@@ -250,12 +268,12 @@ public class Panel extends JPanel implements ActionListener {
 	 * Reset {@link #board}.
 	 */
 	public void resetOption() {
-		switch (JOptionPane.showConfirmDialog(null, "Are you sure you want to reset?", "", JOptionPane.YES_NO_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null)) {
+		switch (JOptionPane.showConfirmDialog(this, "Are you sure you want to reset?", "", JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Reset board.");
 			this.board.reset();
-			JOptionPane.showMessageDialog(null, "Board has been Reset", "", JOptionPane.PLAIN_MESSAGE, null);
+			JOptionPane.showMessageDialog(this, "Board has been Reset", "", JOptionPane.PLAIN_MESSAGE, Chess.icon);
 		default:
 			return;
 		}
@@ -265,19 +283,18 @@ public class Panel extends JPanel implements ActionListener {
 	 * A {@link Player} has resigned.
 	 */
 	public void resignOption() {
-		Chess.logger.info("Resign offered");
-		if (this.board.isGameOver()) {
-			JOptionPane.showMessageDialog(null, "The Game is Over!", "Game Over!", JOptionPane.PLAIN_MESSAGE, null);
+		if (this.board.isGameOver())
 			return;
-		}
 
-		switch (JOptionPane.showConfirmDialog(null,
+		Chess.logger.info("Resign offered");
+		switch (JOptionPane.showConfirmDialog(this,
 				this.board.getCurrentPlayer().name + ", are you sure you want to resign?", "",
-				JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null)) {
+				JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Resign accepted");
 			this.board.setMode(Mode.Over);
-			JOptionPane.showMessageDialog(null, this.board.getNextPlayer().name + " wins!");
+			JOptionPane.showMessageDialog(this, this.board.getNextPlayer().name + " wins!", "",
+					JOptionPane.PLAIN_MESSAGE, Chess.icon);
 		default:
 			Chess.logger.info("Resign declined");
 			return;
@@ -289,9 +306,8 @@ public class Panel extends JPanel implements ActionListener {
 	 */
 	public void scoresOption() {
 		Chess.logger.info("Display Scores");
-		JOptionPane.showMessageDialog(null,
+		JOptionPane.showMessageDialog(this,
 				String.format("%s%n%s", this.board.white.toString(), this.board.black.toString()), "Scores",
-				JOptionPane.PLAIN_MESSAGE, null);
+				JOptionPane.PLAIN_MESSAGE, Chess.icon);
 	}
-
 }

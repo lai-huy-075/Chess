@@ -37,6 +37,10 @@ public class Pawn extends Piece {
 			// Check if capturing diagonally
 			if (src.row - dest.row == -1) {
 				if (Math.abs(src.col - dest.col) == 1) {
+					// En passant
+					
+					
+					// Normal Capturing
 					if (dest_empty)
 						return false;
 					return !this.isAlly(dest_piece);

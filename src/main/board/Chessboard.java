@@ -17,8 +17,12 @@ public final class Chessboard {
 	 * {@link Player} with the {@link PieceColor#Black} pieces
 	 */
 	public final Player black;
-
+	
+	/**
+	 * 2d array holding the location of all the pieces.
+	 */
 	private final Tile[][] board;
+	
 	/**
 	 * A reference to the current {@link Player}.
 	 */
@@ -48,6 +52,15 @@ public final class Chessboard {
 	 * {@link Player} with the {@link PieceColor#White}
 	 */
 	public final Player white;
+	
+	public Chessboard(Panel.Mode mode) {
+		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
+		this.white = Player.default_white;
+		this.black = Player.default_black;
+		this.board = new Tile[8][8];
+		
+		this.createBoard();
+	}
 
 	public Chessboard(Player white, Player black) {
 		this.white = Objects.requireNonNull(white, "White player cannot be null");
@@ -70,14 +83,26 @@ public final class Chessboard {
 		this.destination.setText(piece.toString());
 		this.destination.setForeground(piece.color.color);
 		this.source.reset();
-
+	}
+	
+	private void updatePlayers() {
 		Player temp = this.currentPlayer;
 		this.currentPlayer = this.nextPlayer;
 		this.nextPlayer = temp;
 	}
-
-	private void checkKnights(Tile tile) {
+	
+	/**
+	 * Determine if enemy Knights are able to Check the King.<br>
+	 * If an enemy Knight is found
+	 * 
+	 * @param tile
+	 * @throws NullPointerException if inputed Tile is null
+	 * @throws NullPointerException if inputed Tile does not have a piece on it
+	 */
+	private void checkKnights(Tile tile) throws NullPointerException {
+		Objects.requireNonNull(tile, "Tile cannot be null");
 		King king = (King) tile.getPiece();
+		Objects.requireNonNull(king, "King cannot be null");
 
 		for (int x = -2; x < 3; ++x) {
 			int y = 0;
@@ -112,14 +137,24 @@ public final class Chessboard {
 				continue;
 			}
 
-			for (Piece piece : new Piece[] { tile0.getPiece(), tile1.getPiece() })
+			for (Tile t : new Tile[] { tile0, tile1 }) {
+				if (t == null)
+					continue;
+								
+				Chess.logger.info("Checking tile " + t.toString());
+				Piece piece = t.getPiece();
 				if (piece != null)
 					if (!king.isAlly(piece))
 						if (piece instanceof Knight) {
 							king.setCheck(true);
 							return;
 						}
+			}
 		}
+	}
+	
+	private void checkRooks() {
+		
 	}
 
 	/**
@@ -129,7 +164,7 @@ public final class Chessboard {
 	 * @param traversed privative array of {@link Tile}
 	 * @return true if a piece collides with another. false otherwise.
 	 */
-	private boolean collide(Tile[] traversed) {
+	private boolean collide(Tile[] traversed) throws NullPointerException {
 		Objects.requireNonNull(traversed, "Traversal cannot be null");
 		for (Tile tile : traversed) {
 			if (tile.equals(this.source))
@@ -169,7 +204,7 @@ public final class Chessboard {
 	 *               {@link #nextPlayer} King
 	 * @return {@link Tile} King is currently on.
 	 */
-	private Tile findKing(boolean isAlly) {
+	private Tile findKing(boolean isAlly) throws IllegalStateException {
 		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
 		for (Tile[] row : this.board)
 			for (Tile tile : row) {
@@ -208,7 +243,12 @@ public final class Chessboard {
 	}
 
 	public boolean isGameOver() {
-		return this.mode == Panel.Mode.Over;
+		switch (this.mode) {
+		case Over:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	/**
@@ -257,14 +297,15 @@ public final class Chessboard {
 			return;
 		
 		
-		
-		
-		
-		
+		boolean unpin = this.moveOutOfPin();
+		Chess.logger.info(unpin ? "Move out of pin" : "Did not move out of pin");
+		if (unpin)
+			return;
 		
 
 		this.advancePiece();
 		this.updateKing();
+		this.updatePlayers();
 	}
 
 	/**
@@ -379,8 +420,10 @@ public final class Chessboard {
 
 	private void updateKing() {
 		Chess.logger.info("Updating King");
-		Tile king_tile = this.findKing(true);
+		
+		Tile king_tile = this.findKing(false);
 		this.checkKnights(king_tile);
+		this.checkRooks();
 	}
 
 	/**
@@ -402,11 +445,5 @@ public final class Chessboard {
 		}
 
 		Chess.logger.info("Writting pgn complete!");
-
-		try (FileWriter writer = new FileWriter(Chess.fen_file)) {
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

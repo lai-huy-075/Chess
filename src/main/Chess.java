@@ -111,19 +111,22 @@ public class Chess {
 	}
 	
 	private static final void mainMenu() {
-		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, icon, new String[] {"New Game", "Place pieces"}, "New Game")) {
+		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, icon, new String[] {"New Standard Game", "Funny Game", "Place pieces"}, "New Standard Game")) {
 		case 0:
 			createChessBoard();
 			return;
 		case 1:
+			return;
+		case 2:
 			placePieces();
+			return;
 		default:
 			Chess.logger.info("Picked Illegal Option");
 		}
 	}
 	
 	private static final void placePieces() {
-		Panel panel = new Panel();
+		Panel panel = new Panel(Panel.Mode.Debug);
 		
 		JFrame frame = new JFrame("Chess");
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

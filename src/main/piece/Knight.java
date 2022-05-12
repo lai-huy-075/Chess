@@ -14,7 +14,10 @@ public class Knight extends Piece {
 
 	@Override
 	public boolean isLegal(Tile src, Tile dest) {
-		return false;
+		int dx = Math.abs(src.col - dest.col);
+		int dy = Math.abs(src.row - dest.row);
+		
+		return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
 	}
 
 	@Override

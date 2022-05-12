@@ -20,8 +20,8 @@ public class King extends Piece {
 	}
 	
 	@Override
-	public int getValue() {
-		return 0x7fffffff;
+	public int getValue() throws IllegalStateException {
+		throw new IllegalStateException("King cannot be captured");
 	}
 	
 	public boolean isCheck() {
@@ -34,7 +34,7 @@ public class King extends Piece {
 	
 	@Override
 	public boolean isLegal(Tile src, Tile dest) {
-		return false;
+		return Math.abs(src.col - dest.col) == 1 && Math.abs(src.row - dest.col) == 1;
 	}
 
 	@Override
@@ -59,5 +59,13 @@ public class King extends Piece {
 	@Override
 	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
 		return empty;
+	}
+	
+	public void setKingside(boolean bool) {
+		this.king = bool;
+	}
+	
+	public void setQueenside(boolean bool) {
+		this.queen = bool;
 	}
 }
