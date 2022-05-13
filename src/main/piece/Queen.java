@@ -27,6 +27,11 @@ public class Queen extends Piece {
 		this.rook = false;
 		this.bishop = false;
 	}
+	
+	@Override
+	public String toAN() {
+		return an_queen;
+	}
 
 	@Override
 	public String toString() {

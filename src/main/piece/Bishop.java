@@ -2,7 +2,15 @@ package main.piece;
 
 import main.board.Tile;
 
+/**
+ * The Bishop
+ */
 public class Bishop extends Piece {
+	/**
+	 * Constructor
+	 * 
+	 * @param color {@link PieceColor} of this
+	 */
 	public Bishop(PieceColor color) {
 		super(color);
 	}
@@ -31,6 +39,11 @@ public class Bishop extends Piece {
 		default:
 			return default_name;
 		}
+	}
+	
+	@Override
+	public String toAN() {
+		return an_bishop;
 	}
 
 	@Override

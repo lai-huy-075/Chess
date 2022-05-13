@@ -1,7 +1,6 @@
 package main.board;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,9 +22,10 @@ import javax.swing.UIManager;
 import main.Chess;
 import main.listeners.Keys;
 import main.listeners.Mouse;
+import main.piece.Piece.PieceColor;
 import main.player.Player;
 
-public class Panel extends JPanel implements ActionListener {
+public final class Panel extends JPanel implements ActionListener {
 	/**
 	 * Game mode
 	 */
@@ -57,12 +57,6 @@ public class Panel extends JPanel implements ActionListener {
 	 * Default {@link Font}
 	 */
 	public static final Font default_font = new Font("", Font.PLAIN, 30);
-
-	/**
-	 * {@link Dimension} of all elements in this.
-	 */
-	@Deprecated
-	public static final Dimension dim = new Dimension(70, 70);
 
 	/**
 	 * Grid Layout
@@ -117,8 +111,8 @@ public class Panel extends JPanel implements ActionListener {
 
 		options = new String[] { "Controls", "Reset", "Resign", "Draw", "Quit", "Deslect Piece", "Scores" };
 
-		vs.setPreferredSize(dim);
 		vs.setFont(arial);
+		vs.setPreferredSize(Tile.dim);
 
 		controls = new JTextArea(cont);
 		controls.setColumns(15);
@@ -130,7 +124,7 @@ public class Panel extends JPanel implements ActionListener {
 		menuButton.setFont(arial);
 		menuButton.setOpaque(false);
 		menuButton.setContentAreaFilled(false);
-		menuButton.setPreferredSize(dim);
+		menuButton.setPreferredSize(Tile.dim);
 	}
 
 	/**
@@ -157,7 +151,12 @@ public class Panel extends JPanel implements ActionListener {
 	 * {@link JLabel} for {@link Chessboard#white}i
 	 */
 	private JLabel white;
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param mode {@link Mode} of the game
+	 */
 	public Panel(Mode mode) {
 		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(Player.default_white, Player.default_black);
@@ -170,7 +169,13 @@ public class Panel extends JPanel implements ActionListener {
 		this.createLabels();
 		this.createTiles();
 	}
-
+	
+	/**
+	 * Constructor 
+	 * @param mode {@link Mode} of the game
+	 * @param white {@link PieceColor#White} {@link Player}
+	 * @param black {@link PieceColor#Black} {@link Player}
+	 */
 	public Panel(Mode mode, Player white, Player black) {
 		this.mode = Objects.requireNonNull(mode);
 		this.board = new Chessboard(white, black);
@@ -184,7 +189,13 @@ public class Panel extends JPanel implements ActionListener {
 		this.createLabels();
 		this.createTiles();
 	}
-
+	
+	/**
+	 * constructor
+	 * 
+	 * @param white {@link PieceColor#White} {@link Player}
+	 * @param black {@link PieceColor#Black} {@link Player}
+	 */
 	public Panel(Player white, Player black) {
 		this(Mode.Normal, white, black);
 	}
@@ -234,7 +245,7 @@ public class Panel extends JPanel implements ActionListener {
 			for (int j = 0; j < board[i].length; ++j) {
 				Tile tile = board[i][j];
 				tile.addKeyListener(this.keys);
-				tile.addMouseListener(new Mouse(this, tile));
+				tile.addMouseListener(new Mouse(this.board, tile));
 				this.add(tile, new GridBagConstraints(1 + j, 1 + i, 1, 1, 0, 0, GridBagConstraints.CENTER,
 						GridBagConstraints.CENTER, inset, 0, 0));
 			}
@@ -318,9 +329,10 @@ public class Panel extends JPanel implements ActionListener {
 				JOptionPane.PLAIN_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Quit accepted.");
+			this.board.write();
 			System.exit(0);
 		default:
-			Chess.logger.info("Quit declineed.");
+			Chess.logger.info("Quit declined.");
 			return;
 		}
 	}
@@ -329,14 +341,16 @@ public class Panel extends JPanel implements ActionListener {
 	 * Reset {@link #board}.
 	 */
 	public void resetOption() {
+		Chess.logger.info("Reset offered.");
 		switch (JOptionPane.showConfirmDialog(this, "Are you sure you want to reset?", "", JOptionPane.YES_NO_OPTION,
 				JOptionPane.PLAIN_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
-			Chess.logger.info("Reset board.");
+			Chess.logger.info("Reset accepted.");
 			this.board.reset();
 			JOptionPane.showMessageDialog(this, "Board has been Reset", "", JOptionPane.PLAIN_MESSAGE, Chess.icon);
 			return;
 		default:
+			Chess.logger.info("Reset declined.");
 			return;
 		}
 	}

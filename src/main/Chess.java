@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,15 +21,53 @@ import main.logging.CustomFormatter;
 import main.piece.Piece.PieceColor;
 import main.player.Player;
 
+/**
+ * Main class
+ */
 public class Chess {
+	/**
+	 * {@link String} file name for Forsyth-Edwards Notation 
+	 */
 	public static final String fen = "out.fen";
+	
+	/**
+	 * Output {@link File} for Forsyth-Edwards Notation
+	 */
 	public static final File fen_file;
+	
+	/**
+	 * {@link DateTimeFormatter} of Patern yyyy.MM.dd
+	 */
 	public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+	
+	/**
+	 * {@link ImageIcon} for the {@link JFrame}
+	 */
 	public static final ImageIcon icon;
+	
+	/**
+	 * {@link Image} of {@link #icon}
+	 */
 	public static final Image icon_image;
+	
+	/**
+	 * {@link Logger}
+	 */
 	public static final Logger logger;
+	
+	/**
+	 * {@link LocalDateTime} of when the program was executed
+	 */
 	public static final LocalDateTime now = LocalDateTime.now();
+	
+	/**
+	 * File name for Portable Game Notation
+	 */
 	public static final String pgn = "out.pgn";
+	
+	/**
+	 * Output {@link File} for Portable Game Notation
+	 */
 	public static final File pgn_file;
 
 	static {
@@ -36,9 +75,9 @@ public class Chess {
 		try {
 			file = new FileHandler("./out.log", false);
 		} catch (SecurityException e) {
-			Chess.logger.severe(e.getLocalizedMessage());
+			Chess.logger.throwing("Chess", "static", e);
 		} catch (IOException e) {
-			Chess.logger.severe(e.getLocalizedMessage());
+			Chess.logger.throwing("Chess", "static", e);
 		}
 		file.setFormatter(new CustomFormatter());
 
@@ -59,13 +98,13 @@ public class Chess {
 			try {
 				pgn_file.createNewFile();
 			} catch (IOException e) {
-				Chess.logger.severe(e.getLocalizedMessage());
+				Chess.logger.throwing("Chess", "static", e);
 			}
 
 		try {
 			Chess.logger.info(pgn_file.getCanonicalPath());
 		} catch (IOException e) {
-			Chess.logger.severe(e.getLocalizedMessage());
+			Chess.logger.throwing("Chess", "static", e);
 		}
 
 		File fen_dir = new File("./fen/");
@@ -77,17 +116,19 @@ public class Chess {
 			try {
 				fen_file.createNewFile();
 			} catch (IOException e) {
-				Chess.logger.severe(e.getLocalizedMessage());
+				Chess.logger.throwing("Chess", "static", e);
 			}
 
 		try {
 			Chess.logger.info(fen_file.getCanonicalPath());
 		} catch (IOException e) {
-			for (StackTraceElement element : e.getStackTrace())
-				Chess.logger.severe(element.toString());
+			Chess.logger.throwing("Chess", "static", e);
 		}
 	}
-
+	
+	/**
+	 * Create a standard game of chess
+	 */
 	private static final void createChessBoard() {
 		logger.info("Normal Game");
 
@@ -105,7 +146,10 @@ public class Chess {
 
 		createFrame(panel);
 	}
-
+	
+	/**
+	 * Display the Main Menu
+	 */
 	private static final void mainMenu() {
 		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.QUESTION_MESSAGE, icon, new String[] { "New Standard Game", "Funny Game", "Place pieces" },
@@ -124,22 +168,34 @@ public class Chess {
 			return;
 		}
 	}
-
+	
+	/**
+	 * Create a game of Chess with altered rules
+	 */
 	private static final void funny() {
 		Chess.logger.info("Funny Mode");
 		Panel panel = new Panel(Panel.Mode.Funny);
 
 		createFrame(panel);
 	}
-
+	
+	/**
+	 * Create a game of Chess to allow the user to Place Pieces
+	 */
 	private static final void placePieces() {
-		logger.info("Debug Mode");
+		Chess.logger.info("Debug Mode");
 		Panel panel = new Panel(Panel.Mode.Debug);
 
 		createFrame(panel);
 	}
-
+	
+	/**
+	 * Create a {@link JFrame} and display it. 
+	 * 
+	 * @param panel {@link Panel} to add to created JFrame
+	 */
 	private static final void createFrame(Panel panel) {
+		Chess.logger.info("Creating JFrame");
 		JFrame frame = new JFrame("Chess");
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.add(panel);
@@ -150,8 +206,13 @@ public class Chess {
 		frame.setVisible(true);
 		frame.addWindowListener(new Window(panel));
 	}
-
+	
+	/**
+	 * Main function
+	 * @param args primitive type array of {@link String}
+	 */
 	public static void main(String[] args) {
+		Chess.logger.info("Args:\t" + Arrays.deepToString(args));
 		mainMenu();
 	}
 }

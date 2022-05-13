@@ -99,6 +99,11 @@ public class Pawn extends Piece {
 	}
 	
 	@Override
+	public String toAN() {
+		return an_pawn;
+	}
+	
+	@Override
 	public String toString() {
 		switch (this.color) {
 		case White:

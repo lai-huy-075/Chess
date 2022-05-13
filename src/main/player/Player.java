@@ -78,29 +78,46 @@ public class Player {
 	 * Current score
 	 */
 	private int score;
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param name {@link String} name of this
+	 * @param color {@link PieceColor} this will control
+	 */
 	public Player(String name, PieceColor color) {
 		this.name = Objects.requireNonNull(name);
 		this.color = Objects.requireNonNull(color);
 		this.score = 0;
 	}
-
+	
+	/**
+	 * Get {@link #score}
+	 * 
+	 * @return {@link #score}
+	 */
 	public int getScore() {
 		return this.score;
 	}
 	
-	@Deprecated
-	public void incrementScore(int score) {
-		this.score += score;
-	}
-	
+	/**
+	 * Increment {@link #score} by {@link Piece#getValue()}
+	 * 
+	 * @param piece {@link Piece} to increment score with 
+	 */
 	public void incrementScore(Piece piece) {
 		if (piece == null)
 			return;
 		Chess.logger.info("Capturing " + piece.toString());
 		this.score += piece.getValue();
 	}
-
+	
+	/**
+	 * Determine if this is moving an ally {@link Piece} on a {@link Tile}
+	 * @param tile {@link Tile} this is attempting to interact with
+	 * @return true if this can move the piece on the tile
+	 * 			false otherwise
+	 */
 	public boolean movingAlly(Tile tile) {
 		try {
 			return this.color == tile.getPiece().color;
@@ -109,14 +126,12 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Reset Player's attributes back to their default values
+	 */
 	public void reset() {
 		Chess.logger.info("Reseting " + this.name);
 		this.score = 0;
-	}
-
-	@Deprecated
-	public void setScore(int score) {
-		this.score = score;
 	}
 	
 	@Override

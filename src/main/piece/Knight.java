@@ -35,6 +35,11 @@ public class Knight extends Piece {
 			return default_name;
 		}
 	}
+	
+	@Override
+	public String toAN() {
+		return an_knight;
+	}
 
 	@Override
 	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {

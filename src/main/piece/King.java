@@ -76,6 +76,11 @@ public class King extends Piece {
 		this.queen = true;
 		this.check = false;
 	}
+	
+	@Override
+	public String toAN() {
+		return an_king;
+	}
 
 	@Override
 	public String toString() {

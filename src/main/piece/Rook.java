@@ -21,6 +21,11 @@ public class Rook extends Piece {
 	public void reset() {
 		
 	}
+	
+	@Override
+	public String toAN() {
+		return an_rook;
+	}
 
 	@Override
 	public String toString() {

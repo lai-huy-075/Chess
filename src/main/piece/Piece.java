@@ -23,6 +23,36 @@ public abstract class Piece {
 	}
 	
 	/**
+	 * Algebraic Notation for the King
+	 */
+	protected static final String an_king = "K";
+	
+	/**
+	 * Algebraic Notation for the Queen
+	 */
+	protected static final String an_queen = "Q";
+	
+	/**
+	 * Algebraic Notation for the Rook
+	 */
+	protected static final String an_rook = "R";
+	
+	/**
+	 * Algebraic Notation for the Knight
+	 */
+	protected static final String an_knight = "N";
+	
+	/**
+	 * Algebraic Notation for the Bishop
+	 */
+	protected static final String an_bishop = "B";
+	
+	/**
+	 * Algebraic Notation for the Pawn
+	 */
+	protected static final String an_pawn = "";
+	
+	/**
 	 * {@link String} representing the Black Bishop
 	 */
 	protected static final String black_bishop = "\u265D";
@@ -111,6 +141,13 @@ public abstract class Piece {
 	 */
 	public abstract int getValue();
 	
+	/**
+	 * Get a primitive type array of the tiles traversed from src to dest
+	 * @param board 2d primitive type array holding the board
+	 * @param src source {@link Tile}
+	 * @param dest destination {@link Tile}
+	 * @return {@link Tile}s traversed
+	 */
 	public abstract Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest);
 
 	/**
@@ -136,7 +173,15 @@ public abstract class Piece {
 	public boolean isBlack() {
 		return PieceColor.Black == this.color;
 	}
-
+	
+	/**
+	 * Determine if a piece move is legal 
+	 * 
+	 * @param src {@link Tile} where the piece came from
+	 * @param dest {@link Tile} where the piece is goign
+	 * @return true is a legal move is done<br>
+	 * 			false is not a legal move
+	 */
 	public abstract boolean isLegal(Tile src, Tile dest);
 
 	/**
@@ -148,9 +193,18 @@ public abstract class Piece {
 	public boolean isWhite() {
 		return PieceColor.White == this.color;
 	}
-
+	
+	/**
+	 * Set any piece attributes to their default values.
+	 */
 	public abstract void reset();
 
 	@Override
 	public abstract String toString();
+	
+	/**
+	 * Converts this into a {@link String} for Algebraic Notation
+	 * @return Algebraic Notation for this Piece
+	 */
+	public abstract String toAN();
 }

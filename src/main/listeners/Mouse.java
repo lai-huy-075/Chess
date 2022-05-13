@@ -9,18 +9,38 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import main.Chess;
+import main.board.Chessboard;
 import main.board.Panel;
 import main.board.Tile;
+import main.board.Tile.TileColor;
 
-
+/**
+ * {@link MouseListener} for each {@link Tile}
+ */
 public class Mouse implements MouseListener {
+	/**
+	 * {@link Border} to set when {@link #mouseEntered(MouseEvent)} is called
+	 */
 	private static final Border border = BorderFactory.createLineBorder(Color.BLACK, 3);
 	
-	public final Panel panel;
+	/**
+	 * {@link Chessboard} the {@link Tile} is on
+	 */
+	public final Chessboard board;
+	
+	/**
+	 * {@link Tile} this is linked to
+	 */
 	public final Tile tile;
 	
-	public Mouse(Panel panel, Tile tile) {
-		this.panel = Objects.requireNonNull(panel, "Panel cannot be null");
+	/**
+	 * Constructor
+	 * 
+	 * @param panel {@link Panel} of this
+	 * @param tile	 {@link Tile} of this
+	 */
+	public Mouse(Chessboard board, Tile tile) {
+		this.board = Objects.requireNonNull(board, "Panel cannot be null");
 		this.tile = Objects.requireNonNull(tile, "Tile cannot be null");
 	}
 	
@@ -28,40 +48,20 @@ public class Mouse implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		switch (e.getButton()) {
 		case MouseEvent.BUTTON1:
-			Chess.logger.info("Clicked :\t" + this.tile.toString());
-			this.panel.board.tileClicked(this.tile);
-			this.panel.board.debugTiles();
-			return;
-		case MouseEvent.BUTTON2:
-			String tileText = this.tile.getText();
-			String coords = this.tile.row + ", " + this.tile.col;
-			if (tileText.isEmpty() || !coords.equals(tileText)) {
-				this.tile.setForeground(Tile.text);
-				this.tile.setText(coords);
-			} else {
-				if (this.tile.getPiece() == null) {
-					this.tile.setText("");
-					this.tile.setForeground(null);
-				} else {
-					this.tile.setText(this.tile.getPiece().toString());
-					this.tile.setForeground(this.tile.getPiece().color.color);
-				}
-			}
+			this.board.tileClicked();
 			return;
 		case MouseEvent.BUTTON3:
-			String tileText1 = this.tile.getText();
-			if (tileText1.isEmpty() || !this.tile.toString().equals(tileText1)) {
-				this.tile.setForeground(Tile.text);
-				this.tile.setText(this.tile.toString());
-			} else {
-				if (this.tile.getPiece() == null) {
-					this.tile.setText("");
-					this.tile.setForeground(null);
-				} else {
-					this.tile.setText(this.tile.getPiece().toString());
-					this.tile.setForeground(this.tile.getPiece().color.color);
-				}
+			switch (this.tile.color) {
+			case Dark:
+				this.tile.setBackground(TileColor.Dark.standard.equals(this.tile.getBackground()) ? TileColor.Dark.selected : TileColor.Dark.standard);
+				return;
+			case Light:
+				this.tile.setBackground(TileColor.Light.standard.equals(this.tile.getBackground()) ? TileColor.Light.selected : TileColor.Light.standard);
+				return;
+			default:
+				throw new IllegalStateException("Illegal Tile.TileColor:\t" + this.tile.color.name());
 			}
+		default:
 			return;
 		}
 	}
@@ -83,6 +83,7 @@ public class Mouse implements MouseListener {
 			return;
 		
 		Chess.logger.info("Pressed :\t" + this.tile.toString());
+		this.board.updateSource(this.tile);
 	}
 
 	@Override
@@ -92,14 +93,21 @@ public class Mouse implements MouseListener {
 		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
 		
-		int x = (int) (e.getX()/Panel.dim.getWidth());
-		int y = (int) (e.getY()/Panel.dim.getHeight());
+		int x = Math.floorDiv(e.getX(), (int) Tile.dim.getWidth());
+		int y = Math.floorDiv(e.getY(), (int) Tile.dim.getHeight());
+		Chess.logger.info("Offset:\t(" + x + "," + y + ")");
 		Tile t;
 		try {
-			t = this.panel.board.getTileOffset(this.tile, x, y);
+			t = this.board.getTileOffset(this.tile, x, y);
 			Chess.logger.info("Released:\t" + t.toString());
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
 			Chess.logger.info("Released:\tOut of Bounds.");
+			return;
+		}
+		
+		if (!this.board.compareSource(t)) {
+			this.board.updateDestination(t);
+			this.board.tileClicked();
 		}
 	}
 }
