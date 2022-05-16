@@ -1,5 +1,7 @@
 package main.piece;
 
+import java.util.Objects;
+
 import main.board.Tile;
 
 /**
@@ -13,6 +15,20 @@ public class Bishop extends Piece {
 	 */
 	public Bishop(PieceColor color) {
 		super(color);
+	}
+
+	@Override
+	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		Objects.requireNonNull(board, "Bishop must be on a board");
+		Objects.requireNonNull(src, "Source tile cannot be null");
+		Objects.requireNonNull(dest, "Destinatino tile cannot be null");
+
+		Tile[] temp = new Tile[Math.abs(src.col - dest.col)];
+		int dx = dest.col < src.col ? -1 : 1, dy = dest.row < src.row ? -1 : 1;
+		for (int i = 0; i < temp.length; ++i)
+			temp[i] = board[src.row + i * dy][src.col + i * dx];
+
+		return temp;
 	}
 
 	@Override
@@ -30,6 +46,11 @@ public class Bishop extends Piece {
 	}
 
 	@Override
+	public char toAN() {
+		return an_bishop;
+	}
+
+	@Override
 	public String toString() {
 		switch (this.color) {
 		case White:
@@ -39,20 +60,5 @@ public class Bishop extends Piece {
 		default:
 			return default_name;
 		}
-	}
-	
-	@Override
-	public String toAN() {
-		return an_bishop;
-	}
-
-	@Override
-	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
-		Tile[] temp = new Tile[Math.abs(src.col - dest.col)];
-		int dx = dest.col < src.col ? -1 : 1, dy = dest.row < src.row ? -1 : 1;
-		for (int i = 0; i < temp.length; ++i)
-			temp[i] = board[src.row + i * dy][src.col + i * dx];
-
-		return temp;
 	}
 }

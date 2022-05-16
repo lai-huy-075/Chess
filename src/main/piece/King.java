@@ -1,27 +1,32 @@
 package main.piece;
 
+import java.util.Objects;
+
 import main.board.Tile;
 
+/**
+ * The King
+ */
 public class King extends Piece {
-	/**
-	 * boolean holding if King-side castle is possible
-	 */
-	private boolean king;
-	
-	/**
-	 * boolean holding if Queen-side castle is possible
-	 */
-	private boolean queen;
-	
 	/**
 	 * boolean holding if this King is check.
 	 */
 	private boolean check;
-	
+
+	/**
+	 * boolean holding if King-side castle is possible
+	 */
+	private boolean king;
+
+	/**
+	 * boolean holding if Queen-side castle is possible
+	 */
+	private boolean queen;
+
 	public King(PieceColor color) {
 		super(color);
 	}
-	
+
 	/**
 	 * Determine if the King can King-side castle
 	 * 
@@ -31,7 +36,7 @@ public class King extends Piece {
 	public boolean canKingsideCastle() {
 		return this.king;
 	}
-	
+
 	/**
 	 * Determine if the King can Queen-side castle
 	 * 
@@ -41,12 +46,21 @@ public class King extends Piece {
 	public boolean canQueensideCastle() {
 		return this.queen;
 	}
-	
+
+	@Override
+	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		Objects.requireNonNull(board, "King must be on a board");
+		Objects.requireNonNull(src, "Source tile cannot be null");
+		Objects.requireNonNull(dest, "Destinatino tile cannot be null");
+
+		return empty;
+	}
+
 	@Override
 	public int getValue() throws IllegalStateException {
 		throw new IllegalStateException("King cannot be captured");
 	}
-	
+
 	/**
 	 * Determine if the King is in Check
 	 * 
@@ -56,15 +70,7 @@ public class King extends Piece {
 	public boolean isCheck() {
 		return this.check;
 	}
-	
-	/**
-	 * Set {@link #check}
-	 * @param bool 
-	 */
-	public void setCheck(boolean bool) {
-		this.check = bool;
-	}
-	
+
 	@Override
 	public boolean isLegal(Tile src, Tile dest) {
 		return Math.abs(src.col - dest.col) <= 1 && Math.abs(src.row - dest.row) <= 1;
@@ -76,9 +82,26 @@ public class King extends Piece {
 		this.queen = true;
 		this.check = false;
 	}
-	
+
+	/**
+	 * Set {@link #check}
+	 * 
+	 * @param bool
+	 */
+	public void setCheck(boolean bool) {
+		this.check = bool;
+	}
+
+	public void setKingside(boolean bool) {
+		this.king = bool;
+	}
+
+	public void setQueenside(boolean bool) {
+		this.queen = bool;
+	}
+
 	@Override
-	public String toAN() {
+	public char toAN() {
 		return an_king;
 	}
 
@@ -92,18 +115,5 @@ public class King extends Piece {
 		default:
 			return default_name;
 		}
-	}
-
-	@Override
-	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
-		return empty;
-	}
-	
-	public void setKingside(boolean bool) {
-		this.king = bool;
-	}
-	
-	public void setQueenside(boolean bool) {
-		this.queen = bool;
 	}
 }

@@ -15,9 +15,9 @@ import main.piece.Rook;
 
 public class Player {
 	/**
-	 * Default {@link PieceColor#White} Player
+	 * Primitive type array of {@link Piece} holding {@link PieceColor#Black} Pieces
 	 */
-	public static final Player default_white = new Player("White", PieceColor.White);
+	public static final Piece[] black;
 	
 	/**
 	 * Default {@link PieceColor#Black} Player
@@ -25,9 +25,9 @@ public class Player {
 	public static final Player default_black = new Player("Black", PieceColor.Black);
 	
 	/**
-	 * Primitive type array of {@link Piece} holding {@link PieceColor#Black} Pieces
+	 * Default {@link PieceColor#White} Player
 	 */
-	public static final Piece[] black;
+	public static final Player default_white = new Player("White", PieceColor.White);
 	
 	/**
 	 * Primitive type array of {@link Piece} holding {@link PieceColor#White} Pieces

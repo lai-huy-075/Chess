@@ -148,6 +148,43 @@ public class Chess {
 	}
 	
 	/**
+	 * Create a {@link JFrame} and display it. 
+	 * 
+	 * @param panel {@link Panel} to add to created JFrame
+	 */
+	private static final void createFrame(Panel panel) {
+		Chess.logger.info("Creating JFrame");
+		JFrame frame = new JFrame("Chess");
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		frame.add(panel);
+		frame.pack();
+		frame.setIconImage(icon_image);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.addWindowListener(new Window(panel));
+	}
+	
+	/**
+	 * Create a game of Chess with altered rules
+	 */
+	private static final void funny() {
+		Chess.logger.info("Funny Mode");
+		Panel panel = new Panel(Panel.Mode.Funny);
+
+		createFrame(panel);
+	}
+	
+	/**
+	 * Main function
+	 * @param args primitive type array of {@link String}
+	 */
+	public static void main(String[] args) {
+		Chess.logger.info("Args:\t" + Arrays.deepToString(args));
+		mainMenu();
+	}
+	
+	/**
 	 * Display the Main Menu
 	 */
 	private static final void mainMenu() {
@@ -170,16 +207,6 @@ public class Chess {
 	}
 	
 	/**
-	 * Create a game of Chess with altered rules
-	 */
-	private static final void funny() {
-		Chess.logger.info("Funny Mode");
-		Panel panel = new Panel(Panel.Mode.Funny);
-
-		createFrame(panel);
-	}
-	
-	/**
 	 * Create a game of Chess to allow the user to Place Pieces
 	 */
 	private static final void placePieces() {
@@ -187,32 +214,5 @@ public class Chess {
 		Panel panel = new Panel(Panel.Mode.Debug);
 
 		createFrame(panel);
-	}
-	
-	/**
-	 * Create a {@link JFrame} and display it. 
-	 * 
-	 * @param panel {@link Panel} to add to created JFrame
-	 */
-	private static final void createFrame(Panel panel) {
-		Chess.logger.info("Creating JFrame");
-		JFrame frame = new JFrame("Chess");
-		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.add(panel);
-		frame.pack();
-		frame.setIconImage(icon_image);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		frame.addWindowListener(new Window(panel));
-	}
-	
-	/**
-	 * Main function
-	 * @param args primitive type array of {@link String}
-	 */
-	public static void main(String[] args) {
-		Chess.logger.info("Args:\t" + Arrays.deepToString(args));
-		mainMenu();
 	}
 }

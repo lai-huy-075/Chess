@@ -16,18 +16,18 @@ public final class Tile extends JButton {
 	 * {@link Color} for each tile
 	 */
 	public static enum TileColor {
-		Light(new Color(0xc89669), new Color(0xec7964)),
-		Dark(new Color(0x73463c), new Color(0xe06954));
-		
-		/**
-		 * {@link Color} displayed when not selected
-		 */
-		public final Color standard;
+		Dark(new Color(0x73463c), new Color(0xe06954)),
+		Light(new Color(0xc89669), new Color(0xec7964));
 		
 		/**
 		 * {@link Color} displayed when selected by {@link MouseEvent#BUTTON3}
 		 */
 		public final Color selected;
+		
+		/**
+		 * {@link Color} displayed when not selected
+		 */
+		public final Color standard;
 		
 		private TileColor(Color standard, Color selected) {
 			this.standard = Objects.requireNonNull(standard, "Standard Color cannot be null");
@@ -36,14 +36,14 @@ public final class Tile extends JButton {
 	}
 	
 	/**
-	 * {@link Dimension} of all elements in this.
-	 */
-	public static final Dimension dim = new Dimension(80, 80);
-	
-	/**
 	 * Default {@link Font}
 	 */
 	private static final Font default_font = new Font("", Font.PLAIN, 60);
+	
+	/**
+	 * {@link Dimension} of all elements in this.
+	 */
+	public static final Dimension dim = new Dimension(80, 80);
 	
 	/**
 	 * Serial Version UID
@@ -61,6 +61,11 @@ public final class Tile extends JButton {
 	public final int col;
 	
 	/**
+	 * {@link TileColor} for the Background
+	 */
+	public final TileColor color;
+	
+	/**
 	 * {@link Piece} this currently has on it.<br>
 	 * Null if there is no piece
 	 */
@@ -70,11 +75,6 @@ public final class Tile extends JButton {
 	 * Row this is in
 	 */
 	public final int row;
-	
-	/**
-	 * {@link TileColor} for the Background
-	 */
-	public final TileColor color;
 
 	public Tile(int row, int col) {
 		super("", null);

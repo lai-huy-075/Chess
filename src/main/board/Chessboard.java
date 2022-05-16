@@ -42,6 +42,8 @@ public final class Chessboard {
 	 */
 	private Panel.Mode mode;
 
+	private final List<String> moves;
+
 	/**
 	 * A reference to the next {@link Player}.
 	 */
@@ -61,8 +63,6 @@ public final class Chessboard {
 	 * {@link Player} with the {@link PieceColor#White}
 	 */
 	public final Player white;
-	
-	private final List<String> moves;
 
 	public Chessboard(Panel.Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
@@ -80,7 +80,7 @@ public final class Chessboard {
 		this.black = Objects.requireNonNull(black, "Blackplayer cannot be null");
 		this.board = new Tile[8][8];
 		this.moves = new ArrayList<>();
-		
+
 		this.createBoard();
 		this.reset();
 	}
@@ -99,10 +99,22 @@ public final class Chessboard {
 		this.destination.setForeground(piece.color.color);
 		this.source.reset();
 	}
-	
+
 	private void appendMove() {
-		String move = this.source.getPiece().toAN();
-		move += this.destination.getPiece() != null ? "x" : "";
+		String move = "";
+		boolean attack = this.destination.getPiece() != null;
+
+		final char an = this.source.getPiece().toAN();
+		switch (an) {
+		case Piece.an_pawn:
+			move += attack ? String.valueOf((char) ('a' + this.source.col)) : "";
+			break;
+		default:
+			move += String.valueOf(an);
+			break;
+		}
+
+		move += attack ? "x" : "";
 		move += this.destination.toString();
 		Chess.logger.info("Appending move:\t" + move);
 		this.moves.add(move);
@@ -135,19 +147,164 @@ public final class Chessboard {
 					}
 		}
 	}
-	
+
+	/**
+	 * Determine if a piece collided with any other piece when moving from
+	 * {@link #source} to {@link #destination}
+	 * 
+	 * @param traversed privative array of {@link Tile}
+	 * @return true if a piece collides with another. false otherwise.
+	 */
+	private boolean collide(Tile[] traversed) throws NullPointerException {
+		Objects.requireNonNull(traversed, "Traversal cannot be null");
+		for (Tile tile : traversed) {
+			if (tile.equals(this.source))
+				continue;
+
+			if (tile.equals(this.destination))
+				continue;
+
+			if (tile.getPiece() != null)
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Compares a {@link Tile} to {@link #source}
+	 * 
 	 * @param tile {@link Tile} to compare with
 	 * @return true if {@link #source} and tile are {@link Tile#equals(Object)}<br>
-	 * 			false otherwise
+	 *         false otherwise
 	 */
 	public boolean compareSource(Tile tile) {
 		if (this.source == null)
 			return false;
 		return this.source.equals(tile);
 	}
-	
+
+	/**
+	 * Initialize and add {@link Tile} to the {@link #board}.
+	 */
+	private void createBoard() {
+		Chess.logger.info("Creating board");
+		for (int row = 0; row < this.board.length; ++row)
+			for (int col = 0; col < this.board[row].length; ++col)
+				this.board[row][col] = new Tile(row, col);
+	}
+
+	/**
+	 * Debugs {@link #source} and {@link #destination} to {@link Chess#logger}
+	 */
+	public void debugTiles() {
+		Chess.logger.info("Source:\t" + (this.source == null ? "null" : this.source.toString()));
+		Chess.logger.info("Dest:\t" + (this.destination == null ? "null" : this.destination.toString()));
+	}
+
+	/**
+	 * Draw the game
+	 */
+	public void draw() {
+		this.mode = Panel.Mode.Over;
+		this.result = "1/2-1/2";
+	}
+
+	/**
+	 * Finds the {@link King} on this board.
+	 * 
+	 * @param isAlly true if finding {@link #currentPlayer} King false if finding
+	 *               {@link #nextPlayer} King
+	 * @return {@link Tile} King is currently on.
+	 */
+	private Tile findKing(boolean isAlly) throws IllegalStateException {
+		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
+		for (Tile[] row : this.board)
+			for (Tile tile : row) {
+				Piece piece = tile.getPiece();
+				if (piece == null)
+					continue;
+				if (!(piece instanceof King))
+					continue;
+				if (isAlly) {
+					if (piece.color == this.currentPlayer.color) {
+						Chess.logger.info(
+								String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
+						return tile;
+					}
+				} else if (piece.color == this.nextPlayer.color) {
+					Chess.logger
+							.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
+					return tile;
+				}
+			}
+		throw new IllegalStateException("Cannot find King");
+	}
+
+	/**
+	 * Get {@link #board}
+	 * 
+	 * @return {@link #board}
+	 */
+	public Tile[][] getBoard() {
+		return this.board;
+	}
+
+	/**
+	 * Get {@link #currentPlayer}
+	 * 
+	 * @return {@link #currentPlayer}
+	 */
+	public Player getCurrentPlayer() {
+		return this.currentPlayer;
+	}
+
+	/**
+	 * Get {@link #nextPlayer}
+	 * 
+	 * @return {@link #nextPlayer}
+	 */
+	public Player getNextPlayer() {
+		return this.nextPlayer;
+	}
+
+	/**
+	 * Get a {@link Tile} that is offset from an inputed Tile
+	 * 
+	 * @param tile {@link Tile} to serve as the origin
+	 * @param x    horizontal offset
+	 * @param y    vertical offset
+	 * @return Tile offset
+	 * @throws ArrayIndexOutOfBoundsException when offset goes out of bounds
+	 */
+	public final Tile getTileOffset(Tile tile, int x, int y) throws ArrayIndexOutOfBoundsException {
+		return this.board[tile.row + y][tile.col + x];
+	}
+
+	/**
+	 * Determine if {@link #mode} is {@link Mode#Over}
+	 * 
+	 * @return true if the game is over<br>
+	 *         false if the game is not over
+	 */
+	public boolean isGameOver() {
+		switch (this.mode) {
+		case Over:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Determine if the {@link King} moves itself into a Check
+	 * 
+	 * @return true if the {@link King} moves itself into a check<br>
+	 *         false otherwise
+	 */
+	private boolean kingMoveIntoCheck() {
+		return false;
+	}
+
 	/**
 	 * Find {@link Tile} where {@link Knight} can move to the inputed {@link Tile}
 	 * 
@@ -198,151 +355,10 @@ public final class Chessboard {
 	}
 
 	/**
-	 * Determine if a piece collided with any other piece when moving from
-	 * {@link #source} to {@link #destination}
-	 * 
-	 * @param traversed privative array of {@link Tile}
-	 * @return true if a piece collides with another. false otherwise.
-	 */
-	private boolean collide(Tile[] traversed) throws NullPointerException {
-		Objects.requireNonNull(traversed, "Traversal cannot be null");
-		for (Tile tile : traversed) {
-			if (tile.equals(this.source))
-				continue;
-
-			if (tile.equals(this.destination))
-				continue;
-
-			if (tile.getPiece() != null)
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Initialize and add {@link Tile} to the {@link #board}.
-	 */
-	private void createBoard() {
-		Chess.logger.info("Creating board");
-		for (int row = 0; row < this.board.length; ++row)
-			for (int col = 0; col < this.board[row].length; ++col)
-				this.board[row][col] = new Tile(row, col);
-	}
-
-	/**
-	 * Debugs {@link #source} and {@link #destination} to {@link Chess#logger}
-	 */
-	public void debugTiles() {
-		Chess.logger.info("Source:\t" + (this.source == null ? "null" : this.source.toString()));
-		Chess.logger.info("Dest:\t" + (this.destination == null ? "null" : this.destination.toString()));
-	}
-	
-	/**
-	 * Draw the game
-	 */
-	public void draw() {
-		this.mode = Panel.Mode.Over;
-		this.result = "1/2-1/2";
-	}
-
-	/**
-	 * Finds the {@link King} on this board.
-	 * 
-	 * @param isAlly true if finding {@link #currentPlayer} King false if finding
-	 *               {@link #nextPlayer} King
-	 * @return {@link Tile} King is currently on.
-	 */
-	private Tile findKing(boolean isAlly) throws IllegalStateException {
-		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
-		for (Tile[] row : this.board)
-			for (Tile tile : row) {
-				Piece piece = tile.getPiece();
-				if (piece == null)
-					continue;
-				if (!(piece instanceof King))
-					continue;
-				if (isAlly) {
-					if (piece.color == this.currentPlayer.color) {
-						Chess.logger.info(
-								String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
-						return tile;
-					}
-				} else if (piece.color == this.nextPlayer.color) {
-					Chess.logger
-							.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
-					return tile;
-				}
-			}
-		throw new IllegalStateException("Cannot find King");
-	}
-	
-	/**
-	 * Get {@link #board}
-	 * 
-	 * @return {@link #board}
-	 */
-	public Tile[][] getBoard() {
-		return this.board;
-	}
-	
-	/**
-	 * Get {@link #currentPlayer}
-	 * 
-	 * @return {@link #currentPlayer}
-	 */
-	public Player getCurrentPlayer() {
-		return this.currentPlayer;
-	}
-	
-	/**
-	 * Get {@link #nextPlayer}
-	 * 
-	 * @return {@link #nextPlayer}
-	 */
-	public Player getNextPlayer() {
-		return this.nextPlayer;
-	}
-
-	/**
-	 * Get a {@link Tile} that is offset from an inputed Tile
-	 * @param tile {@link Tile} to serve as the origin
-	 * @param x horizontal offset
-	 * @param y vertical offset
-	 * @return Tile offset
-	 * @throws ArrayIndexOutOfBoundsException when offset goes out of bounds
-	 */
-	public final Tile getTileOffset(Tile tile, int x, int y) throws ArrayIndexOutOfBoundsException {
-		return this.board[tile.row + y][tile.col + x];
-	}
-	
-	/**
-	 * Determine if {@link #mode} is {@link Mode#Over}
-	 * @return true if the game is over<br>
-	 * 			false if the game is not over
-	 */
-	public boolean isGameOver() {
-		switch (this.mode) {
-		case Over:
-			return true;
-		default:
-			return false;
-		}
-	}
-	
-	/**
-	 * Determine if the {@link King} moves itself into a Check
-	 * @return true if the {@link King} moves itself into a check<br>
-	 * 			false otherwise
-	 */
-	private boolean kingMoveIntoCheck() {
-		return false;
-	}
-
-	/**
 	 * Determine if a {@link Piece} moved out of a pin.
 	 * 
 	 * @return true if a piece moves itself out of a pin<br>
-	 * 			false otherwise
+	 *         false otherwise
 	 */
 	private boolean moveOutOfPin() {
 		return false;
@@ -463,7 +479,7 @@ public final class Chessboard {
 		this.source = null;
 		this.destination = null;
 	}
-	
+
 	/**
 	 * Determine the result of the game
 	 * 
@@ -472,33 +488,14 @@ public final class Chessboard {
 	public String result() {
 		return this.result;
 	}
-	
+
 	/**
 	 * Set {@link #mode}
+	 * 
 	 * @param mode new {@link Mode}
 	 */
 	public void setMode(Panel.Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "New mode cannot be null");
-	}
-	
-	/**
-	 * Update {@link #source}
-	 * 
-	 * @param tile new source {@link Tile}
-	 */
-	public void updateSource(Tile tile) {
-		if (this.source == null)
-			this.source = tile;
-	}
-	
-	/**
-	 * Update {@link #destination}
-	 * 
-	 * @param tile new destination {@link Tile}
-	 */
-	public void updateDestination(Tile tile) {
-		if (this.destination == null)
-			this.destination = tile;
 	}
 
 	/**
@@ -509,13 +506,13 @@ public final class Chessboard {
 	public void tileClicked() {
 		if (this.source == null)
 			return;
-		
+
 		if (!this.currentPlayer.movingAlly(this.source))
 			return;
-		
+
 		if (this.destination == null)
 			return;
-		
+
 		this.movePiece();
 		this.resetTiles();
 	}
@@ -538,9 +535,19 @@ public final class Chessboard {
 			Chess.logger.info(this.source.toString());
 		}
 	}
-	
+
 	/**
-	 * Update {@link King#check}, {@link King#king}, and {@link King#queen} 
+	 * Update {@link #destination}
+	 * 
+	 * @param tile new destination {@link Tile}
+	 */
+	public void updateDestination(Tile tile) {
+		if (this.destination == null)
+			this.destination = tile;
+	}
+
+	/**
+	 * Update {@link King#check}, {@link King#king}, and {@link King#queen}
 	 */
 	private void updateKing() {
 		Chess.logger.info("Updating King");
@@ -561,6 +568,16 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Update {@link #source}
+	 * 
+	 * @param tile new source {@link Tile}
+	 */
+	public void updateSource(Tile tile) {
+		if (this.source == null)
+			this.source = tile;
+	}
+
+	/**
 	 * Write {@link Chess#pgn_file} with details of the game
 	 */
 	public final void write() {
@@ -576,17 +593,17 @@ public final class Chessboard {
 			writer.write("[Black \"" + this.black.name + "\"]\n");
 			writer.write("[Result \"" + this.result + "\"]\n");
 			writer.write("\n");
-			
+
 			for (int i = 0; i < this.moves.size(); i += 2) {
 				String white = this.moves.get(i);
 				String black;
 				try {
 					black = this.moves.get(i + 1);
-				} catch (ArrayIndexOutOfBoundsException aioobe) {
+				} catch (IndexOutOfBoundsException ioobe) {
 					black = "";
 				}
-				int move = i/2 + 1;
-				
+				int move = i / 2 + 1;
+
 				writer.write(String.format("%d. %s %s", move, white, black));
 				writer.write(move % 7 == 0 ? "\n" : " ");
 			}

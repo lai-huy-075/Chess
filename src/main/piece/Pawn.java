@@ -5,15 +5,34 @@ import java.util.Objects;
 import main.Chess;
 import main.board.Tile;
 
+/**
+ * The Pawn
+ */
 public class Pawn extends Piece {
 	private boolean en_passant;
-	
+
 	public Pawn(PieceColor color) {
 		super(color);
 	}
 
 	public boolean en_passant() {
 		return this.en_passant;
+	}
+
+	@Override
+	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
+		Objects.requireNonNull(board, "Pawn must be on board");
+		Objects.requireNonNull(src, "Pawn must have a source");
+		Objects.requireNonNull(dest, "Pawn must have a destinaiton");
+
+		switch (this.color) {
+		case Black:
+			return dest.row - src.row == 2 ? new Tile[] { board[src.row + 1][src.col] } : empty;
+		case White:
+			return src.row - dest.row == 2 ? new Tile[] { board[src.row - 1][src.col] } : empty;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + this.color.name());
+		}
 	}
 
 	@Override
@@ -29,7 +48,7 @@ public class Pawn extends Piece {
 
 		Piece dest_piece = dest.getPiece();
 		boolean dest_empty = dest_piece == null;
-		
+
 		Chess.logger.info(dest_empty ? "Destination Tile is empty" : "Destination Tile is not empty");
 
 		switch (this.color) {
@@ -38,8 +57,7 @@ public class Pawn extends Piece {
 			if (src.row - dest.row == -1) {
 				if (Math.abs(src.col - dest.col) == 1) {
 					// En passant
-					
-					
+
 					// Normal Capturing
 					if (dest_empty)
 						return false;
@@ -66,12 +84,11 @@ public class Pawn extends Piece {
 			if (src.row - dest.row == 1) {
 				if (Math.abs(src.col - dest.col) == 1) {
 					// En passant
-					
-					
-					// Normal capturing					
+
+					// Normal capturing
 					if (dest_empty)
 						return false;
-					return !this.isAlly(dest_piece);				
+					return !this.isAlly(dest_piece);
 				}
 			}
 
@@ -97,12 +114,12 @@ public class Pawn extends Piece {
 	public void reset() {
 		this.en_passant = false;
 	}
-	
+
 	@Override
-	public String toAN() {
+	public char toAN() {
 		return an_pawn;
 	}
-	
+
 	@Override
 	public String toString() {
 		switch (this.color) {
@@ -113,14 +130,5 @@ public class Pawn extends Piece {
 		default:
 			return default_name;
 		}
-	}
-
-	@Override
-	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
-		Objects.requireNonNull(board, "Pawn must be on board");
-		Objects.requireNonNull(src, "Pawn must have a source");
-		Objects.requireNonNull(dest, "Pawn must have a destinaiton");
-		
-		return empty;
 	}
 }
