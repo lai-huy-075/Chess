@@ -149,7 +149,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		controls.setFont(arial);
 
 		menuButton = new JButton("\u2261");
-		menuButton.setFont(arial);
+		menuButton.setFont(new Font("Arial", Font.PLAIN, 60));
 		menuButton.setOpaque(false);
 		menuButton.setContentAreaFilled(false);
 		menuButton.setPreferredSize(Tile.dim);
@@ -247,7 +247,10 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 */
 	private void createLabels() {
 		this.white = new JLabel(this.board.white.name, SwingConstants.CENTER);
+		this.white.setFont(new Font("Arial", Font.PLAIN, 80 - 7 * Math.floorDiv(this.board.white.name.length(), 4)));
+		
 		this.black = new JLabel(this.board.black.name, SwingConstants.CENTER);
+		this.black.setFont(new Font("Arial", Font.PLAIN, 80 - 7 * Math.floorDiv(this.board.black.name.length(), 4)));
 
 		this.add(this.white, new GridBagConstraints(1, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, inset, 0, 0));
@@ -434,11 +437,9 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * Set default GUI elements using {@link UIManager#put}
 	 */
 	private void setDefaultGUIElements() {
-		UIManager.put("OptionPane.messageFont", arial);
-		UIManager.put("OptionPane.buttonFont", arial);
-		UIManager.put("Button.font", arial);
-		UIManager.put("Label.font", arial);
-		UIManager.put("Label.background", null);
-		UIManager.put("Label.foreground", Color.BLACK);
+		Font font = new Font("Arial", Font.PLAIN, 20);
+		UIManager.put("OptionPane.messageFont", font);
+		UIManager.put("OptionPane.buttonFont", font);
+		UIManager.put("Label.forground", Color.black);
 	}
 }
