@@ -73,7 +73,15 @@ public class King extends Piece {
 
 	@Override
 	public boolean isLegal(Tile src, Tile dest) {
-		return Math.abs(src.col - dest.col) <= 1 && Math.abs(src.row - dest.row) <= 1;
+		int dx = Math.abs(src.col - dest.col), dy = Math.abs(src.row - dest.row);
+		
+		if (dest.col == 6 && dy == 0 && this.king)
+			return true;
+		
+		if (dest.col == 1 && dy == 0 && this.queen)
+			return true;
+		
+		return dx <= 1 && dy <= 1;
 	}
 
 	@Override

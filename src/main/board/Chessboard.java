@@ -42,6 +42,9 @@ public final class Chessboard {
 	 */
 	private Panel.Mode mode;
 
+	/**
+	 * Move {@link List}
+	 */
 	private final List<String> moves;
 
 	/**
@@ -64,6 +67,11 @@ public final class Chessboard {
 	 */
 	public final Player white;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param mode {@link Mode} of this
+	 */
 	public Chessboard(Panel.Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
 		this.white = Player.default_white;
@@ -74,6 +82,12 @@ public final class Chessboard {
 		this.createBoard();
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param white {@link Player} controlling {@link PieceColor#White}
+	 * @param black {@link Player} controlling {@link PieceColor#Black}
+	 */
 	public Chessboard(Player white, Player black) {
 		this.mode = Mode.Normal;
 		this.white = Objects.requireNonNull(white, "White player cannot be null");
@@ -100,6 +114,9 @@ public final class Chessboard {
 		this.source.reset();
 	}
 
+	/**
+	 * Append the move made to {@link #moves}
+	 */
 	private void appendMove() {
 		String move = "";
 		boolean attack = this.destination.getPiece() != null;
@@ -137,7 +154,7 @@ public final class Chessboard {
 			if (t == null)
 				continue;
 
-			Chess.logger.info("Checking tile " + t.toString());
+			Chess.logger.info(String.format("Checking tile %s for Knight", t.toString()));
 			Piece piece = t.getPiece();
 			if (piece != null)
 				if (!king.isAlly(piece))
@@ -315,7 +332,7 @@ public final class Chessboard {
 		List<Tile> temp = new ArrayList<>();
 
 		for (int x = -2; x < 3; ++x) {
-			int y = 0;
+			int y;
 			switch (x) {
 			case -2:
 				y = 1;
@@ -333,22 +350,17 @@ public final class Chessboard {
 				continue;
 			}
 
-			Tile tile0;
 			try {
-				tile0 = this.getTileOffset(tile, x, -y);
+				temp.add(this.getTileOffset(tile, x, -y));
 			} catch (ArrayIndexOutOfBoundsException aioobe) {
 				continue;
 			}
 
-			Tile tile1;
 			try {
-				tile1 = this.getTileOffset(tile, x, y);
+				temp.add(this.getTileOffset(tile, x, y));
 			} catch (ArrayIndexOutOfBoundsException aioobe) {
 				continue;
 			}
-
-			temp.add(tile0);
-			temp.add(tile1);
 		}
 
 		return temp.toArray(new Tile[temp.size()]);
@@ -507,8 +519,10 @@ public final class Chessboard {
 		if (this.source == null)
 			return;
 
-		if (!this.currentPlayer.movingAlly(this.source))
+		if (!this.currentPlayer.movingAlly(this.source)) {
+			this.resetTiles();
 			return;
+		}
 
 		if (this.destination == null)
 			return;
@@ -524,7 +538,8 @@ public final class Chessboard {
 	 * @param king {@link King} itself
 	 */
 	private void updateCastle(Tile tile, King king) {
-		Piece piece = this.source.getPiece();
+		Chess.logger.info("Update Castle");
+		Piece piece = this.destination.getPiece();
 
 		if (piece instanceof King) {
 			king.setKingside(false);
@@ -532,7 +547,16 @@ public final class Chessboard {
 		}
 
 		if (piece instanceof Rook) {
-			Chess.logger.info(this.source.toString());
+			switch (this.source.col) {
+			case 0:
+				king.setQueenside(false);
+				return;
+			case 7:
+				king.setKingside(false);
+				return;
+			default:
+				return;
+			}
 		}
 	}
 
@@ -542,6 +566,9 @@ public final class Chessboard {
 	 * @param tile new destination {@link Tile}
 	 */
 	public void updateDestination(Tile tile) {
+		Objects.requireNonNull(tile, "New destination tile cannot be null");
+		Chess.logger.info("Updating destination:\t" + tile.toString());
+
 		if (this.destination == null)
 			this.destination = tile;
 	}
@@ -573,6 +600,9 @@ public final class Chessboard {
 	 * @param tile new source {@link Tile}
 	 */
 	public void updateSource(Tile tile) {
+		Objects.requireNonNull(tile, "New source tile cannot be null");
+		Chess.logger.info("Updating source:\t" + tile.toString());
+
 		if (this.source == null)
 			this.source = tile;
 	}
@@ -607,6 +637,8 @@ public final class Chessboard {
 				writer.write(String.format("%d. %s %s", move, white, black));
 				writer.write(move % 7 == 0 ? "\n" : " ");
 			}
+
+			writer.write(this.result.isEmpty() ? "" : this.result);
 		} catch (IOException e) {
 			Chess.logger.throwing("Chessboard", "write", e);
 			return;

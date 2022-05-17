@@ -36,6 +36,7 @@ public class Keys implements KeyListener {
 			return;
 		case 'd':
 			this.panel.drawOption();
+			return;
 		case 'e':
 			JOptionPane.showMessageDialog(this.panel, "Piece deselected", "", JOptionPane.PLAIN_MESSAGE);
 			this.panel.board.resetTiles();

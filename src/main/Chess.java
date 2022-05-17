@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 
 import main.board.Panel;
 import main.listeners.Window;
@@ -70,6 +71,9 @@ public class Chess {
 	 */
 	public static final File pgn_file;
 
+	/**
+	 * Creates logger, icon, and files for the program
+	 */
 	static {
 		FileHandler file = null;
 		try {
@@ -154,6 +158,9 @@ public class Chess {
 	 */
 	private static final void createFrame(Panel panel) {
 		Chess.logger.info("Creating JFrame");
+		
+		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
 		JFrame frame = new JFrame("Chess");
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.add(panel);

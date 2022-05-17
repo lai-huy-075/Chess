@@ -13,8 +13,8 @@ import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -25,7 +25,7 @@ import main.listeners.Mouse;
 import main.piece.Piece.PieceColor;
 import main.player.Player;
 
-public final class Panel extends JPanel implements ActionListener {
+public final class Panel extends JLayeredPane implements ActionListener {
 	/**
 	 * Game mode
 	 */
@@ -37,6 +37,8 @@ public final class Panel extends JPanel implements ActionListener {
 	 * Arial {@link Font}
 	 */
 	public static final Font arial = new Font("Arial", Font.PLAIN, 30);
+	
+	private static final Font font = new Font("Arial", Font.PLAIN, 15);
 
 	/**
 	 * Primitive type array of {@link String} holding column names
@@ -113,6 +115,7 @@ public final class Panel extends JPanel implements ActionListener {
 
 		vs.setFont(arial);
 		vs.setPreferredSize(Tile.dim);
+		vs.setForeground(Color.black);
 
 		controls = new JTextArea(cont);
 		controls.setColumns(15);
@@ -234,13 +237,18 @@ public final class Panel extends JPanel implements ActionListener {
 	 */
 	private void createTiles() {
 		int num = columns.length - 1;
+		
 
 		Tile[][] board = this.board.getBoard();
 		for (int i = 0; i < board.length; ++i) {
-			JLabel col = new JLabel(rows[num], SwingConstants.CENTER);
+			JLabel col = new JLabel(rows[num], SwingConstants.LEFT);
+			col.setVerticalAlignment(SwingConstants.TOP);
+			col.setVerticalTextPosition(SwingConstants.TOP);
+			col.setFont(font);
 			--num;
-			this.add(col, new GridBagConstraints(0, 1 + i, 1, 1, 0, 0, GridBagConstraints.CENTER,
+			this.add(col, new GridBagConstraints(1, 1 + i, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
 					GridBagConstraints.HORIZONTAL, inset, 0, 0));
+			this.setLayer(col, 1);
 
 			for (int j = 0; j < board[i].length; ++j) {
 				Tile tile = board[i][j];
@@ -248,6 +256,7 @@ public final class Panel extends JPanel implements ActionListener {
 				tile.addMouseListener(new Mouse(this.board, tile));
 				this.add(tile, new GridBagConstraints(1 + j, 1 + i, 1, 1, 0, 0, GridBagConstraints.CENTER,
 						GridBagConstraints.CENTER, inset, 0, 0));
+				this.setLayer(tile, 0);
 			}
 		}
 
@@ -255,11 +264,17 @@ public final class Panel extends JPanel implements ActionListener {
 		menuButton.addKeyListener(this.keys);
 		this.add(menuButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.CENTER, inset, 0, 0));
+		this.setLayer(menuButton, 0);
 
 		for (int i = 0; i < columns.length; ++i) {
-			JLabel row = new JLabel(columns[i], SwingConstants.CENTER);
-			this.add(row, new GridBagConstraints(1 + i, 10, 1, 1, 0, 0, GridBagConstraints.CENTER,
+			JLabel row = new JLabel(columns[i], SwingConstants.RIGHT);
+			row.setVerticalAlignment(SwingConstants.BOTTOM);
+			row.setVerticalTextPosition(SwingConstants.BOTTOM);
+			row.setFont(font);
+			
+			this.add(row, new GridBagConstraints(1 + i, 8, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST,
 					GridBagConstraints.CENTER, inset, 0, 0));
+			this.setLayer(row, 2);
 		}
 	}
 
@@ -314,6 +329,7 @@ public final class Panel extends JPanel implements ActionListener {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Draw accepted.");
 			this.board.draw();
+			return;
 		default:
 			Chess.logger.info("Draw declined");
 			return;
@@ -329,7 +345,7 @@ public final class Panel extends JPanel implements ActionListener {
 				JOptionPane.PLAIN_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Quit accepted.");
-			this.board.write();
+			this.removeAll();
 			System.exit(0);
 		default:
 			Chess.logger.info("Quit declined.");
