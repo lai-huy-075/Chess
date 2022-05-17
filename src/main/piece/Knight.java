@@ -2,16 +2,27 @@ package main.piece;
 
 import java.util.Objects;
 
+import main.Chess;
 import main.board.Tile;
 
 /**
  * The Knight
  */
 public class Knight extends Piece {
+	/**
+	 * Constructor
+	 * 
+	 * @param color {@link PieceColor} of this
+	 */
 	public Knight(PieceColor color) {
 		super(color);
 	}
 
+	@Override
+	public void debug() {
+		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
+	}
+	
 	@Override
 	public Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest) {
 		Objects.requireNonNull(board, "Knight must be on a board");

@@ -10,12 +10,16 @@ import java.util.Objects;
 import main.Chess;
 import main.board.Panel.Mode;
 import main.piece.King;
+import main.piece.King.CastleState;
 import main.piece.Knight;
 import main.piece.Piece;
 import main.piece.Piece.PieceColor;
 import main.piece.Rook;
 import main.player.Player;
 
+/**
+ * Chess board
+ */
 public final class Chessboard {
 	/**
 	 * {@link Player} with the {@link PieceColor#Black} pieces
@@ -98,6 +102,32 @@ public final class Chessboard {
 		this.createBoard();
 		this.reset();
 	}
+	
+	/**
+	 * Terminates the program.<br>
+	 * Does not edit any files
+	 */
+	public void quit() {
+		System.exit(0);
+	}
+	
+	/**
+	 * {@link #currentPlayer} resigns
+	 */
+	public void resign() {
+		this.mode = Mode.Over;
+		switch (this.currentPlayer.color) {
+		case Black:
+			this.result = "1-0";
+			break;
+		case White:
+			this.result = "0-1";
+			break;
+		default:
+			throw new IllegalStateException("Illegal current Player PieceColor:\t" + this.currentPlayer.color.name());
+		}
+		this.write();
+	}
 
 	/**
 	 * Move the selected {@link Piece} from {@link #source} to {@link #destination}
@@ -107,32 +137,46 @@ public final class Chessboard {
 		Piece piece = this.source.getPiece();
 
 		this.currentPlayer.incrementScore(this.destination.getPiece());
-
-		this.destination.setPiece(piece);
-		this.destination.setText(piece.toString());
-		this.destination.setForeground(piece.color.color);
+		this.destination.updatePiece(piece);
 		this.source.reset();
 	}
 
 	/**
 	 * Append the move made to {@link #moves}
+	 * 
+	 * @param castle {@link CastleState} when King has castled.
 	 */
-	private void appendMove() {
+	private void appendMove(CastleState castle) {
 		String move = "";
 		boolean attack = this.destination.getPiece() != null;
 
-		final char an = this.source.getPiece().toAN();
-		switch (an) {
-		case Piece.an_pawn:
-			move += attack ? String.valueOf((char) ('a' + this.source.col)) : "";
+		switch (castle) {
+		case Fail:
+			return;
+		case Kingside:
+			move = "O-O";
+			break;
+		case Queenside:
+			move = "O-O-O";
+			break;
+		case Unattempted:
+			final char an = this.source.getPiece().toAN();
+			switch (an) {
+			case Piece.an_pawn:
+				move += attack ? this.source.colToString() : "";
+				break;
+			default:
+				move += String.valueOf(an);
+				break;
+			}
+
+			move += attack ? "x" : "";
+			move += this.destination.toString();
 			break;
 		default:
-			move += String.valueOf(an);
-			break;
+			throw new IllegalStateException("Illegal CastleState:\t" + castle.name());
 		}
 
-		move += attack ? "x" : "";
-		move += this.destination.toString();
 		Chess.logger.info("Appending move:\t" + move);
 		this.moves.add(move);
 	}
@@ -222,8 +266,9 @@ public final class Chessboard {
 	 * Draw the game
 	 */
 	public void draw() {
-		this.mode = Panel.Mode.Over;
+		this.mode = Mode.Over;
 		this.result = "1/2-1/2";
+		this.write();
 	}
 
 	/**
@@ -313,6 +358,48 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Handle the {@link King} castling
+	 * 
+	 * @return {@link CastleState} depending upon if the King castled.
+	 */
+	private CastleState kingCastled() {
+		if (!(this.source.getPiece() instanceof King))
+			return CastleState.Unattempted;
+
+		King king = (King) this.source.getPiece();
+		Piece piece;
+		switch (this.destination.col) {
+		case 1:
+			if (!king.canQueensideCastle())
+				return CastleState.Fail;
+
+			for (int i = 1; i < this.source.col; ++i)
+				if (this.board[this.source.row][i].getPiece() != null)
+					return CastleState.Fail;
+
+			piece = this.board[this.source.row][0].getPiece();
+
+			this.board[this.source.row][0].reset();
+			this.board[this.source.row][2].updatePiece(piece);
+			return CastleState.Queenside;
+		case 6:
+			if (!king.canKingsideCastle())
+				return CastleState.Unattempted;
+
+			for (int i = this.source.col + 1; i < 7; ++i)
+				if (this.board[this.source.row][i].getPiece() != null)
+					return CastleState.Fail;
+
+			piece = this.board[this.source.row][7].getPiece();
+			this.board[this.source.row][7].reset();
+			this.board[this.source.row][5].updatePiece(piece);
+			return CastleState.Kingside;
+		default:
+			return CastleState.Unattempted;
+		}
+	}
+
+	/**
 	 * Determine if the {@link King} moves itself into a Check
 	 * 
 	 * @return true if the {@link King} moves itself into a check<br>
@@ -378,7 +465,7 @@ public final class Chessboard {
 
 	/**
 	 * Handling logic of moving a piece.<br>
-	 * Actual updating is done in {@link #advancePiece()}
+	 * Actual updating of the GUI is done in {@link #advancePiece()}
 	 */
 	private void movePiece() {
 		Piece src_piece = this.source.getPiece();
@@ -414,9 +501,24 @@ public final class Chessboard {
 		boolean kingMoveIntoCheck = this.kingMoveIntoCheck();
 		Chess.logger.info(kingMoveIntoCheck ? "King moved into Check" : "King did not move into Check");
 
-		this.appendMove();
+		Tile ally_king = this.findKing(true);
+
+		CastleState castled = this.kingCastled();
+		Chess.logger.info("CastleState:\t" + castled.name());
+		switch (castled) {
+		case Fail:
+			return;
+		case Kingside:
+		case Queenside:
+		case Unattempted:
+			break;
+		default:
+			throw new IllegalStateException("Illegal CastleState:\t" + castled.name());
+		}
+
+		this.updateKing(ally_king);
+		this.appendMove(castled);
 		this.advancePiece();
-		this.updateKing();
 		this.updatePlayers();
 	}
 
@@ -436,9 +538,7 @@ public final class Chessboard {
 				tile = this.board[i][j];
 				piece = Player.white[indexInList];
 				piece.reset();
-				tile.setPiece(piece);
-				tile.setText(piece.toString());
-				tile.setForeground(piece.color.color);
+				tile.updatePiece(piece);
 				++indexInList;
 			}
 		}
@@ -450,9 +550,7 @@ public final class Chessboard {
 				tile = this.board[i][j];
 				piece = Player.black[indexInList];
 				piece.reset();
-				tile.setPiece(piece);
-				tile.setText(piece.toString());
-				tile.setForeground(piece.color.color);
+				tile.updatePiece(piece);
 				++indexInList;
 			}
 		}
@@ -506,14 +604,12 @@ public final class Chessboard {
 	 * 
 	 * @param mode new {@link Mode}
 	 */
-	public void setMode(Panel.Mode mode) {
+	public void setMode(Mode mode) {
 		this.mode = Objects.requireNonNull(mode, "New mode cannot be null");
 	}
 
 	/**
 	 * This method is called whenever a {@link Tile} is clicked.
-	 * 
-	 * @param tile Tile clicked
 	 */
 	public void tileClicked() {
 		if (this.source == null)
@@ -575,14 +671,16 @@ public final class Chessboard {
 
 	/**
 	 * Update {@link King#check}, {@link King#king}, and {@link King#queen}
+	 * 
+	 * @param king_tile {@link Tile} {@link King} is on
 	 */
-	private void updateKing() {
+	private void updateKing(Tile king_tile) {
 		Chess.logger.info("Updating King");
 
-		Tile king_tile = this.findKing(false);
 		King king = (King) king_tile.getPiece();
 		this.checkKnights(king_tile, king);
 		this.updateCastle(king_tile, king);
+		king.debug();
 	}
 
 	/**

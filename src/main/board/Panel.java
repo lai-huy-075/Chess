@@ -30,7 +30,25 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * Game mode
 	 */
 	public static enum Mode {
-		Debug, Funny, Normal, Over;
+		/**
+		 * Normal rules. Allows user to place pieces
+		 */
+		Debug,
+		
+		/**
+		 * Funny rules
+		 */
+		Funny,
+		
+		/**
+		 * Normal rules
+		 */
+		Normal,
+		
+		/**
+		 * Game is complete
+		 */
+		Over;
 	}
 
 	/**
@@ -38,6 +56,9 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 */
 	public static final Font arial = new Font("Arial", Font.PLAIN, 30);
 	
+	/**
+	 * {@link Font} for {@link JLabel}
+	 */
 	private static final Font font = new Font("Arial", Font.PLAIN, 15);
 
 	/**
@@ -51,7 +72,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	private static final Map<String, String> controlMap;
 
 	/**
-	 * {@link JTextArea} to display keyboard shortcutes
+	 * {@link JTextArea} to display keyboard shortcuts
 	 */
 	public static final JTextArea controls;
 
@@ -95,7 +116,11 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * Versus {@link JLabel}
 	 */
 	private static final JLabel vs = new JLabel("vs", SwingConstants.CENTER);
-
+	
+	/**
+	 * Compile-time processes.<br>
+	 * Sets static attributes
+	 */
 	static {
 		controlMap = new HashMap<>();
 		controlMap.put("Pause", "Escape");
@@ -262,7 +287,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 
 		menuButton.addActionListener(this);
 		menuButton.addKeyListener(this.keys);
-		this.add(menuButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER,
+		this.add(menuButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.CENTER, inset, 0, 0));
 		this.setLayer(menuButton, 0);
 
@@ -346,7 +371,8 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Quit accepted.");
 			this.removeAll();
-			System.exit(0);
+			this.board.quit();
+			return;
 		default:
 			Chess.logger.info("Quit declined.");
 			return;
@@ -384,9 +410,10 @@ public final class Panel extends JLayeredPane implements ActionListener {
 				JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, Chess.icon)) {
 		case JOptionPane.YES_OPTION:
 			Chess.logger.info("Resign accepted");
-			this.board.setMode(Mode.Over);
+			this.board.resign();
 			JOptionPane.showMessageDialog(this, this.board.getNextPlayer().name + " wins!", "",
 					JOptionPane.PLAIN_MESSAGE, Chess.icon);
+			return;
 		default:
 			Chess.logger.info("Resign declined");
 			return;

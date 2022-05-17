@@ -9,12 +9,23 @@ import main.board.Tile;
  * The Pawn
  */
 public class Pawn extends Piece {
+	@Deprecated
 	private boolean en_passant;
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param color {@link PieceColor} of this
+	 */
 	public Pawn(PieceColor color) {
 		super(color);
 	}
-
+	
+	public void debug() {
+		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
+	}
+	
+	@Deprecated
 	public boolean en_passant() {
 		return this.en_passant;
 	}

@@ -3,6 +3,7 @@ package main.piece;
 import java.awt.Color;
 import java.util.Objects;
 
+import main.Chess;
 import main.board.Tile;
 
 /**
@@ -140,6 +141,11 @@ public abstract class Piece {
 		this.color = Objects.requireNonNull(color);
 		this.reset();
 	}
+	
+	/**
+	 * Logs Piece attributes using {@link Chess#logger}
+	 */
+	public abstract void debug();
 
 	/**
 	 * Get a primitive type array of the tiles traversed from src to dest
@@ -215,7 +221,7 @@ public abstract class Piece {
 	 * @return Algebraic Notation for this Piece
 	 */
 	public abstract char toAN();
-
+	
 	@Override
 	public abstract String toString();
 }

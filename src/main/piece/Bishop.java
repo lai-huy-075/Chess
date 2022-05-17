@@ -2,6 +2,7 @@ package main.piece;
 
 import java.util.Objects;
 
+import main.Chess;
 import main.board.Tile;
 
 /**
@@ -29,6 +30,11 @@ public class Bishop extends Piece {
 			temp[i] = board[src.row + i * dy][src.col + i * dx];
 
 		return temp;
+	}
+	
+	@Override
+	public void debug() {
+		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
 	}
 
 	@Override

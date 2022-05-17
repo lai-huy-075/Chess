@@ -2,12 +2,38 @@ package main.piece;
 
 import java.util.Objects;
 
+import main.Chess;
 import main.board.Tile;
 
 /**
  * The King
  */
 public class King extends Piece {
+	/**
+	 * Castling State
+	 */
+	public static enum CastleState {
+		/**
+		 * If the King has completed a valid king-side castle
+		 */
+		Kingside,
+		
+		/**
+		 * If the King has completed a valid queen-side castle
+		 */
+		Queenside,
+		
+		/**
+		 * If the King has attempted an invalid castle
+		 */
+		Fail,
+		
+		/**
+		 * If the King did not castle.
+		 */
+		Unattempted;
+	}
+	
 	/**
 	 * boolean holding if this King is check.
 	 */
@@ -22,16 +48,26 @@ public class King extends Piece {
 	 * boolean holding if Queen-side castle is possible
 	 */
 	private boolean queen;
-
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param color {@link PieceColor} of this
+	 */
 	public King(PieceColor color) {
 		super(color);
+	}
+	
+	@Override
+	public void debug() {
+		Chess.logger.info(String.format("%s, king=%b, queen=%b, check=%b", this.toString(), this.king, this.queen, this.check));
 	}
 
 	/**
 	 * Determine if the King can King-side castle
 	 * 
-	 * @return true if King-side castle is possible
-	 * @return false if King-side castle is not possible
+	 * @return true if King-side castle is possible<br>
+	 * 			false if King-side castle is not possible
 	 */
 	public boolean canKingsideCastle() {
 		return this.king;
@@ -64,8 +100,8 @@ public class King extends Piece {
 	/**
 	 * Determine if the King is in Check
 	 * 
-	 * @return true if the King is in Check
-	 * @return false if the King is not in Check
+	 * @return true if the King is in Check<br>
+	 * 			false if the King is not in Check
 	 */
 	public boolean isCheck() {
 		return this.check;
@@ -94,16 +130,24 @@ public class King extends Piece {
 	/**
 	 * Set {@link #check}
 	 * 
-	 * @param bool
+	 * @param bool new {@link #check} value
 	 */
 	public void setCheck(boolean bool) {
 		this.check = bool;
 	}
-
+	
+	/**
+	 * Set {@link #king}
+	 * @param bool new {@link #king} value
+	 */
 	public void setKingside(boolean bool) {
 		this.king = bool;
 	}
-
+	
+	/**
+	 * Set {@link #queen}
+	 * @param bool new {@link #queen} value
+	 */
 	public void setQueenside(boolean bool) {
 		this.queen = bool;
 	}

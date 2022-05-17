@@ -2,6 +2,7 @@ package main.piece;
 
 import java.util.Objects;
 
+import main.Chess;
 import main.board.Tile;
 
 /**
@@ -25,6 +26,11 @@ public class Queen extends Piece {
 	 */
 	public Queen(PieceColor color) {
 		super(color);
+	}
+	
+	@Override
+	public void debug() {
+		Chess.logger.info(String.format("%s, rook=%b, bishop=%b", this.toString(), this.rook, this.bishop));
 	}
 
 	@Override

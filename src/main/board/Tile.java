@@ -137,12 +137,37 @@ public final class Tile extends JButton {
 	 * The the {@link Piece} on this
 	 * @param piece Piece to set
 	 */
+	@Deprecated
 	public void setPiece(Piece piece) {
 		this.piece = piece;
+	}
+	
+	/**
+	 * Update {@link #piece} and GUI elements
+	 * 
+	 * @param piece Piece to update
+	 */
+	public void updatePiece(Piece piece) {
+		if (piece == null) {
+			this.reset();
+			return;
+		}
+		
+		this.piece = piece;
+		this.setForeground(this.piece.color.color);
+		this.setText(this.piece.toString());
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf((char) ('a' + this.col)) + String.valueOf(8 - this.row);
+		return this.colToString() + this.rowToString();
+	}
+	
+	public String colToString() {
+		return String.valueOf((char) ('a' + this.col));
+	}
+	
+	public String rowToString() {
+		return String.valueOf(8 - this.row);
 	}
 }

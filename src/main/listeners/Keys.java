@@ -1,5 +1,6 @@
 package main.listeners;
 
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Objects;
@@ -9,9 +10,19 @@ import javax.swing.JOptionPane;
 import main.Chess;
 import main.board.Panel;
 
+/**
+ * {@link KeyListener} for all intractable {@link Component} on the {@link Panel}
+ */
 public class Keys implements KeyListener {
+	/**
+	 * {@link Panel} holding all {@link Component}
+	 */
 	public final Panel panel;
 	
+	/**
+	 * Constructor
+	 * @param panel {@link Panel} 
+	 */
 	public Keys(Panel panel) {
 		this.panel = Objects.requireNonNull(panel, "Panel cannot be null.");
 	}
