@@ -1,0 +1,4 @@
+/**
+ * Resources packages.
+ */
+package resources;
