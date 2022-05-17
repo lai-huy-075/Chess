@@ -102,7 +102,7 @@ public final class Chessboard {
 		this.createBoard();
 		this.reset();
 	}
-	
+
 	/**
 	 * Terminates the program.<br>
 	 * Does not edit any files
@@ -110,7 +110,7 @@ public final class Chessboard {
 	public void quit() {
 		System.exit(0);
 	}
-	
+
 	/**
 	 * {@link #currentPlayer} resigns
 	 */
@@ -272,33 +272,49 @@ public final class Chessboard {
 	}
 
 	/**
-	 * Finds the {@link King} on this board.
+	 * Find all pieces of a certain {@link PieceColor}
 	 * 
-	 * @param isAlly true if finding {@link #currentPlayer} King false if finding
-	 *               {@link #nextPlayer} King
-	 * @return {@link Tile} King is currently on.
+	 * @param isAlly which {@link PieceColor} to find
+	 * @return primitive type array of {@link Tile}
 	 */
-	private Tile findKing(boolean isAlly) throws IllegalStateException {
-		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
-		for (Tile[] row : this.board)
+	private Tile[] findPieces(boolean isAlly) {
+		Chess.logger.info(isAlly ? "Searching for ally Pieces" : "Searching for enemy Pieces");
+		List<Tile> temp = new ArrayList<>();
+
+		for (Tile[] row : this.board) {
 			for (Tile tile : row) {
 				Piece piece = tile.getPiece();
 				if (piece == null)
 					continue;
-				if (!(piece instanceof King))
-					continue;
 				if (isAlly) {
 					if (piece.color == this.currentPlayer.color) {
-						Chess.logger.info(
-								String.format("Found %s King on %s", this.currentPlayer.color.name(), tile.toString()));
-						return tile;
+						Chess.logger.info("Found Piece on " + tile.toString());
+						temp.add(tile);
 					}
-				} else if (piece.color == this.nextPlayer.color) {
-					Chess.logger
-							.info(String.format("Found %s King on %s", this.nextPlayer.color.name(), tile.toString()));
-					return tile;
+				} else if (piece.color != this.currentPlayer.color) {
+					Chess.logger.info("Found Piece on " + tile.toString());
+					temp.add(tile);
 				}
 			}
+		}
+
+		return temp.toArray(new Tile[temp.size()]);
+	}
+
+	/**
+	 * Finds the {@link King} on this board.
+	 * 
+	 * @param isAlly which {@link PieceColor} to find
+	 * @return {@link Tile} King is currently on.
+	 */
+	private Tile findKing(boolean isAlly) throws IllegalStateException {
+		Chess.logger.info(isAlly ? "Searching for ally King" : "Searching for enemy King");
+		for (Tile tile : this.findPieces(isAlly))
+			if (tile.getPiece() instanceof King) {
+				Chess.logger.info("Found King on " + tile.toString());
+				return tile;
+			}
+
 		throw new IllegalStateException("Cannot find King");
 	}
 
@@ -338,7 +354,8 @@ public final class Chessboard {
 	 * @return Tile offset
 	 * @throws ArrayIndexOutOfBoundsException when offset goes out of bounds
 	 */
-	public final Tile getTileOffset(Tile tile, int x, int y) throws ArrayIndexOutOfBoundsException {
+	public Tile getTileOffset(Tile tile, int x, int y) throws ArrayIndexOutOfBoundsException {
+		Objects.requireNonNull(tile, "Origin tile cannot be null");
 		return this.board[tile.row + y][tile.col + x];
 	}
 
@@ -405,7 +422,21 @@ public final class Chessboard {
 	 * @return true if the {@link King} moves itself into a check<br>
 	 *         false otherwise
 	 */
-	private boolean kingMoveIntoCheck() {
+	private boolean kingMoveIntoCheck(Tile... enemies) {
+		Objects.requireNonNull(enemies, "Enemy tiles cannot be null");
+		if (enemies.length == 0)
+			throw new IllegalArgumentException("Enemy tiles cannot be empty");
+
+		for (Tile tile : enemies) {
+			Piece piece = tile.getPiece();
+			if (!piece.isLegal(tile, this.destination))
+				continue;
+			
+			if (this.collide(piece.getTileTraversed(this.board, tile, this.destination)))
+				continue;
+			
+			return true;
+		}
 		return false;
 	}
 
@@ -456,10 +487,28 @@ public final class Chessboard {
 	/**
 	 * Determine if a {@link Piece} moved out of a pin.
 	 * 
+	 * @param king_tile
+	 * @param enemies
 	 * @return true if a piece moves itself out of a pin<br>
 	 *         false otherwise
 	 */
-	private boolean moveOutOfPin() {
+	private boolean moveOutOfPin(Tile king_tile, Tile... enemies) {
+		Objects.requireNonNull(king_tile, "King tile cannot be null");
+		Objects.requireNonNull(enemies, "Enemy tiles cannot be null");
+		if (enemies.length == 0)
+			throw new IllegalArgumentException("Enemy tiles cannot be empty");
+
+		for (Tile tile : enemies) {
+			Piece piece = tile.getPiece();
+
+			if (!piece.isLegal(tile, king_tile))
+				continue;
+			if (this.collide(piece.getTileTraversed(this.board, tile, king_tile)))
+				break;
+
+			return true;
+		}
+
 		return false;
 	}
 
@@ -493,15 +542,16 @@ public final class Chessboard {
 		if (collide)
 			return;
 
-		boolean unpin = this.moveOutOfPin();
+		Tile ally_king = this.findKing(true);
+		Tile[] enemies = this.findPieces(false);
+
+		boolean unpin = this.moveOutOfPin(ally_king, enemies);
 		Chess.logger.info(unpin ? "Move out of pin" : "Did not move out of pin");
 		if (unpin)
 			return;
 
-		boolean kingMoveIntoCheck = this.kingMoveIntoCheck();
+		boolean kingMoveIntoCheck = this.kingMoveIntoCheck(enemies);
 		Chess.logger.info(kingMoveIntoCheck ? "King moved into Check" : "King did not move into Check");
-
-		Tile ally_king = this.findKing(true);
 
 		CastleState castled = this.kingCastled();
 		Chess.logger.info("CastleState:\t" + castled.name());
@@ -708,7 +758,7 @@ public final class Chessboard {
 	/**
 	 * Write {@link Chess#pgn_file} with details of the game
 	 */
-	public final void write() {
+	public void write() {
 		Chess.logger.info("Writting pgn started...");
 		String date = Chess.now.format(Chess.format);
 
