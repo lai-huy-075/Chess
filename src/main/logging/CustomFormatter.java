@@ -4,7 +4,7 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * Custom {@link Formatter} for {@link Chess#logger }
+ * Custom {@link Formatter} for {@link main.Chess#logger }
  */
 public class CustomFormatter extends Formatter {
 	@Override

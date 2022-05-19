@@ -13,22 +13,25 @@ import main.piece.Piece.PieceColor;
 import main.piece.Queen;
 import main.piece.Rook;
 
+/**
+ * Player
+ */
 public class Player {
 	/**
 	 * Primitive type array of {@link Piece} holding {@link PieceColor#Black} Pieces
 	 */
 	public static final Piece[] black;
-	
+
 	/**
 	 * Default {@link PieceColor#Black} Player
 	 */
 	public static final Player default_black = new Player("Black", PieceColor.Black);
-	
+
 	/**
 	 * Default {@link PieceColor#White} Player
 	 */
 	public static final Player default_white = new Player("White", PieceColor.White);
-	
+
 	/**
 	 * Primitive type array of {@link Piece} holding {@link PieceColor#White} Pieces
 	 */
@@ -48,7 +51,7 @@ public class Player {
 		white[13] = new Bishop(PieceColor.White);
 		white[14] = new Knight(PieceColor.White);
 		white[15] = new Rook(PieceColor.White);
-		
+
 		black = new Piece[16];
 		for (int i = 0; i < 8; i++)
 			black[i] = new Pawn(PieceColor.Black);
@@ -63,26 +66,26 @@ public class Player {
 		black[14] = new Knight(PieceColor.Black);
 		black[15] = new Rook(PieceColor.Black);
 	}
-	
+
 	/**
 	 * {@link PieceColor} that this player controls
 	 */
 	public final PieceColor color;
-	
+
 	/**
 	 * {@link String} holding the name of this player
 	 */
 	public final String name;
-	
+
 	/**
 	 * Current score
 	 */
 	private int score;
-	
+
 	/**
 	 * Constructor
 	 * 
-	 * @param name {@link String} name of this
+	 * @param name  {@link String} name of this
 	 * @param color {@link PieceColor} this will control
 	 */
 	public Player(String name, PieceColor color) {
@@ -90,7 +93,7 @@ public class Player {
 		this.color = Objects.requireNonNull(color);
 		this.score = 0;
 	}
-	
+
 	/**
 	 * Get {@link #score}
 	 * 
@@ -99,11 +102,11 @@ public class Player {
 	public int getScore() {
 		return this.score;
 	}
-	
+
 	/**
 	 * Increment {@link #score} by {@link Piece#getValue()}
 	 * 
-	 * @param piece {@link Piece} to increment score with 
+	 * @param piece {@link Piece} to increment score with
 	 */
 	public void incrementScore(Piece piece) {
 		if (piece == null)
@@ -111,12 +114,12 @@ public class Player {
 		Chess.logger.info("Capturing " + piece.toString());
 		this.score += piece.getValue();
 	}
-	
+
 	/**
 	 * Determine if this is moving an ally {@link Piece} on a {@link Tile}
+	 * 
 	 * @param tile {@link Tile} this is attempting to interact with
-	 * @return true if this can move the piece on the tile
-	 * 			false otherwise
+	 * @return true if this can move the piece on the tile false otherwise
 	 */
 	public boolean movingAlly(Tile tile) {
 		try {
@@ -125,7 +128,7 @@ public class Player {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Reset Player's attributes back to their default values
 	 */
@@ -133,7 +136,7 @@ public class Player {
 		Chess.logger.info("Reseting " + this.name);
 		this.score = 0;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("%-15s:%d", this.name, this.score);

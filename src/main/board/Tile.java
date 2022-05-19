@@ -11,12 +11,22 @@ import javax.swing.SwingConstants;
 
 import main.piece.Piece;
 
+/**
+ * Individual Tiles on the {@link Chessboard}
+ */
 public final class Tile extends JButton {
 	/**
 	 * {@link Color} for each tile
 	 */
 	public static enum TileColor {
+		/**
+		 * Dark Squares
+		 */
 		Dark(new Color(0x73463c), new Color(0xe06954)),
+		
+		/**
+		 * Light Squares
+		 */
 		Light(new Color(0xc89669), new Color(0xec7964));
 		
 		/**
@@ -29,6 +39,11 @@ public final class Tile extends JButton {
 		 */
 		public final Color standard;
 		
+		/**
+		 * Constructor
+		 * @param standard {@link Color} of Tile when not selected
+		 * @param selected {@link Color} of Tile when selected
+		 */
 		private TileColor(Color standard, Color selected) {
 			this.standard = Objects.requireNonNull(standard, "Standard Color cannot be null");
 			this.selected = Objects.requireNonNull(selected, "Selected Color cannot be null");
@@ -75,7 +90,12 @@ public final class Tile extends JButton {
 	 * Row this is in
 	 */
 	public final int row;
-
+	
+	/**
+	 * Constructor
+	 * @param row row that this tile is in
+	 * @param col column that this tile is in
+	 */
 	public Tile(int row, int col) {
 		super("", null);
 		
@@ -163,10 +183,18 @@ public final class Tile extends JButton {
 		return this.colToString() + this.rowToString();
 	}
 	
+	/**
+	 * Converts {@link #col} to {@link String}
+	 * @return String representation of {@link #col}
+	 */
 	public String colToString() {
 		return String.valueOf((char) ('a' + this.col));
 	}
 	
+	/**
+	 * Converts {@link #row} to {@link String}
+	 * @return String representation of {@link #row}
+	 */
 	public String rowToString() {
 		return String.valueOf(8 - this.row);
 	}

@@ -76,8 +76,8 @@ public class King extends Piece {
 	/**
 	 * Determine if the King can Queen-side castle
 	 * 
-	 * @return true if Queen-side castle is possible
-	 * @return false if Queen-side castle is not possible
+	 * @return true if Queen-side castle is possible<br>
+	 * 			false if Queen-side castle is not possible
 	 */
 	public boolean canQueensideCastle() {
 		return this.queen;
@@ -114,7 +114,7 @@ public class King extends Piece {
 		if (dest.col == 6 && dy == 0 && this.king)
 			return true;
 		
-		if (dest.col == 1 && dy == 0 && this.queen)
+		if (dest.col == 2 && dy == 0 && this.queen)
 			return true;
 		
 		return dx <= 1 && dy <= 1;

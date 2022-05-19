@@ -14,13 +14,25 @@ public abstract class Piece {
 	 * Enumerated type of the piece colors.
 	 */
 	public static enum PieceColor {
-		Black(new Color(0x2c2c2c)), White(new Color(0xd3d3d3));
+		/**
+		 * The Black Pieces
+		 */
+		Black(new Color(0x2c2c2c)),
+		
+		/**
+		 * The White Pieces
+		 */
+		White(new Color(0xd3d3d3));
 
 		/**
 		 * {@link Color} of this
 		 */
 		public final Color color;
-
+		
+		/**
+		 * Constructor
+		 * @param color {@link Color} of this piece
+		 */
 		private PieceColor(Color color) {
 			this.color = color;
 		}

@@ -386,7 +386,7 @@ public final class Chessboard {
 		King king = (King) this.source.getPiece();
 		Piece piece;
 		switch (this.destination.col) {
-		case 1:
+		case 2:
 			if (!king.canQueensideCastle())
 				return CastleState.Fail;
 
@@ -397,7 +397,7 @@ public final class Chessboard {
 			piece = this.board[this.source.row][0].getPiece();
 
 			this.board[this.source.row][0].reset();
-			this.board[this.source.row][2].updatePiece(piece);
+			this.board[this.source.row][3].updatePiece(piece);
 			return CastleState.Queenside;
 		case 6:
 			if (!king.canKingsideCastle())
@@ -418,6 +418,8 @@ public final class Chessboard {
 
 	/**
 	 * Determine if the {@link King} moves itself into a Check
+	 * 
+	 * @param enemies primitive type array of {@link Tile} holding locations of all enemy {@link Piece}
 	 * 
 	 * @return true if the {@link King} moves itself into a check<br>
 	 *         false otherwise
@@ -487,8 +489,8 @@ public final class Chessboard {
 	/**
 	 * Determine if a {@link Piece} moved out of a pin.
 	 * 
-	 * @param king_tile
-	 * @param enemies
+	 * @param king_tile {@link Tile} {@link King} is currently on
+	 * @param enemies primitive type array of {@link Tile} holding locations of all enemy {@link Piece}
 	 * @return true if a piece moves itself out of a pin<br>
 	 *         false otherwise
 	 */

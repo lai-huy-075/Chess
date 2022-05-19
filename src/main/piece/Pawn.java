@@ -9,6 +9,9 @@ import main.board.Tile;
  * The Pawn
  */
 public class Pawn extends Piece {
+	/**
+	 * Can this pawn be captured by en passant
+	 */
 	@Deprecated
 	private boolean en_passant;
 	
@@ -21,10 +24,15 @@ public class Pawn extends Piece {
 		super(color);
 	}
 	
+	@Override
 	public void debug() {
 		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
 	}
 	
+	/**
+	 * Determine {@link #en_passant}
+	 * @return {@link #en_passant}
+	 */
 	@Deprecated
 	public boolean en_passant() {
 		return this.en_passant;

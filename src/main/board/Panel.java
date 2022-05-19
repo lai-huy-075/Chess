@@ -25,6 +25,9 @@ import main.listeners.Mouse;
 import main.piece.Piece.PieceColor;
 import main.player.Player;
 
+/**
+ * All GUI elements
+ */
 public final class Panel extends JLayeredPane implements ActionListener {
 	/**
 	 * Game mode
@@ -75,11 +78,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * {@link JTextArea} to display keyboard shortcuts
 	 */
 	public static final JTextArea controls;
-
-	/**
-	 * Default {@link Font}
-	 */
-	public static final Font default_font = new Font("", Font.PLAIN, 30);
 
 	/**
 	 * Grid Layout
@@ -243,7 +241,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	}
 
 	/**
-	 * Create {@link JLabel} to add to the {@link ChessBoardPanel}.
+	 * Create {@link JLabel} to add to the {@link main.board.Panel}.
 	 */
 	private void createLabels() {
 		this.white = new JLabel(this.board.white.name, SwingConstants.CENTER);
@@ -270,8 +268,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		Tile[][] board = this.board.getBoard();
 		for (int i = 0; i < board.length; ++i) {
 			JLabel col = new JLabel(rows[num], SwingConstants.LEFT);
-			col.setVerticalAlignment(SwingConstants.TOP);
-			col.setVerticalTextPosition(SwingConstants.TOP);
+//			col.setVerticalAlignment(SwingConstants.TOP);
 			col.setFont(font);
 			--num;
 			this.add(col, new GridBagConstraints(1, 1 + i, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
@@ -296,8 +293,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 
 		for (int i = 0; i < columns.length; ++i) {
 			JLabel row = new JLabel(columns[i], SwingConstants.RIGHT);
-			row.setVerticalAlignment(SwingConstants.BOTTOM);
-			row.setVerticalTextPosition(SwingConstants.BOTTOM);
+//			row.setVerticalAlignment(SwingConstants.BOTTOM);
 			row.setFont(font);
 			
 			this.add(row, new GridBagConstraints(1 + i, 8, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST,

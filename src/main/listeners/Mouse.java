@@ -10,7 +10,6 @@ import javax.swing.border.Border;
 
 import main.Chess;
 import main.board.Chessboard;
-import main.board.Panel;
 import main.board.Tile;
 import main.board.Tile.TileColor;
 
@@ -36,8 +35,8 @@ public class Mouse implements MouseListener {
 	/**
 	 * Constructor
 	 * 
-	 * @param panel {@link Panel} of this
-	 * @param tile	 {@link Tile} of this
+	 * @param board {@link Chessboard} to interact with
+	 * @param tile	 {@link Tile} to interact with
 	 */
 	public Mouse(Chessboard board, Tile tile) {
 		this.board = Objects.requireNonNull(board, "Panel cannot be null");
