@@ -8,6 +8,24 @@ import main.board.Tile;
 /**
  * Generic Piece for Chess
  */
+/**
+ * <p>
+ * A chess piece, or chessman, is a game piece that is placed on a chessboard to
+ * play the game of chess. It can be either {@link PieceColor#White} or
+ * {@link PieceColor#Black}, and it can be one of six types: {@link King},
+ * {@link Queen}, {@link Rook}, {@link Bishop}, {@link Knight}, or {@link Pawn}.
+ * </p>
+ * 
+ * <p>
+ * Chess sets generally come with sixteen pieces of each color. Additional
+ * pieces, usually an extra {@link Queen} per color, may be provided for use in
+ * promotion.
+ * </p>
+ * Read more <a href="https://en.wikipedia.org/wiki/Chess_piece">here</a>
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
+ */
 public abstract class Piece {
     /**
      * Algebraic Notation for the Bishop

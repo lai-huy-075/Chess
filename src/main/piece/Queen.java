@@ -6,7 +6,17 @@ import main.Chess;
 import main.board.Tile;
 
 /**
- * The Queen
+ * The queen (&#x2655;, &#x265B;) is the most powerful piece in the game of
+ * chess, able to move any number of {@link Tile}s vertically, horizontally or
+ * diagonally, combining the power of the {@link Rook} and {@link Bishop}.<br>
+ * Each player starts the game with one {@link Queen}, placed in the middle of
+ * the first rank next to the {@link King}.<br>
+ * Because the {@link Queen} is the strongest piece, a {@link Pawn} is promoted
+ * to a {@link Queen} in the vast majority of cases.<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/Queen_(chess)">here</a>
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Queen extends Piece {
     /**

@@ -11,8 +11,11 @@ import main.Chess;
 import main.board.Panel;
 
 /**
- * {@link KeyListener} for all intractable {@link Component} on the
+ * {@link KeyListener} for all interactable {@link Component} on the
  * {@link Panel}
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Keys implements KeyListener {
     /**

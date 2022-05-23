@@ -6,7 +6,16 @@ import main.Chess;
 import main.board.Tile;
 
 /**
- * The Rook
+ * The rook (&#x2656;, &#x265C;) is a piece in the game of chess.<br>
+ * It may move any number of squares horizontally or vertically without jumping,
+ * and it may capture an enemy piece on its path; additionally, it may
+ * participate in castling.<br>
+ * Each player starts the game with two rooks, one in each corner on their own
+ * side of the board.<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/Rook_(chess)">here</a>
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Rook extends Piece {
     /**

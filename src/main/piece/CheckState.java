@@ -1,7 +1,13 @@
 package main.piece;
 
 /**
- * State of the {@link King} being in Check
+ * State of the {@link King} being in Check, Checkmate, or Stalemate.<br>
+ * Read about Check
+ * <a href="https://en.wikipedia.org/wiki/Check_(chess)">here</a>.<br>
+ * Read about Checkmate
+ * <a href="https://en.wikipedia.org/wiki/Checkmate">here</a>.<br>
+ * Read about Stalemate
+ * <a href="https://en.wikipedia.org/wiki/Stalemate">here</a>.
  */
 public enum CheckState {
     /**

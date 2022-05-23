@@ -4,9 +4,24 @@ import java.util.Objects;
 
 import main.Chess;
 import main.board.Tile;
+import main.player.Player;
 
 /**
- * The King
+ * The king (&#x2654;, &#x265A;) is the most important piece in the game of
+ * chess.<br>
+ * It may move to any adjoining square or perform a move known as castling.<br>
+ * If a {@link Player}'s king is threatened with capture, it is said to be in
+ * {@link CheckState#Check}, and the player must remove the threat of capture on
+ * the next move.<br>
+ * If this cannot be done, the king is said to be in {@link CheckState#Mate},
+ * resulting in a loss for that player.<br>
+ * A player cannot make any move that places their own king in check.<br>
+ * Despite this, the king can become a strong offensive piece in the endgame or,
+ * rarely, the middlegame.<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/King_(chess)">here</a>.
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class King extends Piece {
     /**
@@ -115,7 +130,7 @@ public class King extends Piece {
     /**
      * Set {@link #check}
      * 
-     * @param bool new {@link #check} value
+     * @param state new {@link #check} value
      */
     public void setCheck(final CheckState state) {
 	Objects.requireNonNull(state, "CheckState cannot be null");

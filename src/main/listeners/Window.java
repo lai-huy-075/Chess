@@ -9,6 +9,9 @@ import main.board.Panel;
 
 /**
  * {@link WindowListener}
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Window implements WindowListener {
     /**

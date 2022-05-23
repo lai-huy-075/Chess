@@ -4,9 +4,19 @@ import java.util.Objects;
 
 import main.Chess;
 import main.board.Tile;
+import main.player.Player;
 
 /**
- * The Knight
+ * The knight (&#x2658;, &#x265E;) is a piece in the game of chess, represented
+ * by a horse's head and neck.<br>
+ * It may move two {@link Tile}s vertically and one tile horizontally or two
+ * tiles horizontally and one tile vertically.<br>
+ * Each {@link Player} starts the game with two knights on the b- and g-files,
+ * each located between a {@link Rook} and a {@link Bishop}.<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/Knight_(chess)">here</a>.
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Knight extends Piece {
     /**

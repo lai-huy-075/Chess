@@ -19,7 +19,7 @@ import main.player.Player;
 /**
  * Chess board
  *
- * @author Μr. Pιηεαρρlξ
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
 public final class Chessboard {
@@ -120,6 +120,13 @@ public final class Chessboard {
      * Append the move made to {@link #moves}
      *
      * @param castle {@link CastleState} when King has castled.
+     */
+    /**
+     * Append the move made to {@link #moves}
+     * 
+     * @param castle {@link CastleState}
+     * @param check  {@link CheckState}
+     * @param attack determine if an enemy {@link Piece} was captured
      */
     private void appendMove(final CastleState castle, final CheckState check, final boolean attack) {
 	Objects.requireNonNull(castle, "CastleState cannot be null");
@@ -236,7 +243,7 @@ public final class Chessboard {
      * Finds the {@link King} on this board.
      *
      * @param allies primitive type array of {@link Tile}
-     * @return
+     * @return {@link Tile} where the {@link King} was
      */
     private Tile findKing(final Tile... allies) {
 	Chess.logger.info("Seaching for King in " + Arrays.deepToString(allies));
@@ -337,6 +344,7 @@ public final class Chessboard {
     /**
      * Handle the {@link King} castling
      *
+     * @param enemies location of all enemy {@link Piece}
      * @return {@link CastleState} depending upon if the King castled.
      */
     private CastleState kingCastled(final Tile... enemies) {
@@ -687,12 +695,12 @@ public final class Chessboard {
 		return;
 	    }
     }
-
+    
     /**
-     * Update {@link King#check}
-     *
-     * @param tile {@link Tile} {@link King} is on
-     * @param king {@link King}
+     * Update {@link King#check} to {@link CheckState#Check} if required
+     * @param tile {@link Tile} the {@link King} is on
+     * @param king {@link King} 
+     * @param enemies location of all the enemy {@link Piece}
      */
     private void updateCheck(final Tile tile, final King king, final Tile[] enemies) {
 	for (final Tile t : enemies) {
@@ -706,7 +714,15 @@ public final class Chessboard {
 
 	king.setCheck(CheckState.Fail);
     }
-
+    
+    /**
+     * Update {@link King#check} to {@link CheckState#Mate} if required
+     * 
+     * @param tile {@link Tile} the {@link King} is on
+     * @param king {@link King}
+     * @param allies location of all the ally {@link Piece}
+     * @param enemies location of all the enemy {@link Piece}
+     */
     private void updateCheckMate(final Tile tile, final King king, final Tile[] allies, final Tile[] enemies) {
 
     }

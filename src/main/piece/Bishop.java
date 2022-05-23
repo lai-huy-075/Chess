@@ -4,9 +4,22 @@ import java.util.Objects;
 
 import main.Chess;
 import main.board.Tile;
+import main.player.Player;
 
 /**
- * The Bishop
+ * The bishop (&#x2657;, &#x265D;) is a piece in the game of chess. <br>
+ * It moves and captures along diagonals without jumping over intervening
+ * pieces.<br>
+ * Each {@link Player} begins the game with two bishops.<br>
+ * One starts between the {@link King}'s {@link Knight} and the {@link King},
+ * the other between the {@link Queen}'s {@link Knight} and the
+ * {@link Queen}.<br>
+ * The starting squares are c1 and f1 for {@link PieceColor#White}'s bishops,
+ * and c8 and f8 for {@link PieceColor#Black}'s bishops.<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/Bishop_(chess)">here</a>.
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
  */
 public class Bishop extends Piece {
     /**

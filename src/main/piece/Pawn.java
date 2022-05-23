@@ -8,6 +8,21 @@ import main.board.Tile;
 /**
  * The Pawn
  */
+/**
+ * The pawn (&#x2659;, &#x265F;) is the most numerous and weakest piece in the
+ * game of chess.<br>
+ * It may move one vacant {@link Tile} directly forward, it may move two vacant
+ * tiles directly forward on its first move, and it may capture one tile
+ * diagonally forward.<br>
+ * Each player begins a game with eight pawns, one on each square of the rank
+ * immediately in front of the other pieces. (The white pawns start on a2, b2,
+ * c2, d2, e2, f2, g2, h2; the black pawns start on a7, b7, c7, d7, e7, f7, g7,
+ * h7.)<br>
+ * Read more <a href="https://en.wikipedia.org/wiki/Pawn_(chess)">here</a>.
+ * 
+ * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
+ * @version 2022 05 23
+ */
 public class Pawn extends Piece {
     /**
      * Can this pawn be captured by en passant
