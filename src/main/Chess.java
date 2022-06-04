@@ -140,13 +140,35 @@ public class Chess {
     private static final void createChessBoard() {
 	logger.info("Normal Game");
 
-	final String white_name = JOptionPane.showInputDialog(null, "White, enter you name", "White",
-		JOptionPane.INFORMATION_MESSAGE);
+	String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
+		JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+	while (white_name.length() > 49) {
+	    white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
+		    JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+	    
+	    if (white_name == null)
+		return;
+
+	    if (white_name.isEmpty())
+		return;
+	}
+
 	if (white_name == null || white_name.isEmpty())
 	    return;
 
-	final String black_name = JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
-		JOptionPane.INFORMATION_MESSAGE);
+	String black_name = (String) JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
+		JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+
+	while (black_name.length() > 49) {
+	    black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
+		    JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+	    if (black_name == null)
+		return;
+
+	    if (black_name.isEmpty())
+		return;
+	}
+
 	if (black_name == null || black_name.isEmpty())
 	    return;
 

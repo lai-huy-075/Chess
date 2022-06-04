@@ -187,10 +187,16 @@ public final class Chessboard {
      * @param traversed privative array of {@link Tile}
      * @return true if a piece collides with another. false otherwise.
      */
-    private boolean collide(final Tile[] traversed) throws NullPointerException {
+    private boolean collide(final Tile source, final Tile destination, final Tile[] traversed) {
+	Objects.requireNonNull(source, "Source tile cannnot be null");
+	Objects.requireNonNull(destination, "Destination tile cannot be null");
 	Objects.requireNonNull(traversed, "Traversal cannot be null");
+
 	for (final Tile tile : traversed) {
-	    if (tile.equals(this.source) || tile.equals(this.destination))
+	    if (tile.equals(source))
+		continue;
+
+	    if (tile.equals(destination))
 		continue;
 
 	    if (tile.getPiece() != null)
@@ -407,7 +413,10 @@ public final class Chessboard {
 
 	for (final Tile t : enemies) {
 	    final Piece piece = t.getPiece();
-	    if (!piece.isLegal(t, tile) || this.collide(piece.getTileTraversed(this.board, t, tile)))
+	    if (!piece.isLegal(t, tile))
+		continue;
+
+	    if (this.collide(t, tile, piece.getTileTraversed(this.board, t, tile)))
 		continue;
 
 	    return true;
@@ -418,17 +427,20 @@ public final class Chessboard {
     /**
      * Determine if a {@link Piece} moved out of a pin.
      *
-     * @param king_tile {@link Tile} {@link King} is currently on
-     * @param enemies   primitive type array of {@link Tile} holding locations of
-     *                  all enemy {@link Piece}
+     * @param king    {@link Tile} {@link King} is currently on
+     * @param enemies primitive type array of {@link Tile} holding locations of all
+     *                enemy {@link Piece}
      * @return true if a piece moves itself out of a pin<br>
      *         false otherwise
      */
-    private boolean moveOutOfPin(final Tile king_tile, final Tile[] enemies) {
-	Objects.requireNonNull(king_tile, "King tile cannot be null");
+    private boolean moveOutOfPin(final Tile king, final Tile[] enemies) {
+	Objects.requireNonNull(king, "King tile cannot be null");
 	Objects.requireNonNull(enemies, "Enemy tiles cannot be null");
-	final Piece temp = this.source.getPiece();
+
+	final Piece source = this.source.getPiece(), destination = this.destination.getPiece();
 	this.source.reset();
+	this.destination.updatePiece(source);
+	final Tile king_tile = source instanceof King ? this.destination : king;
 
 	if (enemies.length == 0)
 	    throw new IllegalArgumentException("Enemy tiles cannot be empty");
@@ -436,14 +448,19 @@ public final class Chessboard {
 	for (final Tile tile : enemies) {
 	    final Piece piece = tile.getPiece();
 
-	    if (!piece.isLegal(tile, king_tile) || this.collide(piece.getTileTraversed(this.board, tile, king_tile)))
+	    if (!piece.isLegal(tile, king_tile))
 		continue;
 
-	    this.source.updatePiece(temp);
+	    if (this.collide(tile, king_tile, piece.getTileTraversed(this.board, tile, king_tile)))
+		continue;
+
+	    this.source.updatePiece(source);
+	    this.destination.updatePiece(destination);
 	    return true;
 	}
 
-	this.source.updatePiece(temp);
+	this.source.updatePiece(source);
+	this.destination.updatePiece(destination);
 	return false;
     }
 
@@ -471,7 +488,7 @@ public final class Chessboard {
 
 	final Tile[] traversed = src_piece.getTileTraversed(this.board, this.source, this.destination);
 	Chess.logger.info("Traversed:\t" + Arrays.deepToString(traversed));
-	final boolean collide = this.collide(traversed);
+	final boolean collide = this.collide(this.source, this.destination, traversed);
 	Chess.logger.info(
 		src_piece.toString() + (collide ? " collided on its journey" : " did not collide on its journey"));
 	if (collide)
@@ -489,6 +506,8 @@ public final class Chessboard {
 
 	final boolean kingMoveIntoCheck = this.kingMoveIntoCheck(this.destination, enemies);
 	Chess.logger.info(kingMoveIntoCheck ? "King moved into Check" : "King did not move into Check");
+	if (kingMoveIntoCheck)
+	    return;
 
 	final CastleState castle = this.kingCastled(enemies);
 	Chess.logger.info("CastleState:\t" + castle.name());
@@ -695,17 +714,21 @@ public final class Chessboard {
 		return;
 	    }
     }
-    
+
     /**
      * Update {@link King#check} to {@link CheckState#Check} if required
-     * @param tile {@link Tile} the {@link King} is on
-     * @param king {@link King} 
+     * 
+     * @param tile    {@link Tile} the {@link King} is on
+     * @param king    {@link King}
      * @param enemies location of all the enemy {@link Piece}
      */
     private void updateCheck(final Tile tile, final King king, final Tile[] enemies) {
 	for (final Tile t : enemies) {
 	    final Piece piece = t.getPiece();
-	    if (!piece.isLegal(t, tile) || this.collide(piece.getTileTraversed(this.board, t, tile)))
+	    if (!piece.isLegal(t, tile))
+		continue;
+
+	    if (this.collide(t, tile, piece.getTileTraversed(this.board, t, tile)))
 		continue;
 
 	    king.setCheck(CheckState.Check);
@@ -714,17 +737,23 @@ public final class Chessboard {
 
 	king.setCheck(CheckState.Fail);
     }
-    
+
     /**
      * Update {@link King#check} to {@link CheckState#Mate} if required
      * 
-     * @param tile {@link Tile} the {@link King} is on
-     * @param king {@link King}
-     * @param allies location of all the ally {@link Piece}
+     * @param tile    {@link Tile} the {@link King} is on
+     * @param king    {@link King}
+     * @param allies  location of all the ally {@link Piece}
      * @param enemies location of all the enemy {@link Piece}
      */
     private void updateCheckMate(final Tile tile, final King king, final Tile[] allies, final Tile[] enemies) {
+	if (king.getCheckState() == CheckState.Fail)
+	    return;
 
+	Objects.requireNonNull(tile, "Tile cannot be null");
+	Objects.requireNonNull(king, "King cannot be null");
+	Objects.requireNonNull(allies, "Allies cannot be null");
+	Objects.requireNonNull(enemies, "Enemies cannot be null");
     }
 
     /**

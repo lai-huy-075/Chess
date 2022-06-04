@@ -224,10 +224,12 @@ public final class Panel extends JLayeredPane implements ActionListener {
      */
     private void createLabels() {
 	this.white = new JLabel(this.board.white.name, SwingConstants.CENTER);
-	this.white.setFont(new Font("Arial", Font.PLAIN, 80 - 7 * Math.floorDiv(this.board.white.name.length(), 4)));
+	this.white.setFont(
+		new Font("Arial", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.white.name.length() / 12.5f)));
 
 	this.black = new JLabel(this.board.black.name, SwingConstants.CENTER);
-	this.black.setFont(new Font("Arial", Font.PLAIN, 80 - 7 * Math.floorDiv(this.board.black.name.length(), 4)));
+	this.black.setFont(
+		new Font("Arial", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.black.name.length() / 12.5f)));
 
 	this.add(this.white, new GridBagConstraints(1, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
 		GridBagConstraints.HORIZONTAL, inset, 0, 0));
@@ -246,8 +248,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	final Tile[][] board = this.board.getBoard();
 	for (int i = 0; i < board.length; ++i) {
 	    final JLabel col = new JLabel(rows[num], SwingConstants.LEFT);
-//			col.setVerticalAlignment(SwingConstants.TOP);
-	    col.setFont(font);
 	    --num;
 	    this.add(col, new GridBagConstraints(1, 1 + i, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
 		    GridBagConstraints.HORIZONTAL, inset, 0, 0));
@@ -271,8 +271,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 
 	for (int i = 0; i < columns.length; ++i) {
 	    final JLabel row = new JLabel(columns[i], SwingConstants.RIGHT);
-//			row.setVerticalAlignment(SwingConstants.BOTTOM);
-	    row.setFont(font);
 
 	    this.add(row, new GridBagConstraints(1 + i, 8, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST,
 		    GridBagConstraints.CENTER, inset, 0, 0));
@@ -415,5 +413,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	UIManager.put("OptionPane.messageFont", font);
 	UIManager.put("OptionPane.buttonFont", font);
 	UIManager.put("Label.forground", Color.black);
+	UIManager.put("Label.font", Panel.font);
     }
 }

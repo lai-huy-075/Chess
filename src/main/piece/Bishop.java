@@ -45,7 +45,7 @@ public class Bishop extends Piece {
 	final Tile[] temp = new Tile[Math.abs(src.col - dest.col)];
 	final int dx = dest.col < src.col ? -1 : 1, dy = dest.row < src.row ? -1 : 1;
 	for (int i = 0; i < temp.length; ++i)
-	    temp[i] = board[src.row + i * dy][src.col + i * dx];
+	    temp[i] = board[src.row + (i + 1) * dy][src.col + (i + 1) * dx];
 
 	return temp;
     }
