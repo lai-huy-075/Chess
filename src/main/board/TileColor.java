@@ -38,7 +38,7 @@ public enum TileColor {
      * @param selected {@link Color} of Tile when selected
      */
     TileColor(final Color standard, final Color selected) {
-	this.standard = Objects.requireNonNull(standard, "Standard Color cannot be null");
-	this.selected = Objects.requireNonNull(selected, "Selected Color cannot be null");
+        this.standard = Objects.requireNonNull(standard, "Standard Color cannot be null");
+        this.selected = Objects.requireNonNull(selected, "Selected Color cannot be null");
     }
 }

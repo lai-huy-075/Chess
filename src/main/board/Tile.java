@@ -64,28 +64,28 @@ public final class Tile extends JButton {
      * @param col column that this tile is in
      */
     public Tile(final int row, final int col) {
-	super("", null);
+        super("", null);
 
-	if (col < 0 || col > 7)
-	    throw new IndexOutOfBoundsException("Illegal column: " + col);
-	this.col = col;
+        if (col < 0 || col > 7)
+            throw new IndexOutOfBoundsException("Illegal column: " + col);
+        this.col = col;
 
-	if (row < 0 || row > 7)
-	    throw new IndexOutOfBoundsException("Illegal row: " + row);
-	this.row = row;
+        if (row < 0 || row > 7)
+            throw new IndexOutOfBoundsException("Illegal row: " + row);
+        this.row = row;
 
-	this.color = this.row % 2 == 0 && this.col % 2 == 0 || this.row % 2 == 1 && this.col % 2 == 1 ? TileColor.Light
-		: TileColor.Dark;
+        this.color = this.row % 2 == 0 && this.col % 2 == 0 || this.row % 2 == 1 && this.col % 2 == 1 ? TileColor.Light
+                : TileColor.Dark;
 
-	// Set GUI Elements
-	this.setFont(default_font);
-	this.setBackground(this.color.standard);
-	this.setHorizontalAlignment(SwingConstants.CENTER);
-	this.setVerticalAlignment(SwingConstants.CENTER);
-	this.setFocusPainted(false);
-	this.setBorder(null);
-	this.setPreferredSize(dim);
-	this.setFocusable(true);
+        // Set GUI Elements
+        this.setFont(default_font);
+        this.setBackground(this.color.standard);
+        this.setHorizontalAlignment(SwingConstants.CENTER);
+        this.setVerticalAlignment(SwingConstants.CENTER);
+        this.setFocusPainted(false);
+        this.setBorder(null);
+        this.setPreferredSize(dim);
+        this.setFocusable(true);
     }
 
     /**
@@ -94,21 +94,21 @@ public final class Tile extends JButton {
      * @return String representation of {@link #col}
      */
     public String colToString() {
-	return String.valueOf((char) ('a' + this.col));
+        return String.valueOf((char) ('a' + this.col));
     }
 
     @Override
     public boolean equals(final Object other) {
-	if (this == other)
-	    return true;
-	if (!(other instanceof Tile))
-	    return false;
-	final Tile tile = (Tile) other;
-	if (this.row != tile.row)
-	    return false;
-	if (this.col != tile.col)
-	    return false;
-	return true;
+        if (this == other)
+            return true;
+        if (!(other instanceof Tile))
+            return false;
+        final Tile tile = (Tile) other;
+        if (this.row != tile.row)
+            return false;
+        if (this.col != tile.col)
+            return false;
+        return true;
     }
 
     /**
@@ -117,16 +117,16 @@ public final class Tile extends JButton {
      * @return {@link #piece}
      */
     public Piece getPiece() {
-	return this.piece;
+        return this.piece;
     }
 
     /**
      * Reset the tile
      */
     public void reset() {
-	this.piece = null;
-	this.setForeground(null);
-	this.setText("");
+        this.piece = null;
+        this.setForeground(null);
+        this.setText("");
     }
 
     /**
@@ -135,7 +135,7 @@ public final class Tile extends JButton {
      * @return String representation of {@link #row}
      */
     public String rowToString() {
-	return String.valueOf(8 - this.row);
+        return String.valueOf(8 - this.row);
     }
 
     /**
@@ -145,12 +145,12 @@ public final class Tile extends JButton {
      */
     @Deprecated
     public void setPiece(final Piece piece) {
-	this.piece = piece;
+        this.piece = piece;
     }
 
     @Override
     public String toString() {
-	return this.colToString() + this.rowToString();
+        return this.colToString() + this.rowToString();
     }
 
     /**
@@ -159,13 +159,13 @@ public final class Tile extends JButton {
      * @param piece Piece to update
      */
     public void updatePiece(final Piece piece) {
-	if (piece == null) {
-	    this.reset();
-	    return;
-	}
+        if (piece == null) {
+            this.reset();
+            return;
+        }
 
-	this.piece = piece;
-	this.setForeground(this.piece.color.color);
-	this.setText(this.piece.toString());
+        this.piece = piece;
+        this.setForeground(this.piece.color.color);
+        this.setText(this.piece.toString());
     }
 }

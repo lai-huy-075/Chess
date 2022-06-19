@@ -41,33 +41,33 @@ public class Player {
     public static final Piece[] white;
 
     static {
-	white = new Piece[16];
-	for (int i = 0; i < 8; i++)
-	    white[i] = new Pawn(PieceColor.White);
+        white = new Piece[16];
+        for (int i = 0; i < 8; i++)
+            white[i] = new Pawn(PieceColor.White);
 
-	// Add other pieces
-	white[8] = new Rook(PieceColor.White);
-	white[9] = new Knight(PieceColor.White);
-	white[10] = new Bishop(PieceColor.White);
-	white[11] = new Queen(PieceColor.White);
-	white[12] = new King(PieceColor.White);
-	white[13] = new Bishop(PieceColor.White);
-	white[14] = new Knight(PieceColor.White);
-	white[15] = new Rook(PieceColor.White);
+        // Add other pieces
+        white[8] = new Rook(PieceColor.White);
+        white[9] = new Knight(PieceColor.White);
+        white[10] = new Bishop(PieceColor.White);
+        white[11] = new Queen(PieceColor.White);
+        white[12] = new King(PieceColor.White);
+        white[13] = new Bishop(PieceColor.White);
+        white[14] = new Knight(PieceColor.White);
+        white[15] = new Rook(PieceColor.White);
 
-	black = new Piece[16];
-	for (int i = 0; i < 8; i++)
-	    black[i] = new Pawn(PieceColor.Black);
+        black = new Piece[16];
+        for (int i = 0; i < 8; i++)
+            black[i] = new Pawn(PieceColor.Black);
 
-	// Add other pieces
-	black[8] = new Rook(PieceColor.Black);
-	black[9] = new Knight(PieceColor.Black);
-	black[10] = new Bishop(PieceColor.Black);
-	black[11] = new Queen(PieceColor.Black);
-	black[12] = new King(PieceColor.Black);
-	black[13] = new Bishop(PieceColor.Black);
-	black[14] = new Knight(PieceColor.Black);
-	black[15] = new Rook(PieceColor.Black);
+        // Add other pieces
+        black[8] = new Rook(PieceColor.Black);
+        black[9] = new Knight(PieceColor.Black);
+        black[10] = new Bishop(PieceColor.Black);
+        black[11] = new Queen(PieceColor.Black);
+        black[12] = new King(PieceColor.Black);
+        black[13] = new Bishop(PieceColor.Black);
+        black[14] = new Knight(PieceColor.Black);
+        black[15] = new Rook(PieceColor.Black);
     }
 
     /**
@@ -92,9 +92,9 @@ public class Player {
      * @param color {@link PieceColor} this will control
      */
     public Player(final String name, final PieceColor color) {
-	this.name = Objects.requireNonNull(name);
-	this.color = Objects.requireNonNull(color);
-	this.score = 0;
+        this.name = Objects.requireNonNull(name);
+        this.color = Objects.requireNonNull(color);
+        this.score = 0;
     }
 
     /**
@@ -103,7 +103,7 @@ public class Player {
      * @return {@link #score}
      */
     public int getScore() {
-	return this.score;
+        return this.score;
     }
 
     /**
@@ -112,10 +112,10 @@ public class Player {
      * @param piece {@link Piece} to increment score with
      */
     public void incrementScore(final Piece piece) {
-	if (piece == null)
-	    return;
-	Chess.logger.info("Capturing " + piece.toString());
-	this.score += piece.getValue();
+        if (piece == null)
+            return;
+        Chess.logger.info("Capturing " + piece.toString());
+        this.score += piece.getValue();
     }
 
     /**
@@ -125,23 +125,23 @@ public class Player {
      * @return true if this can move the piece on the tile false otherwise
      */
     public boolean movingAlly(final Tile tile) {
-	try {
-	    return this.color == tile.getPiece().color;
-	} catch (final NullPointerException npe) {
-	    return false;
-	}
+        try {
+            return this.color == tile.getPiece().color;
+        } catch (final NullPointerException npe) {
+            return false;
+        }
     }
 
     /**
      * Reset Player's attributes back to their default values
      */
     public void reset() {
-	Chess.logger.info("Reseting " + this.name);
-	this.score = 0;
+        Chess.logger.info("Reseting " + this.name);
+        this.score = 0;
     }
 
     @Override
     public String toString() {
-	return String.format("%-15s:%d", this.name, this.score);
+        return String.format("%-15s:%d", this.name, this.score);
     }
 }

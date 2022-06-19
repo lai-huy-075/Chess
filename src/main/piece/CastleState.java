@@ -1,9 +1,6 @@
 package main.piece;
 
 /**
- * Result of a Castle made by the {@link King}
- */
-/**
  * Result of a Castle made by the {@link King}<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Castling">here</a>.
  * 

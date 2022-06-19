@@ -139,8 +139,8 @@ public abstract class Piece {
      * @param color {@link PieceColor} of this
      */
     protected Piece(final PieceColor color) {
-	this.color = Objects.requireNonNull(color);
-	this.reset();
+        this.color = Objects.requireNonNull(color);
+        this.reset();
     }
 
     /**
@@ -176,9 +176,9 @@ public abstract class Piece {
      *         {@code false} if {@code Piece} is not an <i>ally</i> or is null.
      */
     public boolean isAlly(final Piece piece) {
-	if (piece == null)
-	    return false;
-	return this.color == piece.color;
+        if (piece == null)
+            return false;
+        return this.color == piece.color;
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class Piece {
      *         {@code false} otherwise.
      */
     public boolean isBlack() {
-	return PieceColor.Black == this.color;
+        return PieceColor.Black == this.color;
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class Piece {
      *         {@code false} otherwise.
      */
     public boolean isWhite() {
-	return PieceColor.White == this.color;
+        return PieceColor.White == this.color;
     }
 
     /**

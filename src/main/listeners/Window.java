@@ -25,42 +25,42 @@ public class Window implements WindowListener {
      * @param panel {@link Panel} of this
      */
     public Window(final Panel panel) {
-	this.panel = Objects.requireNonNull(panel, "Panel cannot be null");
+        this.panel = Objects.requireNonNull(panel, "Panel cannot be null");
     }
 
     @Override
     public void windowActivated(final WindowEvent e) {
-	Chess.logger.info("Window Activated");
+        Chess.logger.info("Window Activated");
     }
 
     @Override
     public void windowClosed(final WindowEvent e) {
-	Chess.logger.info("Window Closed");
+        Chess.logger.info("Window Closed");
     }
 
     @Override
     public void windowClosing(final WindowEvent e) {
-	Chess.logger.info("Window Closing");
-	this.panel.quitOption();
+        Chess.logger.info("Window Closing");
+        this.panel.quitOption();
     }
 
     @Override
     public void windowDeactivated(final WindowEvent e) {
-	Chess.logger.info("Window Deactivated");
+        Chess.logger.info("Window Deactivated");
     }
 
     @Override
     public void windowDeiconified(final WindowEvent e) {
-	Chess.logger.info("Window Deiconified");
+        Chess.logger.info("Window Deiconified");
     }
 
     @Override
     public void windowIconified(final WindowEvent e) {
-	Chess.logger.info("Window Iconified");
+        Chess.logger.info("Window Iconified");
     }
 
     @Override
     public void windowOpened(final WindowEvent e) {
-	Chess.logger.info("Window Opened");
+        Chess.logger.info("Window Opened");
     }
 }
