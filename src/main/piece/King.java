@@ -135,7 +135,7 @@ public class King extends Piece {
     public void setCheck(final CheckState state) {
         Objects.requireNonNull(state, "CheckState cannot be null");
 
-        Chess.logger.info("Setting King.check to " + state.name());
+        Chess.logger.info(String.format("Setting %s King.check to %s", this.color.name(), this.check.name()));
         this.check = state;
     }
 

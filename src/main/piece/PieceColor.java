@@ -32,4 +32,19 @@ public enum PieceColor {
     PieceColor(final int rgb) {
         this.color = new Color(rgb);
     }
+
+    /**
+     * Get the oponent {@link PieceColor}
+     * @return oponent PieceColor
+     */
+    public PieceColor oponent() {
+        switch (this) {
+            case White:
+                return Black;
+            case Black:
+                return White;
+            default:
+                throw new IllegalStateException("Illegal PieceColor:\t" + this.name());
+        }
+    }
 }
