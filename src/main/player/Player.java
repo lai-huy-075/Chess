@@ -1,6 +1,7 @@
 package main.player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,6 +107,18 @@ public class Player {
 	 */
 	private void createRandom() {
 		this.createPieces();
+	}
+
+	/**
+	 * Log attributes using {@link Chess#logger}
+	 */
+	public String debug() {
+		String str = "Player [color=" + this.color + ", name=" + this.name + ", pieces="
+				+ Arrays.deepToString(this.pieces) + ", score=" + this.score + "]\n";
+		for (final Piece piece : this.pieces)
+			str += piece.debug() + "\n";
+
+		return str + "\n";
 	}
 
 	/**
