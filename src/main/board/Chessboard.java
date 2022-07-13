@@ -119,18 +119,19 @@ public final class Chessboard {
 	 */
 	private void advancePiece() {
 		Chess.logger.info("Advancing piece");
-		Piece src_piece = this.source.getPiece(), dest_piece = this.destination.getPiece();
+		final Piece src_piece = this.source.getPiece(), dest_piece = this.destination.getPiece();
 
 		if (dest_piece != null)
 			dest_piece.setTile(null);
 
 		this.currentPlayer.incrementScore(dest_piece);
 		this.destination.updatePiece(src_piece);
-		src_piece.setTile(this.destination);
 		this.source.reset();
 
-		for (Pawn pawn : this.nextPlayer.getPawn())
+		for (final Pawn pawn : this.nextPlayer.getPawn())
 			pawn.setEnPassant(false);
+
+		Chess.logger.info(this.currentPlayer.debug());
 	}
 
 	/**
@@ -147,9 +148,24 @@ public final class Chessboard {
 	private void appendMove(final boolean attack, final PromoteState promote) {
 		Objects.requireNonNull(promote, "PromoteState cannot be null");
 		String move = "";
-		King black_king = this.black.getKing(), white_king = this.white.getKing();
+		King ally_king, enemy_king;
+		switch (this.currentPlayer.color) {
+		case Black:
+			ally_king = this.black.getKing();
+			enemy_king = this.white.getKing();
+			break;
+		case White:
+			ally_king = this.white.getKing();
+			enemy_king = this.black.getKing();
+			break;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
+		}
 
-		switch (white_king.getCastle()) {
+		final CastleState castle = ally_king.getCastle();
+		final CheckState check = enemy_king.getCheckState();
+
+		switch (castle) {
 		case Fail:
 			break;
 		case Kingside:
@@ -159,27 +175,27 @@ public final class Chessboard {
 			move = "O-O-O";
 			break;
 		case Unattempted:
+			if (promote != PromoteState.Fail)
+				move += attack ? this.source.colToString() : "";
+			else {
+				final char an = this.destination.getPiece().toAN();
+				switch (an) {
+				case Piece.an_pawn:
+					move += attack ? this.source.colToString() : "";
+					break;
+				default:
+					move += String.valueOf(an);
+					break;
+				}
+			}
+
+			move += attack ? "x" : "";
+			move += this.destination.toString();
+
 			break;
 		default:
-			throw new IllegalStateException("Illegal CastleState:\t" + white_king.getCastle().name());
+			throw new IllegalStateException("Illegal CastleState:\t" + ally_king.getCastle().name());
 		}
-
-		if (promote != PromoteState.Fail)
-			move += attack ? this.source.colToString() : "";
-		else {
-			final char an = this.destination.getPiece().toAN();
-			switch (an) {
-			case Piece.an_pawn:
-				move += attack ? this.source.colToString() : "";
-				break;
-			default:
-				move += String.valueOf(an);
-				break;
-			}
-		}
-
-		move += attack ? "x" : "";
-		move += this.destination.toString();
 
 		switch (promote) {
 		case Bishop:
@@ -200,7 +216,7 @@ public final class Chessboard {
 			throw new IllegalStateException("Illegal PromoteState:\t" + promote.name());
 		}
 
-		switch (black_king.getCheckState()) {
+		switch (check) {
 		case Check:
 			move += "+";
 			break;
@@ -212,7 +228,7 @@ public final class Chessboard {
 		case Stale:
 			break;
 		default:
-			throw new IllegalStateException("Illegal CheckState:\t" + black_king.getCheckState().name());
+			throw new IllegalStateException("Illegal CheckState:\t" + check.name());
 		}
 
 		Chess.logger.info("Appending move:\t" + move);
@@ -469,7 +485,7 @@ public final class Chessboard {
 		this.source.reset();
 		this.destination.updatePiece(sp);
 
-		for (final Tile t : this.findPieces(false)) {
+		for (final Tile t : this.findPieces(sp.color.opponent())) {
 			final Piece piece = t.getPiece();
 			if (!piece.isLegal(t, tile))
 				continue;
@@ -557,7 +573,7 @@ public final class Chessboard {
 				throw new IllegalStateException("Illegal CastleState:\t" + castle.name());
 			}
 		} else {
-			final boolean protect = this.moveProtectKing(ally_king);
+			final boolean protect = this.moveProtectKing(ally_king, this.source, this.destination);
 			Chess.logger.info(protect ? "Move protects the King" : "Move does not protect the King");
 			if (!protect)
 				return;
@@ -593,7 +609,8 @@ public final class Chessboard {
 
 		this.advancePiece();
 		this.updateKing(ally_king);
-		this.updateKing(enemy_king);
+		this.updateCheck(enemy_king);
+		this.updateCheckMate(enemy_king);
 		this.appendMove(attack, promote);
 		this.updatePlayers();
 
@@ -621,13 +638,21 @@ public final class Chessboard {
 	 * @return true if a piece moves itself out of a pin<br>
 	 *         false otherwise
 	 */
+	@SuppressWarnings("unused")
+	@Deprecated
 	private boolean moveProtectKing(final King king) {
-		Objects.requireNonNull(king, "King cannot be null");
+		return this.moveProtectKing(king, this.source, this.destination);
+	}
 
-		final Piece sp = this.source.getPiece(), dp = this.destination.getPiece();
-		this.source.reset();
-		this.destination.updatePiece(sp);
-		final Tile king_tile = sp instanceof King ? this.destination : king.getTile();
+	private boolean moveProtectKing(final King king, final Tile source, final Tile destination) {
+		Objects.requireNonNull(king, "King cannot be null");
+		Objects.requireNonNull(source, "Source tile cannot be null");
+		Objects.requireNonNull(destination, "Destination tile cannot be null");
+
+		final Piece sp = source.getPiece(), dp = destination.getPiece();
+		source.reset();
+		destination.updatePiece(sp);
+		final Tile king_tile = sp instanceof King ? destination : king.getTile();
 
 		for (final Tile tile : this.findPieces(false)) {
 			final Piece piece = tile.getPiece();
@@ -638,13 +663,13 @@ public final class Chessboard {
 			if (this.collide(tile, king_tile, piece.getTileTraversed(this.board, tile, king_tile)))
 				continue;
 
-			this.source.updatePiece(sp);
-			this.destination.updatePiece(dp);
+			source.updatePiece(sp);
+			destination.updatePiece(dp);
 			return false;
 		}
 
-		this.source.updatePiece(sp);
-		this.destination.updatePiece(dp);
+		source.updatePiece(sp);
+		destination.updatePiece(dp);
 		return true;
 	}
 
@@ -652,7 +677,7 @@ public final class Chessboard {
 	 * Place the {@link Piece} on {@link #board}
 	 */
 	private void placePieces() {
-		Chess.logger.info("Placing pieces on the Chessboard");
+		Chess.logger.info("Placing pieces on the Chess board");
 
 		int indexInList = 0;
 		Tile tile;
@@ -728,7 +753,7 @@ public final class Chessboard {
 	 * Reset the board and all attributes.
 	 */
 	public void reset() {
-		Chess.logger.info("Resetting Chessboard");
+		Chess.logger.info("Resetting Chess board");
 		this.resetBoard();
 		this.resetTiles();
 		this.placePieces();
@@ -737,7 +762,7 @@ public final class Chessboard {
 		this.moves.clear();
 		this.currentPlayer = this.white;
 		this.nextPlayer = this.black;
-		Chess.logger.info("Reset Chessboard\n\n");
+		Chess.logger.info("Reset Chess board\n\n");
 	}
 
 	/**
@@ -847,7 +872,7 @@ public final class Chessboard {
 	 */
 	private void updateCastle(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating CastleState for %s King", king.color.name()));
+		Chess.logger.info(String.format("Updating CastleState for %s King%n", king.color.name()));
 		final Piece piece = this.destination.getPiece();
 
 		if (piece instanceof King) {
@@ -902,7 +927,7 @@ public final class Chessboard {
 	 */
 	private void updateCheckMate(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating CheckState for %s King to Mate if nessesary", king.color.name()));
+		Chess.logger.info(String.format("Updating CheckState for %s King to Mate if necessary", king.color.name()));
 		if (king.getCheckState() == CheckState.Fail)
 			return;
 
@@ -929,9 +954,26 @@ public final class Chessboard {
 				if (this.collide(ally, prot, piece.getTileTraversed(this.board, ally, prot)))
 					continue;
 
+				if (!this.moveProtectKing(king, ally, prot))
+					continue;
+
+				Chess.logger.info("Found defending piece:\t" + piece.toString());
+				Chess.logger.info(String.format("Move from %s to %s", ally.toString(), prot.toString()));
 				return;
 			}
 		}
+
+		for (int dy = -1; dy < 2; ++dy)
+			for (int dx = -1; dx < 2; ++dx) {
+				if (dx == 0 && dy == 0)
+					continue;
+				Tile tile = this.getTileOffset(king_tile, dx, dy);
+				if (king.isAlly(tile.getPiece()))
+					continue;
+
+				if (this.moveProtectKing(king, king_tile, tile))
+					return;
+			}
 
 		king.setCheck(CheckState.Mate);
 	}
@@ -989,7 +1031,7 @@ public final class Chessboard {
 	 * Write {@link Chess#pgn_file} with details of the game
 	 */
 	public void write() {
-		Chess.logger.info("Writting pgn started...");
+		Chess.logger.info("Writing pgn started...");
 		final String date = Chess.now.format(Chess.format);
 
 		try (FileWriter writer = new FileWriter(Chess.pgn_file)) {
