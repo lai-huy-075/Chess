@@ -2,7 +2,6 @@ package main.piece;
 
 import java.util.Objects;
 
-import main.Chess;
 import main.board.Tile;
 
 /**
@@ -51,8 +50,9 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public void debug() {
-		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
+	public String debug() {
+		return "Pawn [en_passant=" + this.en_passant + ", diagonal=" + this.diagonal + ", starting_File="
+				+ this.starting_File + ", color=" + this.color + ", tile=" + this.tile + "]";
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class Pawn extends Piece {
 					// Normal Capturing
 					if (!dest_empty)
 						return !this.isAlly(dest_piece);
-					
+
 					// En passant
 					Piece up = dest.getUp().getPiece();
 					if (up instanceof Pawn)
@@ -123,7 +123,7 @@ public class Pawn extends Piece {
 			if (src.row == 1) {
 				if (dest.row - src.row <= 2) {
 					this.en_passant = dest.row - src.row == 2;
-					return src.col == dest.col;
+					return src.col == dest.col && dest_empty;
 				}
 				return false;
 			}
@@ -153,7 +153,7 @@ public class Pawn extends Piece {
 			if (src.row == 6)
 				if (src.row - dest.row <= 2) {
 					this.en_passant = src.row - dest.row == 2;
-					return src.col == dest.col;
+					return src.col == dest.col && dest_empty;
 				}
 
 			// Moving one square

@@ -2,7 +2,6 @@ package main.piece;
 
 import java.util.Objects;
 
-import main.Chess;
 import main.board.Tile;
 import main.player.Player;
 
@@ -32,8 +31,8 @@ public class Bishop extends Piece {
 	}
 
 	@Override
-	public void debug() {
-		Chess.logger.info(String.format("%s, %s", this.toString(), this.color.name()));
+	public String debug() {
+		return "Bishop [color=" + this.color + ", tile=" + this.tile + "]";
 	}
 
 	@Override

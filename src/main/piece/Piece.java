@@ -150,8 +150,10 @@ public abstract class Piece {
 
 	/**
 	 * Logs Piece attributes using {@link Chess#logger}
+	 * 
+	 * @return debug {@link String}
 	 */
-	public abstract void debug();
+	public abstract String debug();
 
 	/**
 	 * Get {@link #tile}

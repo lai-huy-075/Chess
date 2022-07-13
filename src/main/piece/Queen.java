@@ -2,7 +2,6 @@ package main.piece;
 
 import java.util.Objects;
 
-import main.Chess;
 import main.board.Tile;
 
 /**
@@ -39,8 +38,9 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public void debug() {
-		Chess.logger.info(String.format("%s, rook=%b, bishop=%b", this.toString(), this.rook, this.bishop));
+	public String debug() {
+		return "Queen [bishop=" + this.bishop + ", rook=" + this.rook + ", color=" + this.color + ", tile=" + this.tile
+				+ "]";
 	}
 
 	@Override
