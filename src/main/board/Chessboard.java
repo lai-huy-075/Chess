@@ -30,6 +30,9 @@ import main.player.Player;
  * @version 2022 05 23
  */
 public final class Chessboard {
+	/**
+	 * Primitive type array of {@link String} holding the options of promotion
+	 */
 	private static final String[] pieces = { "Queen", "Knight", "Rook", "Bishop" };
 
 	/**
@@ -38,12 +41,12 @@ public final class Chessboard {
 	public final Player black;
 
 	/**
-	 * 2d array holding the location of all the pieces.
+	 * 2d array holding the location of all the pieces
 	 */
 	private final Tile[][] board;
 
 	/**
-	 * A reference to the current {@link Player}.
+	 * A reference to the current {@link Player}
 	 */
 	private Player currentPlayer;
 
@@ -63,12 +66,12 @@ public final class Chessboard {
 	private final List<String> moves;
 
 	/**
-	 * A reference to the next {@link Player}.
+	 * A reference to the next {@link Player}
 	 */
 	private Player nextPlayer;
 
 	/**
-	 * {@link String} holding the result.
+	 * {@link String} holding the result
 	 */
 	private String result;
 
