@@ -152,8 +152,6 @@ public final class Tile extends JButton {
 	 * Reset the tile
 	 */
 	public void reset() {
-		if (this.piece != null)
-			this.piece.setTile(null);
 		this.piece = null;
 		this.setForeground(null);
 		this.setText("");
@@ -203,6 +201,7 @@ public final class Tile extends JButton {
 		}
 
 		this.piece = piece;
+		this.piece.setTile(this);
 		this.setForeground(this.piece.color.color);
 		this.setText(this.piece.toString());
 	}
