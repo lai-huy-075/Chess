@@ -320,6 +320,8 @@ public final class Chessboard {
 	 *               {@link #nextPlayer}
 	 * @return primitive type array of {@link Tile}
 	 */
+	@SuppressWarnings("unused")
+	@Deprecated
 	private Tile[] findPieces(final boolean isAlly) {
 		return this.findPieces(isAlly ? this.currentPlayer.color : this.nextPlayer.color);
 
@@ -654,7 +656,7 @@ public final class Chessboard {
 		destination.updatePiece(sp);
 		final Tile king_tile = sp instanceof King ? destination : king.getTile();
 
-		for (final Tile tile : this.findPieces(false)) {
+		for (final Tile tile : this.findPieces(king.color.opponent())) {
 			final Piece piece = tile.getPiece();
 
 			if (!piece.isLegal(tile, king_tile))
@@ -963,17 +965,13 @@ public final class Chessboard {
 			}
 		}
 
-		for (int dy = -1; dy < 2; ++dy)
-			for (int dx = -1; dx < 2; ++dx) {
-				if (dx == 0 && dy == 0)
-					continue;
-				Tile tile = this.getTileOffset(king_tile, dx, dy);
-				if (king.isAlly(tile.getPiece()))
-					continue;
+		for (Tile tile : king.getSurround(this.board)) {
+			if (king.isAlly(tile.getPiece()))
+				continue;
 
-				if (this.moveProtectKing(king, king_tile, tile))
-					return;
-			}
+			if (this.moveProtectKing(king, king_tile, tile))
+				return;
+		}
 
 		king.setCheck(CheckState.Mate);
 	}

@@ -109,13 +109,15 @@ public class Pawn extends Piece {
 				this.diagonal = Math.abs(src.col - dest.col) == 1;
 				if (this.diagonal) {
 					// Normal Capturing
-					if (!dest_empty)
-						return !this.isAlly(dest_piece);
+					if (dest_empty)
+						return false;
 
 					// En passant
 					Piece up = dest.getUp().getPiece();
 					if (up instanceof Pawn)
 						return ((Pawn) up).en_passant();
+
+					return !this.isAlly(dest_piece);
 				}
 			}
 
@@ -139,13 +141,15 @@ public class Pawn extends Piece {
 				this.diagonal = Math.abs(src.col - dest.col) == 1;
 				if (this.diagonal) {
 					// Normal capturing
-					if (!dest_empty)
-						return !this.isAlly(dest_piece);
+					if (dest_empty)
+						return false;
 
 					// En passant
 					Piece down = dest.getDown().getPiece();
 					if (down instanceof Pawn)
 						return ((Pawn) down).en_passant();
+
+					return !this.isAlly(dest_piece);
 				}
 			}
 
