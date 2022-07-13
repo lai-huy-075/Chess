@@ -5,9 +5,6 @@ import java.util.Objects;
 import main.board.Tile;
 
 /**
- * The Pawn
- */
-/**
  * The pawn (&#x2659;, &#x265F;) is the most numerous and weakest piece in the
  * game of chess.<br>
  * It may move one vacant {@link Tile} directly forward, it may move two vacant
@@ -24,14 +21,14 @@ import main.board.Tile;
  */
 public class Pawn extends Piece {
 	/**
-	 * Can this pawn be captured by en passant
-	 */
-	private boolean en_passant;
-
-	/**
 	 * Determine if this pawn moved diagonally.
 	 */
 	private boolean diagonal;
+
+	/**
+	 * Can this pawn be captured by en passant
+	 */
+	private boolean en_passant;
 
 	/**
 	 * Starting file of this.
