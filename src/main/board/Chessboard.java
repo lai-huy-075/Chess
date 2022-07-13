@@ -285,10 +285,10 @@ public final class Chessboard {
 			for (int col = 0; col < this.board[row].length; ++col)
 				this.board[row][col] = new Tile(row, col);
 
-		for (int row = 1; row < this.board.length - 1; ++row)
+		for (int row = 0; row < this.board.length; ++row)
 			for (int col = 0; col < this.board[row].length; ++col) {
-				this.board[row][col].setUp(this.board[row - 1][col]);
-				this.board[row][col].setDown(this.board[row + 1][col]);
+				this.board[row][col].setUp(row - 1 > 0 ? this.board[row - 1][col] : null);
+				this.board[row][col].setDown(row + 1 < this.board.length ? this.board[row + 1][col] : null);
 			}
 	}
 
@@ -296,8 +296,8 @@ public final class Chessboard {
 	 * Debugs {@link #source} and {@link #destination} to {@link Chess#logger}
 	 */
 	public void debugTiles() {
-		Chess.logger.info("Source:\t" + (this.source == null ? "null" : this.source.toString()));
-		Chess.logger.info("Dest:\t" + (this.destination == null ? "null" : this.destination.toString()));
+		Chess.logger.info("Source:\t" + this.source);
+		Chess.logger.info("Dest:\t" + this.destination);
 	}
 
 	/**
@@ -657,6 +657,9 @@ public final class Chessboard {
 		final Piece sp = source.getPiece(), dp = destination.getPiece();
 		source.reset();
 		destination.updatePiece(sp);
+		if (dp != null)
+			dp.setTile(null);
+
 		final Tile king_tile = sp instanceof King ? destination : king.getTile();
 
 		for (final Tile tile : this.findPieces(king.color.opponent())) {
@@ -670,11 +673,15 @@ public final class Chessboard {
 
 			source.updatePiece(sp);
 			destination.updatePiece(dp);
+			if (dp != null)
+				dp.setTile(destination);
 			return false;
 		}
 
 		source.updatePiece(sp);
 		destination.updatePiece(dp);
+		if (dp != null)
+			dp.setTile(destination);
 		return true;
 	}
 

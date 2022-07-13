@@ -2,8 +2,11 @@ package main;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -15,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
@@ -34,8 +38,10 @@ import main.player.Player;
  * @version 2022 05 23
  */
 public class Chess {
+	private static final String[] options = { "Standard Game", "Funny Game", "Test" };
+	
 	/**
-	 * {@link DateTimeFormatter} of Patern yyyy.MM.dd
+	 * {@link DateTimeFormatter} of Pattern yyyy.MM.dd
 	 */
 	public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
@@ -68,6 +74,11 @@ public class Chess {
 	 * Output {@link File} for Portable Game Notation
 	 */
 	public static final File pgn_file;
+	
+	/**
+	 * {@link File} in local directory
+	 */
+	private static final File local = new File("./");
 
 	/**
 	 * Creates logger, icon, and files for the program
@@ -179,8 +190,10 @@ public class Chess {
 	 * Create a {@link JFrame} and display it.
 	 * 
 	 * @param panel {@link Panel} to add to created JFrame
+	 * 
+	 * @return {@link JFrame} created
 	 */
-	private static final void createFrame(final Panel panel) {
+	private static final JFrame createFrame(final Panel panel) {
 		Chess.logger.info("Creating JFrame");
 
 		panel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -194,6 +207,8 @@ public class Chess {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.addWindowListener(new Window(panel));
+
+		return frame;
 	}
 
 	/**
@@ -203,7 +218,9 @@ public class Chess {
 		Chess.logger.info("Funny Mode");
 		final Panel panel = new Panel(Mode.Funny);
 
-		createFrame(panel);
+		final JFrame frame = createFrame(panel);
+		frame.dispose();
+		;
 	}
 
 	/**
@@ -221,8 +238,7 @@ public class Chess {
 	 */
 	private static final void mainMenu() {
 		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.QUESTION_MESSAGE, icon, new String[] { "New Standard Game", "Funny Game", "Place pieces" },
-				"New Standard Game")) {
+				JOptionPane.QUESTION_MESSAGE, icon, options, options[0])) {
 		case 0:
 			createChessBoard();
 			return;
@@ -230,7 +246,7 @@ public class Chess {
 			funny();
 			return;
 		case 2:
-			placePieces();
+			test();
 			return;
 		default:
 			Chess.logger.info("Picked Illegal Option");
@@ -241,10 +257,44 @@ public class Chess {
 	/**
 	 * Create a game of Chess to allow the user to Place Pieces
 	 */
-	private static final void placePieces() {
-		Chess.logger.info("Debug Mode");
+	private static final void test() {
+		Chess.logger.info("Test Mode");
 		final Panel panel = new Panel(Mode.Debug);
-
-		createFrame(panel);
+		final JFrame frame = createFrame(panel);
+		JFileChooser fc = new JFileChooser(local);
+		fc.showOpenDialog(panel);
+		
+		final File file = fc.getSelectedFile();
+		final String name = file.getName(), extension;
+		final int i = name.lastIndexOf('.');
+		extension = i > 0 ? name.substring(i + 1) : "";
+		if (!extension.equals("pgn")) {
+			Chess.logger.info("Incorrect file type:\t" + extension);
+			frame.dispose();
+			return;
+		}
+		
+		
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {
+			String data = "";
+			int c = reader.read();
+			while (c != -1) {
+				data += (char) c;
+				c = reader.read();
+			}
+			Chess.logger.info(data);
+		} catch (FileNotFoundException fnfe) {
+			Chess.logger.throwing("Chess", "test", fnfe);
+			frame.dispose();
+			return;
+		} catch (IOException ioe) {
+			Chess.logger.throwing("Chess", "test", ioe);
+			frame.dispose();
+			return;
+		} catch (NullPointerException npe) {
+			Chess.logger.throwing("Chess", "test", npe);
+			frame.dispose();
+			return;
+		}
 	}
 }

@@ -107,9 +107,13 @@ public class King extends Piece {
 		final int x = this.tile.col, y = this.tile.row;
 		for (int dy = -1; dy < 2; ++dy)
 			for (int dx = -1; dx < 2; ++dx) {
-				Tile tile = board[y + dy][x + dx];
-				if (!this.isAlly(tile.getPiece()))
-					surround.add(tile);
+				try {
+					Tile tile = board[y + dy][x + dx];
+					if (!this.isAlly(tile.getPiece()))
+						surround.add(tile);
+				} catch (ArrayIndexOutOfBoundsException aioobe) {
+					continue;
+				}
 			}
 
 		return surround.toArray(new Tile[surround.size()]);
