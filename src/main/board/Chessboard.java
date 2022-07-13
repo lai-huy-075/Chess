@@ -7,13 +7,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.JOptionPane;
+
 import main.Chess;
+import main.piece.Bishop;
 import main.piece.CastleState;
 import main.piece.CheckState;
 import main.piece.King;
+import main.piece.Knight;
 import main.piece.Pawn;
 import main.piece.Piece;
 import main.piece.PieceColor;
+import main.piece.PromoteState;
+import main.piece.Queen;
 import main.piece.Rook;
 import main.player.Player;
 
@@ -24,6 +30,8 @@ import main.player.Player;
  * @version 2022 05 23
  */
 public final class Chessboard {
+	private static final String[] pieces = { "Queen", "Knight", "Rook", "Bishop" };
+
 	/**
 	 * {@link Player} with the {@link PieceColor#Black} pieces
 	 */
@@ -133,13 +141,12 @@ public final class Chessboard {
 	/**
 	 * Append the move made to {@link #moves}
 	 * 
-	 * @param castle {@link CastleState}
-	 * @param check  {@link CheckState}
-	 * @param attack determine if an enemy {@link Piece} was captured
+	 * @param attack  determine if an enemy {@link Piece} was captured
+	 * @param promote determine if a {@link Pawn} promoted.
 	 */
-	private void appendMove(final boolean attack) {
+	private void appendMove(final boolean attack, final PromoteState promote) {
+		Objects.requireNonNull(promote, "PromoteState cannot be null");
 		String move = "";
-
 		King black_king = this.black.getKing(), white_king = this.white.getKing();
 
 		switch (white_king.getCastle()) {
@@ -152,6 +159,14 @@ public final class Chessboard {
 			move = "O-O-O";
 			break;
 		case Unattempted:
+			break;
+		default:
+			throw new IllegalStateException("Illegal CastleState:\t" + white_king.getCastle().name());
+		}
+
+		if (promote != PromoteState.Fail)
+			move += attack ? this.source.colToString() : "";
+		else {
 			final char an = this.destination.getPiece().toAN();
 			switch (an) {
 			case Piece.an_pawn:
@@ -161,12 +176,28 @@ public final class Chessboard {
 				move += String.valueOf(an);
 				break;
 			}
+		}
 
-			move += attack ? "x" : "";
-			move += this.destination.toString();
+		move += attack ? "x" : "";
+		move += this.destination.toString();
+
+		switch (promote) {
+		case Bishop:
+			move += "=B";
+			break;
+		case Fail:
+			break;
+		case Knight:
+			move += "=N";
+			break;
+		case Queen:
+			move += "=Q";
+			break;
+		case Rook:
+			move += "=R";
 			break;
 		default:
-			throw new IllegalStateException("Illegal CastleState:\t" + white_king.getCastle().name());
+			throw new IllegalStateException("Illegal PromoteState:\t" + promote.name());
 		}
 
 		switch (black_king.getCheckState()) {
@@ -479,7 +510,7 @@ public final class Chessboard {
 			return;
 
 		final boolean legal = src_piece.isLegal(this.source, this.destination);
-		Chess.logger.info(legal ? "Move is legal" : "Move is not legal");
+		Chess.logger.info(legal ? "Move is legal\n" : "Move is not legal\n");
 		if (!legal)
 			return;
 
@@ -532,30 +563,38 @@ public final class Chessboard {
 				return;
 		}
 
-		boolean attack;
+		boolean attack = this.destination.getPiece() != null;
+		PromoteState promote = PromoteState.Fail;
 		if (src_piece instanceof Pawn) {
-			if (((Pawn) src_piece).getDiagonal()) {
-				switch (src_piece.color) {
-				case Black:
-					attack = this.destination.getPiece() != null || this.destination.getUp().getPiece() != null;
+			boolean diagonal = ((Pawn) src_piece).getDiagonal();
+			switch (src_piece.color) {
+			case Black:
+				if (diagonal && (!attack)) {
+					attack |= this.destination.getUp().getPiece() != null;
 					this.destination.getUp().reset();
-					break;
-				case White:
-					attack = this.destination.getPiece() != null || this.destination.getDown().getPiece() != null;
-					this.destination.getDown().reset();
-					break;
-				default:
-					throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
 				}
-			} else
-				attack = false;
-		} else
-			attack = this.destination.getPiece() != null;
+
+				if (this.destination.row == 7)
+					promote = this.promote();
+				break;
+			case White:
+				if (diagonal && (!attack)) {
+					attack |= this.destination.getDown().getPiece() != null;
+					this.destination.getDown().reset();
+				}
+
+				if (this.destination.row == 0)
+					promote = this.promote();
+				break;
+			default:
+				break;
+			}
+		}
 
 		this.advancePiece();
 		this.updateKing(ally_king);
 		this.updateKing(enemy_king);
-		this.appendMove(attack);
+		this.appendMove(attack, promote);
 		this.updatePlayers();
 
 		if (enemy_king.getCheckState() == CheckState.Mate) {
@@ -641,6 +680,39 @@ public final class Chessboard {
 				piece.setTile(tile);
 				++indexInList;
 			}
+	}
+
+	/**
+	 * Promote a pawn
+	 * 
+	 * @return {@link PromoteState}
+	 */
+	private PromoteState promote() {
+		final int piece = JOptionPane.showOptionDialog(null, "Select a piece", "Promotion", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, Chess.icon, pieces, "Queen");
+		final int file = ((Pawn) this.source.getPiece()).starting_File;
+		final PromoteState state;
+		switch (piece) {
+		case 1:
+			this.currentPlayer.pieces[file] = new Knight(this.currentPlayer.color);
+			state = PromoteState.Knight;
+			break;
+		case 2:
+			this.currentPlayer.pieces[file] = new Rook(this.currentPlayer.color);
+			state = PromoteState.Rook;
+			break;
+		case 3:
+			this.currentPlayer.pieces[file] = new Bishop(this.currentPlayer.color);
+			state = PromoteState.Bishop;
+			break;
+		default:
+			this.currentPlayer.pieces[file] = new Queen(this.currentPlayer.color);
+			state = PromoteState.Queen;
+			break;
+		}
+		Chess.logger.info("Promoted Pawn to " + state.name());
+		this.source.updatePiece(this.currentPlayer.pieces[file]);
+		return state;
 	}
 
 	/**
