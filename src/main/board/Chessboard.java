@@ -535,7 +535,7 @@ public final class Chessboard {
 		boolean attack;
 		if (src_piece instanceof Pawn) {
 			if (((Pawn) src_piece).getDiagonal()) {
-				switch (this.currentPlayer.color) {
+				switch (src_piece.color) {
 				case Black:
 					attack = this.destination.getPiece() != null || this.destination.getUp().getPiece() != null;
 					this.destination.getUp().reset();
