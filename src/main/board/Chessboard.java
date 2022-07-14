@@ -317,20 +317,6 @@ public final class Chessboard {
 	}
 
 	/**
-	 * Finds all the {@link Piece} of a certain {@link PieceColor}
-	 * 
-	 * @param isAlly true if finding {@link #currentPlayer}, false if finding
-	 *               {@link #nextPlayer}
-	 * @return primitive type array of {@link Tile}
-	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	private Tile[] findPieces(final boolean isAlly) {
-		return this.findPieces(isAlly ? this.currentPlayer.color : this.nextPlayer.color);
-
-	}
-
-	/**
 	 * Find all pieces of a certain {@link PieceColor}
 	 *
 	 * @param isAlly which {@link PieceColor} to find
@@ -634,19 +620,6 @@ public final class Chessboard {
 
 			this.endGame();
 		}
-	}
-
-	/**
-	 * Determine if a move protects the King from check.
-	 *
-	 * @param king {@link Tile} {@link King} is currently on
-	 * @return true if a piece moves itself out of a pin<br>
-	 *         false otherwise
-	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	private boolean moveProtectKing(final King king) {
-		return this.moveProtectKing(king, this.source, this.destination);
 	}
 
 	private boolean moveProtectKing(final King king, final Tile source, final Tile destination) {
