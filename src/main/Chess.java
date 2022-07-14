@@ -35,11 +35,14 @@ import main.player.Player;
  * Main class
  * 
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
- * @version 2022 05 23
+ * @version 2022 06 14
  */
 public class Chess {
+	/**
+	 * Primitive type array of {@link String} holding game modes
+	 */
 	private static final String[] options = { "Standard Game", "Funny Game", "Test" };
-	
+
 	/**
 	 * {@link DateTimeFormatter} of Pattern yyyy.MM.dd
 	 */
@@ -74,7 +77,7 @@ public class Chess {
 	 * Output {@link File} for Portable Game Notation
 	 */
 	public static final File pgn_file;
-	
+
 	/**
 	 * {@link File} in local directory
 	 */
@@ -263,7 +266,7 @@ public class Chess {
 		final JFrame frame = createFrame(panel);
 		JFileChooser fc = new JFileChooser(local);
 		fc.showOpenDialog(panel);
-		
+
 		final File file = fc.getSelectedFile();
 		final String name = file.getName(), extension;
 		final int i = name.lastIndexOf('.');
@@ -273,8 +276,7 @@ public class Chess {
 			frame.dispose();
 			return;
 		}
-		
-		
+
 		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {
 			String data = "";
 			int c = reader.read();
@@ -296,5 +298,11 @@ public class Chess {
 			frame.dispose();
 			return;
 		}
+	}
+
+	/**
+	 * Constructor
+	 */
+	public Chess() {
 	}
 }

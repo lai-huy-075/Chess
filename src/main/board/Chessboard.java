@@ -139,11 +139,6 @@ public final class Chessboard {
 
 	/**
 	 * Append the move made to {@link #moves}
-	 *
-	 * @param castle {@link CastleState} when King has castled.
-	 */
-	/**
-	 * Append the move made to {@link #moves}
 	 * 
 	 * @param attack  determine if an enemy {@link Piece} was captured
 	 * @param promote determine if a {@link Pawn} promoted.
@@ -245,6 +240,16 @@ public final class Chessboard {
 	 * @param traversed privative array of {@link Tile}
 	 * @return true if a piece collides with another. false otherwise.
 	 */
+	/**
+	 * Determine if a piece collided with any other piece when moving
+	 * 
+	 * @param source      The {@link Tile} the {@link Piece} is moving from
+	 * @param destination The {@link Tile} the {@link Piece} is moving to
+	 * @param traversed   primitive type array of {@link Tile} holding all
+	 *                    {@link Tile} a {@link Piece} traverses on its journey
+	 * @return {@code true} is collision is detected<br>
+	 *         {@code false} otherwise.
+	 */
 	private boolean collide(final Tile source, final Tile destination, final Tile[] traversed) {
 		Objects.requireNonNull(source, "Source tile cannnot be null");
 		Objects.requireNonNull(destination, "Destination tile cannot be null");
@@ -319,7 +324,7 @@ public final class Chessboard {
 	/**
 	 * Find all pieces of a certain {@link PieceColor}
 	 *
-	 * @param isAlly which {@link PieceColor} to find
+	 * @param color {@link PieceColor} to find
 	 * @return primitive type array of {@link Tile}
 	 */
 	private Tile[] findPieces(final PieceColor color) {
@@ -461,8 +466,6 @@ public final class Chessboard {
 	 * Determine if the {@link King} moves itself into a Check
 	 *
 	 * @param tile    {@link Tile} to check
-	 * @param enemies primitive type array of {@link Tile} holding locations of all
-	 *                enemy {@link Piece}
 	 *
 	 * @return true if the {@link King} moves itself into a check<br>
 	 *         false otherwise
@@ -622,6 +625,18 @@ public final class Chessboard {
 		}
 	}
 
+	/**
+	 * Determine if a move will protect the {@link King} from check.<br>
+	 * This method assumes that movement from source to destination is
+	 * {@link Piece#isLegal(Tile, Tile)} and does not
+	 * {@link #collide(Tile, Tile, Tile[])}
+	 * 
+	 * @param king        The {@link King} that needs protection
+	 * @param source      The {@link Tile} a piece is moving from
+	 * @param destination The {@link Tile} a piece is moving to
+	 * @return {@code true} if the move protects the {@link King}<br>
+	 *         {@code false} otherwise
+	 */
 	private boolean moveProtectKing(final King king, final Tile source, final Tile destination) {
 		Objects.requireNonNull(king, "King cannot be null");
 		Objects.requireNonNull(source, "Source tile cannot be null");
@@ -916,6 +931,7 @@ public final class Chessboard {
 		if (king.getCheckState() == CheckState.Fail)
 			return;
 
+		// Find all attacking pieces and their path to the King
 		Tile king_tile = king.getTile();
 		List<Tile> traverse = new ArrayList<>();
 		for (Tile enemy : this.findPieces(king.color.opponent())) {
@@ -930,6 +946,7 @@ public final class Chessboard {
 			traverse.addAll(List.of(traversed));
 		}
 
+		// Determine if any ally piece can protect the king
 		for (Tile ally : this.findPieces(king.color)) {
 			final Piece piece = ally.getPiece();
 			for (Tile prot : traverse) {
@@ -948,6 +965,7 @@ public final class Chessboard {
 			}
 		}
 
+		// Determine if the King can move itself out of check
 		for (Tile tile : king.getSurround(this.board)) {
 			if (king.isAlly(tile.getPiece()))
 				continue;
@@ -975,7 +993,7 @@ public final class Chessboard {
 	/**
 	 * Update {@link King#check}, {@link King#king}, and {@link King#queen}
 	 *
-	 * @param king_tile {@link Tile} {@link King} is on
+	 * @param king {@link King} being updated
 	 */
 	private void updateKing(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");

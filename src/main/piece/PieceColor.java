@@ -24,6 +24,11 @@ public enum PieceColor {
 	 */
 	public final Color color;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param rgb value of {@link #color} as an int
+	 */
 	private PieceColor(int rgb) {
 		this.color = new Color(rgb);
 	}

@@ -175,7 +175,7 @@ public class Pawn extends Piece {
 	/**
 	 * Set {@link #en_passant}
 	 * 
-	 * @param en_passant
+	 * @param en_passant new {@link #en_passant} value
 	 */
 	public void setEnPassant(boolean en_passant) {
 		this.en_passant = en_passant;

@@ -111,6 +111,8 @@ public class Player {
 
 	/**
 	 * Log attributes using {@link Chess#logger}
+	 * 
+	 * @return debug {@link String}
 	 */
 	public String debug() {
 		String str = "Player [color=" + this.color + ", name=" + this.name + ", pieces="
@@ -133,6 +135,11 @@ public class Player {
 		throw new IllegalStateException("Player does not have a King");
 	}
 
+	/**
+	 * Get this Player's {@link Pawn}s
+	 * 
+	 * @return primitive type array of {@link Pawn}
+	 */
 	public Pawn[] getPawn() {
 		List<Pawn> pawn = new ArrayList<>();
 		for (Piece piece : this.pieces)

@@ -148,7 +148,7 @@ public class King extends Piece {
 		if (dy == 0 && !this.isCheck()) {
 			if (dest.col == 6 && this.king)
 				return true;
-			if (dest.col == 2 && dy == 0 && this.queen)
+			if (dest.col == 2 && this.queen)
 				return true;
 		}
 		return dx <= 1 && dy <= 1;

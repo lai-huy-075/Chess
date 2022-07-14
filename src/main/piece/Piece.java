@@ -198,36 +198,14 @@ public abstract class Piece {
 	}
 
 	/**
-	 * Determine if this is {@link PieceColor#Black}
-	 * 
-	 * @return {@code true} if {@link PieceColor#Black}.<br>
-	 *         {@code false} otherwise.
-	 */
-	@Deprecated
-	public boolean isBlack() {
-		return PieceColor.Black == this.color;
-	}
-
-	/**
 	 * Determine if a piece move is legal
 	 * 
 	 * @param src  {@link Tile} where the piece came from
-	 * @param dest {@link Tile} where the piece is goign
+	 * @param dest {@link Tile} where the piece is going
 	 * @return true is a legal move is done<br>
 	 *         false is not a legal move
 	 */
 	public abstract boolean isLegal(Tile src, Tile dest);
-
-	/**
-	 * Determine if this is {@link PieceColor#White}
-	 * 
-	 * @return {@code true} if {@link PieceColor#White}.<br>
-	 *         {@code false} otherwise.
-	 */
-	@Deprecated
-	public boolean isWhite() {
-		return PieceColor.White == this.color;
-	}
 
 	/**
 	 * Set any piece attributes to their default values.

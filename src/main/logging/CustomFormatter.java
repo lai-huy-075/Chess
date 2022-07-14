@@ -10,6 +10,12 @@ import java.util.logging.LogRecord;
  * @version 2022 05 23
  */
 public class CustomFormatter extends Formatter {
+	/**
+	 * Constructor
+	 */
+	public CustomFormatter() {
+	}
+
 	@Override
 	public String format(final LogRecord record) {
 		final String line = String.format("[%s] %s%n", record.getLevel(), record.getMessage());
