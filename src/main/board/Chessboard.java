@@ -18,6 +18,7 @@ import main.piece.Knight;
 import main.piece.Pawn;
 import main.piece.Piece;
 import main.piece.PieceColor;
+import main.piece.PieceType;
 import main.piece.PromoteState;
 import main.piece.Queen;
 import main.piece.Rook;
@@ -176,13 +177,13 @@ public final class Chessboard {
 			if (promote != PromoteState.Fail)
 				move += attack ? this.source.colToString() : "";
 			else {
-				final char an = this.destination.getPiece().toAN();
-				switch (an) {
-				case Piece.an_pawn:
+				final PieceType type = this.destination.getPiece().type;
+				switch (type) {
+				case Pawn:
 					move += attack ? this.source.colToString() : "";
 					break;
 				default:
-					move += String.valueOf(an);
+					move += String.valueOf(type.an);
 					break;
 				}
 			}
@@ -506,7 +507,7 @@ public final class Chessboard {
 		if (src_piece == null)
 			return;
 
-		Chess.logger.info(String.format("Moving %s from %s to %s", src_piece.toString(), this.source.toString(),
+		Chess.logger.info(String.format("Moving %s from %s to %s", src_piece.toFigure(), this.source.toString(),
 				this.destination.toString()));
 
 		if (this.source.equals(this.destination)) {
@@ -528,7 +529,7 @@ public final class Chessboard {
 		Chess.logger.info("Traversed:\t" + Arrays.deepToString(traversed));
 		final boolean collide = this.collide(this.source, this.destination, traversed);
 		Chess.logger.info(
-				src_piece.toString() + (collide ? " collided on its journey" : " did not collide on its journey"));
+				src_piece.toFigure() + (collide ? " collided on its journey" : " did not collide on its journey"));
 		if (collide)
 			return;
 
@@ -959,7 +960,7 @@ public final class Chessboard {
 				if (!this.moveProtectKing(king, ally, prot))
 					continue;
 
-				Chess.logger.info("Found defending piece:\t" + piece.toString());
+				Chess.logger.info("Found defending piece:\t" + piece.toFigure());
 				Chess.logger.info(String.format("Move from %s to %s", ally.toString(), prot.toString()));
 				return;
 			}

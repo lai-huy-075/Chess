@@ -203,6 +203,6 @@ public final class Tile extends JButton {
 		this.piece = piece;
 		this.piece.setTile(this);
 		this.setForeground(this.piece.color.color);
-		this.setText(this.piece.toString());
+		this.setText(this.piece.toFigure());
 	}
 }

@@ -118,7 +118,7 @@ public class Player {
 		String str = "Player [color=" + this.color + ", name=" + this.name + ", pieces="
 				+ Arrays.deepToString(this.pieces) + ", score=" + this.score + "]\n";
 		for (final Piece piece : this.pieces)
-			str += piece.debug() + "\n";
+			str += piece.toString() + "\n";
 
 		return str + "\n";
 	}
@@ -165,7 +165,7 @@ public class Player {
 	public void incrementScore(final Piece piece) {
 		if (piece == null)
 			return;
-		Chess.logger.info("Capturing " + piece.toString());
+		Chess.logger.info("Capturing " + piece.toFigure());
 		this.score += piece.getValue();
 	}
 
