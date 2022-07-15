@@ -24,12 +24,7 @@ public class Knight extends Piece {
 	 * @param color {@link PieceColor} of this
 	 */
 	public Knight(final PieceColor color) {
-		super(color);
-	}
-
-	@Override
-	public String debug() {
-		return "Knight [color=" + this.color + ", tile=" + this.tile + "]";
+		super(color, PieceType.Knight);
 	}
 
 	@Override
@@ -59,31 +54,7 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public char toAN() {
-		return an_knight;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return 'n';
-		case White:
-			return 'N';
-		default:
-			return '?';
-		}
-	}
-
-	@Override
 	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_knight;
-		case Black:
-			return black_knight;
-		default:
-			return default_name;
-		}
+		return "Knight [color=" + this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

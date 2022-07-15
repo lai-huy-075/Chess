@@ -34,13 +34,7 @@ public class Queen extends Piece {
 	 * @param color {@link PieceColor} of this
 	 */
 	public Queen(final PieceColor color) {
-		super(color);
-	}
-
-	@Override
-	public String debug() {
-		return "Queen [bishop=" + this.bishop + ", rook=" + this.rook + ", color=" + this.color + ", tile=" + this.tile
-				+ "]";
+		super(color, PieceType.Queen);
 	}
 
 	@Override
@@ -94,31 +88,8 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public char toAN() {
-		return an_queen;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return 'q';
-		case White:
-			return 'Q';
-		default:
-			return '?';
-		}
-	}
-
-	@Override
 	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_queen;
-		case Black:
-			return black_queen;
-		default:
-			return default_name;
-		}
+		return "Queen [bishop=" + this.bishop + ", rook=" + this.rook + ", color=" + this.color + ", type=" + this.type
+				+ ", tile=" + this.tile + "]";
 	}
 }

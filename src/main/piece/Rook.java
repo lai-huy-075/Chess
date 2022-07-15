@@ -23,12 +23,7 @@ public class Rook extends Piece {
 	 * @param color {@link PieceColor} of this
 	 */
 	public Rook(final PieceColor color) {
-		super(color);
-	}
-
-	@Override
-	public String debug() {
-		return "Rook [color=" + this.color + ", tile=" + this.tile + "]";
+		super(color, PieceType.Rook);
 	}
 
 	@Override
@@ -62,35 +57,10 @@ public class Rook extends Piece {
 
 	@Override
 	public void reset() {
-
-	}
-
-	@Override
-	public char toAN() {
-		return an_rook;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return 'r';
-		case White:
-			return 'R';
-		default:
-			return '?';
-		}
 	}
 
 	@Override
 	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_rook;
-		case Black:
-			return black_rook;
-		default:
-			return default_name;
-		}
+		return "Rook [color=" + this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

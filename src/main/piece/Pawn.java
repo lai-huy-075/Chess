@@ -42,14 +42,8 @@ public class Pawn extends Piece {
 	 * @param file  starting file of this
 	 */
 	public Pawn(final PieceColor color, int file) {
-		super(color);
+		super(color, PieceType.Pawn);
 		this.starting_File = file;
-	}
-
-	@Override
-	public String debug() {
-		return "Pawn [en_passant=" + this.en_passant + ", diagonal=" + this.diagonal + ", starting_File="
-				+ this.starting_File + ", color=" + this.color + ", tile=" + this.tile + "]";
 	}
 
 	/**
@@ -182,31 +176,8 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public char toAN() {
-		return an_pawn;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return 'p';
-		case White:
-			return 'P';
-		default:
-			return '?';
-		}
-	}
-
-	@Override
 	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_pawn;
-		case Black:
-			return black_pawn;
-		default:
-			return default_name;
-		}
+		return "Pawn [diagonal=" + this.diagonal + ", en_passant=" + this.en_passant + ", starting_File="
+				+ this.starting_File + ", color=" + this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

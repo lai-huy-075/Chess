@@ -27,12 +27,7 @@ public class Bishop extends Piece {
 	 * @param color {@link PieceColor} of this
 	 */
 	public Bishop(final PieceColor color) {
-		super(color);
-	}
-
-	@Override
-	public String debug() {
-		return "Bishop [color=" + this.color + ", tile=" + this.tile + "]";
+		super(color, PieceType.Bishop);
 	}
 
 	@Override
@@ -64,31 +59,7 @@ public class Bishop extends Piece {
 	}
 
 	@Override
-	public char toAN() {
-		return an_bishop;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return 'b';
-		case White:
-			return 'B';
-		default:
-			return '?';
-		}
-	}
-
-	@Override
 	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_bishop;
-		case Black:
-			return black_bishop;
-		default:
-			return default_name;
-		}
+		return "Bishop [color=" + this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

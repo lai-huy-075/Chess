@@ -49,7 +49,7 @@ public class King extends Piece {
 	 * @param color {@link PieceColor} of this
 	 */
 	public King(final PieceColor color) {
-		super(color);
+		super(color, PieceType.King);
 	}
 
 	/**
@@ -73,9 +73,9 @@ public class King extends Piece {
 	}
 
 	@Override
-	public String debug() {
-		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen
-				+ ", color=" + this.color + ", tile=" + this.tile + "]";
+	public String toString() {
+		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen + ", color="
+				+ this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 
 	/**
@@ -202,34 +202,5 @@ public class King extends Piece {
 	public void setQueenside(final boolean bool) {
 		Chess.logger.info(String.format("Setting %s King.queen to %b", this.color.name(), bool));
 		this.queen = bool;
-	}
-
-	@Override
-	public char toAN() {
-		return an_king;
-	}
-
-	@Override
-	public char toFEN() {
-		switch (this.color) {
-		case Black:
-			return Character.toLowerCase(an_king);
-		case White:
-			return Character.toUpperCase(an_king);
-		default:
-			return '?';
-		}
-	}
-
-	@Override
-	public String toString() {
-		switch (this.color) {
-		case White:
-			return white_king;
-		case Black:
-			return black_king;
-		default:
-			return default_name;
-		}
 	}
 }
