@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -23,6 +24,11 @@ import main.player.Player;
  */
 public class PGNReader {
 	/**
+	 * {@link String} holding regular expression of any valid chess move (hopefully)
+	 */
+	private static final String move = "[KQRNB]?[a-h]?x?[a-h][1-8](=[QRNB])?[+#]?|O\\-O(\\-O)?[+#]?";
+
+	/**
 	 * PGN {@link File}
 	 */
 	public final File file;
@@ -36,6 +42,12 @@ public class PGNReader {
 	 * {@link PieceColor#Black} {@link Player} read from {@link #file}
 	 */
 	private Player black;
+
+	/**
+	 * Primitive type array of {@link String} holding the moves read from
+	 * {@link #file}
+	 */
+	private String[] moves;
 
 	/**
 	 * Constructor
@@ -55,6 +67,7 @@ public class PGNReader {
 	 * Read {@link #file}
 	 */
 	public void read() {
+		Chess.logger.info("Reading from file started...");
 		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(this.file))) {
 			String data = "";
 			int c = reader.read();
@@ -65,14 +78,16 @@ public class PGNReader {
 
 			String[] lines = data.split("\\n");
 			for (String line : lines) {
-				if (line.contains("White")) {
+				if (line.matches("\\[White \\\".*\\\"\\]"))
 					this.white = new Player(getData(line)[0], PieceColor.White);
-				} else if (line.contains("Black")) {
+				else if (line.matches("\\[Black \\\".*\\\"\\]"))
 					this.black = new Player(getData(line)[0], PieceColor.Black);
-				}
 			}
 
-			return;
+			this.moves = getAllMatches(data, move);
+			Chess.logger.info("White Player:\t" + this.white.name);
+			Chess.logger.info("Black Player:\t" + this.black.name);
+			Chess.logger.info(Arrays.deepToString(this.moves));
 		} catch (FileNotFoundException fnfe) {
 			Chess.logger.throwing("PGNReader", "read", fnfe);
 			return;
@@ -83,6 +98,7 @@ public class PGNReader {
 			Chess.logger.throwing("PGNReader", "read", npe);
 			return;
 		}
+		Chess.logger.info("Reading from file complete");
 	}
 
 	/**
@@ -108,9 +124,9 @@ public class PGNReader {
 	 */
 	private static String[] getAllMatches(String text, String regex) {
 		List<String> matches = new ArrayList<>();
-		Matcher m = Pattern.compile("(?=(" + regex + "))").matcher(text);
+		Matcher m = Pattern.compile(regex).matcher(text);
 		while (m.find())
-			matches.add(m.group(1));
+			matches.add(m.group());
 		return matches.toArray(new String[matches.size()]);
 	}
 
@@ -121,6 +137,15 @@ public class PGNReader {
 	 */
 	public Player getBlack() {
 		return this.black;
+	}
+
+	/**
+	 * Get {@link #moves}
+	 * 
+	 * @return {@link #moves}
+	 */
+	public String[] getMoves() {
+		return this.moves;
 	}
 
 	/**

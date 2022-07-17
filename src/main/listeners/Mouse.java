@@ -99,8 +99,8 @@ public class Mouse implements MouseListener {
 		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
 
-		final int x = Math.floorDiv(e.getX(), (int) Tile.dim.getWidth());
-		final int y = Math.floorDiv(e.getY(), (int) Tile.dim.getHeight());
+		final int x = Math.floorDiv(e.getX(), (int) Tile.dimension.getWidth());
+		final int y = Math.floorDiv(e.getY(), (int) Tile.dimension.getHeight());
 		Chess.logger.info("Offset:\t(" + x + "," + y + ")");
 		Tile t;
 		try {

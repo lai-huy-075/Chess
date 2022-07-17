@@ -24,7 +24,7 @@ public final class Tile extends JButton {
 	/**
 	 * {@link Dimension} of all elements in this.
 	 */
-	public static final Dimension dim = new Dimension(80, 80);
+	public static final Dimension dimension = new Dimension(80, 80);
 
 	/**
 	 * Serial Version UID
@@ -94,7 +94,7 @@ public final class Tile extends JButton {
 		this.setVerticalAlignment(SwingConstants.CENTER);
 		this.setFocusPainted(false);
 		this.setBorder(null);
-		this.setPreferredSize(dim);
+		this.setPreferredSize(dimension);
 		this.setFocusable(true);
 	}
 

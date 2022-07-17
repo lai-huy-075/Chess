@@ -19,6 +19,7 @@ public class PGNWriter {
 	public static final void write(Chessboard board) {
 		Objects.requireNonNull(board, "Chessboard cannot be null");
 
+		Chess.logger.info("Writing pgn started...");
 		final String date = Chess.now.format(Chess.format), result = board.result();
 		try (FileWriter writer = new FileWriter(Chess.pgn_file)) {
 			writer.write("[Event \"1v1\"]\n");
@@ -48,8 +49,9 @@ public class PGNWriter {
 
 			writer.write(result.isEmpty() ? "" : result);
 		} catch (final IOException e) {
-			Chess.logger.throwing("Chessboard", "write", e);
+			Chess.logger.throwing("PGNWriter", "write", e);
 			return;
 		}
+		Chess.logger.info("Writting pgn complete!\n");
 	}
 }

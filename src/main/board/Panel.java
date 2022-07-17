@@ -78,7 +78,8 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * Primitive type array of {@link String} to pick from when
 	 * {@link #displayMenu()} is called
 	 */
-	private static final String[] options;
+	private static final String[] options = { "Controls", "Reset", "Resign", "Draw", "Quit", "Deslect Piece",
+			"Scores" };
 
 	/**
 	 * Primitive type array of {@link String} holding row names
@@ -114,10 +115,8 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		for (final String key : controlMap.keySet())
 			cont += key + "\t" + controlMap.get(key) + "\n";
 
-		options = new String[] { "Controls", "Reset", "Resign", "Draw", "Quit", "Deslect Piece", "Scores" };
-
 		vs.setFont(arial);
-		vs.setPreferredSize(Tile.dim);
+		vs.setPreferredSize(Tile.dimension);
 		vs.setForeground(Color.black);
 
 		controls = new JTextArea(cont);
@@ -130,7 +129,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		menuButton.setFont(new Font("Arial", Font.PLAIN, 60));
 		menuButton.setOpaque(false);
 		menuButton.setContentAreaFilled(false);
-		menuButton.setPreferredSize(Tile.dim);
+		menuButton.setPreferredSize(Tile.dimension);
 	}
 
 	/**
@@ -163,9 +162,10 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 *
 	 * @param mode {@link Mode} of the game
 	 */
+	@Deprecated
 	public Panel(final Mode mode) {
 		this.mode = Objects.requireNonNull(mode);
-		this.board = new Chessboard(Player.default_white, Player.default_black);
+		this.board = new Chessboard(this.mode, Player.default_white, Player.default_black);
 		this.keys = new Keys(this);
 
 		this.setLayout(grid);
@@ -186,8 +186,9 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		PGNReader reader = new PGNReader(data);
 		reader.read();
 
-		this.board = new Chessboard(reader.getWhite(), reader.getBlack());
+		this.board = new Chessboard(this.mode, reader.getWhite(), reader.getBlack());
 		this.keys = new Keys(this);
+		this.board.loadMoves(reader.getMoves());
 
 		// Set Default GUI Elements
 		this.setLayout(grid);

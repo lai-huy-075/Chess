@@ -90,10 +90,10 @@ public final class Chessboard {
 	 *
 	 * @param mode {@link Mode} of this
 	 */
-	public Chessboard(final Mode mode) {
+	public Chessboard(final Mode mode, final Player white, final Player black) {
 		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
-		this.white = Player.default_white;
-		this.black = Player.default_black;
+		this.white = Objects.requireNonNull(white, "White player cannot be null");
+		this.black = Objects.requireNonNull(black, "Black player cannot be null");
 		this.board = new Tile[8][8];
 		this.moves = new ArrayList<>();
 
@@ -107,13 +107,7 @@ public final class Chessboard {
 	 * @param black {@link Player} controlling {@link PieceColor#Black}
 	 */
 	public Chessboard(final Player white, final Player black) {
-		this.mode = Mode.Normal;
-		this.white = Objects.requireNonNull(white, "White player cannot be null");
-		this.black = Objects.requireNonNull(black, "Blackplayer cannot be null");
-		this.board = new Tile[8][8];
-		this.moves = new ArrayList<>();
-
-		this.createBoard();
+		this(Mode.Normal, white, black);
 		this.reset();
 	}
 
@@ -504,6 +498,16 @@ public final class Chessboard {
 		this.source.updatePiece(sp);
 		this.destination.updatePiece(dp);
 		return false;
+	}
+	
+	/**
+	 * Load moves from a pre-set list of moves.
+	 * 
+	 * @param moves variable argument of moves to load in
+	 */
+	public void loadMoves(String... moves) {
+		this.moves.clear();
+		this.moves.addAll(List.of(moves));
 	}
 
 	/**
@@ -1039,8 +1043,6 @@ public final class Chessboard {
 	 * Write {@link Chess#pgn_file} with details of the game
 	 */
 	public void write() {
-		Chess.logger.info("Writing pgn started...");
 		PGNWriter.write(this);
-		Chess.logger.info("Writting pgn complete!\n\n");
 	}
 }
