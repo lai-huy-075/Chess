@@ -88,7 +88,9 @@ public final class Chessboard {
 	/**
 	 * Constructor
 	 *
-	 * @param mode {@link Mode} of this
+	 * @param mode  {@link Mode} of this
+	 * @param white {@link Player} controlling {@link PieceColor#White}
+	 * @param black {@link Player} controlling {@link PieceColor#Black}
 	 */
 	public Chessboard(final Mode mode, final Player white, final Player black) {
 		this.mode = Objects.requireNonNull(mode, "Mode cannot be null");
@@ -98,16 +100,6 @@ public final class Chessboard {
 		this.moves = new ArrayList<>();
 
 		this.createBoard();
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param white {@link Player} controlling {@link PieceColor#White}
-	 * @param black {@link Player} controlling {@link PieceColor#Black}
-	 */
-	public Chessboard(final Player white, final Player black) {
-		this(Mode.Normal, white, black);
 		this.reset();
 	}
 
@@ -367,6 +359,15 @@ public final class Chessboard {
 	public Player getCurrentPlayer() {
 		return this.currentPlayer;
 	}
+	
+	/**
+	 * Get {@link #mode}
+	 * 
+	 * @return {@link #mode}
+	 */
+	public Mode getMode() {
+		return this.mode;
+	}
 
 	/**
 	 * Get {@link #moves}
@@ -499,7 +500,7 @@ public final class Chessboard {
 		this.destination.updatePiece(dp);
 		return false;
 	}
-	
+
 	/**
 	 * Load moves from a pre-set list of moves.
 	 * 
@@ -766,7 +767,6 @@ public final class Chessboard {
 	 * Reset the board and all attributes.
 	 */
 	public void reset() {
-		Chess.logger.info("Resetting Chess board");
 		this.resetBoard();
 		this.resetTiles();
 		this.placePieces();
@@ -824,20 +824,21 @@ public final class Chessboard {
 	}
 
 	/**
-	 * Set {@link #mode}
-	 *
-	 * @param mode new {@link Mode}
-	 */
-	public void setMode(final Mode mode) {
-		this.mode = Objects.requireNonNull(mode, "New mode cannot be null");
-	}
-
-	/**
 	 * This method is called whenever a {@link Tile} is clicked.
 	 */
 	public void tileClicked() {
-		if (this.mode == Mode.Over)
+		switch (this.mode) {
+		case Debug:
 			return;
+		case Funny:
+			break;
+		case Normal:
+			break;
+		case Over:
+			return;
+		default:
+			throw new IllegalStateException("Illegal Mode:\t" + this.mode);
+		}
 
 		if (this.source == null)
 			return;

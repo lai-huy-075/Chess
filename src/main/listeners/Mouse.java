@@ -85,8 +85,25 @@ public class Mouse implements MouseListener {
 	@Override
 	public void mousePressed(final MouseEvent e) {
 		this.tile.getModel().setPressed(true);
-		if (e.getButton() != MouseEvent.BUTTON1)
+		switch (this.board.getMode()) {
+		case Debug:
 			return;
+		case Funny:
+			break;
+		case Normal:
+			break;
+		case Over:
+			return;
+		default:
+			throw new IllegalStateException("Illegal Mode:\t" + this.board.getMode());
+		}
+		
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1:
+			break;
+		default:
+			return;
+		}
 
 		Chess.logger.info("Pressed :\t" + this.tile.toString());
 		this.board.updateSource(this.tile);
@@ -95,9 +112,25 @@ public class Mouse implements MouseListener {
 	@Override
 	public void mouseReleased(final MouseEvent e) {
 		this.tile.getModel().setPressed(false);
-
-		if (e.getButton() != MouseEvent.BUTTON1)
+		switch (this.board.getMode()) {
+		case Debug:
 			return;
+		case Funny:
+			break;
+		case Normal:
+			break;
+		case Over:
+			return;
+		default:
+			throw new IllegalStateException("Illegal Mode:\t" + this.board.getMode());
+		}
+		
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1:
+			break;
+		default:
+			return;
+		}
 
 		final int x = Math.floorDiv(e.getX(), (int) Tile.dimension.getWidth());
 		final int y = Math.floorDiv(e.getY(), (int) Tile.dimension.getHeight());

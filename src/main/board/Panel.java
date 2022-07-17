@@ -171,13 +171,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		this.keys = new Keys(this);
 		this.board.loadMoves(reader.getMoves());
 
-		// Set Default GUI Elements
-		this.setLayout(grid);
-		this.setDefaultGUIElements();
-
-		// Creates other GUI elements
-		this.createLabels();
-		this.createTiles();
+		this.init();
 	}
 
 	/**
@@ -189,16 +183,10 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 */
 	public Panel(final Mode mode, final Player white, final Player black) {
 		this.mode = Objects.requireNonNull(mode);
-		this.board = new Chessboard(white, black);
+		this.board = new Chessboard(this.mode, white, black);
 		this.keys = new Keys(this);
 
-		// Set Default GUI Elements
-		this.setLayout(grid);
-		this.setDefaultGUIElements();
-
-		// Creates other GUI elements
-		this.createLabels();
-		this.createTiles();
+		this.init();
 	}
 
 	@Override
@@ -330,6 +318,19 @@ public final class Panel extends JLayeredPane implements ActionListener {
 			Chess.logger.info("Draw declined");
 			return;
 		}
+	}
+
+	/**
+	 * Initialize stuff. &#x1F60A;
+	 */
+	private void init() {
+		// Set Default GUI Elements
+		this.setLayout(grid);
+		this.setDefaultGUIElements();
+
+		// Creates other GUI elements
+		this.createLabels();
+		this.createTiles();
 	}
 
 	/**
