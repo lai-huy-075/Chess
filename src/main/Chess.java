@@ -180,7 +180,7 @@ public class Chess {
 				return;
 		}
 
-		final Panel panel = new Panel(new Player(white_name, PieceColor.White),
+		final Panel panel = new Panel(Mode.Normal, new Player(white_name, PieceColor.White),
 				new Player(black_name, PieceColor.Black));
 
 		createFrame(panel);
@@ -216,7 +216,42 @@ public class Chess {
 	 */
 	private static final void funny() {
 		Chess.logger.info("Funny Mode");
-		final Panel panel = new Panel(Mode.Funny);
+
+		String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
+				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+
+		if (white_name == null || white_name.isEmpty())
+			return;
+
+		while (white_name.length() > 49) {
+			white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
+					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+
+			if (white_name == null)
+				return;
+
+			if (white_name.isEmpty())
+				return;
+		}
+
+		String black_name = (String) JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
+				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+
+		if (black_name == null || black_name.isEmpty())
+			return;
+
+		while (black_name.length() > 49) {
+			black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
+					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
+			if (black_name == null)
+				return;
+
+			if (black_name.isEmpty())
+				return;
+		}
+
+		final Panel panel = new Panel(Mode.Funny, new Player(white_name, PieceColor.White),
+				new Player(black_name, PieceColor.Black));
 
 		final JFrame frame = createFrame(panel);
 		frame.dispose();

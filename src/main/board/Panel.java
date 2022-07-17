@@ -158,25 +158,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	private JLabel white;
 
 	/**
-	 * Constructor
-	 *
-	 * @param mode {@link Mode} of the game
-	 */
-	@Deprecated
-	public Panel(final Mode mode) {
-		this.mode = Objects.requireNonNull(mode);
-		this.board = new Chessboard(this.mode, Player.default_white, Player.default_black);
-		this.keys = new Keys(this);
-
-		this.setLayout(grid);
-		this.setDefaultGUIElements();
-
-		// Creates other GUI elements
-		this.createLabels();
-		this.createTiles();
-	}
-
-	/**
 	 * Load a game from a {@link File}
 	 * 
 	 * @param data PGN {@link File}.
@@ -218,16 +199,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		// Creates other GUI elements
 		this.createLabels();
 		this.createTiles();
-	}
-
-	/**
-	 * constructor
-	 *
-	 * @param white {@link PieceColor#White} {@link Player}
-	 * @param black {@link PieceColor#Black} {@link Player}
-	 */
-	public Panel(final Player white, final Player black) {
-		this(Mode.Normal, white, black);
 	}
 
 	@Override
