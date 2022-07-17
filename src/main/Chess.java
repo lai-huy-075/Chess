@@ -2,11 +2,8 @@ package main;
 
 import java.awt.Image;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -262,42 +259,12 @@ public class Chess {
 	 */
 	private static final void test() {
 		Chess.logger.info("Test Mode");
-		final Panel panel = new Panel(Mode.Debug);
-		final JFrame frame = createFrame(panel);
 		JFileChooser fc = new JFileChooser(local);
-		fc.showOpenDialog(panel);
+		fc.showOpenDialog(fc);
 
 		final File file = fc.getSelectedFile();
-		final String name = file.getName(), extension;
-		final int i = name.lastIndexOf('.');
-		extension = i > 0 ? name.substring(i + 1) : "";
-		if (!extension.equals("pgn")) {
-			Chess.logger.info("Incorrect file type:\t" + extension);
-			frame.dispose();
-			return;
-		}
-
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {
-			String data = "";
-			int c = reader.read();
-			while (c != -1) {
-				data += (char) c;
-				c = reader.read();
-			}
-			Chess.logger.info(data);
-		} catch (FileNotFoundException fnfe) {
-			Chess.logger.throwing("Chess", "test", fnfe);
-			frame.dispose();
-			return;
-		} catch (IOException ioe) {
-			Chess.logger.throwing("Chess", "test", ioe);
-			frame.dispose();
-			return;
-		} catch (NullPointerException npe) {
-			Chess.logger.throwing("Chess", "test", npe);
-			frame.dispose();
-			return;
-		}
+		final Panel panel = new Panel(file);
+		createFrame(panel);
 	}
 
 	/**

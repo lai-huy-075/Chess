@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import main.Chess;
+import main.file.PGNReader;
 import main.listeners.Keys;
 import main.listeners.Mouse;
 import main.piece.PieceColor;
@@ -166,6 +168,28 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		this.board = new Chessboard(Player.default_white, Player.default_black);
 		this.keys = new Keys(this);
 
+		this.setLayout(grid);
+		this.setDefaultGUIElements();
+
+		// Creates other GUI elements
+		this.createLabels();
+		this.createTiles();
+	}
+
+	/**
+	 * Load a game from a {@link File}
+	 * 
+	 * @param data PGN {@link File}.
+	 */
+	public Panel(final File data) {
+		this.mode = Mode.Debug;
+		PGNReader reader = new PGNReader(data);
+		reader.read();
+
+		this.board = new Chessboard(reader.getWhite(), reader.getBlack());
+		this.keys = new Keys(this);
+
+		// Set Default GUI Elements
 		this.setLayout(grid);
 		this.setDefaultGUIElements();
 

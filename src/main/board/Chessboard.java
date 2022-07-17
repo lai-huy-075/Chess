@@ -1,7 +1,5 @@
 package main.board;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +8,7 @@ import java.util.Objects;
 import javax.swing.JOptionPane;
 
 import main.Chess;
+import main.file.PGNWriter;
 import main.piece.Bishop;
 import main.piece.CastleState;
 import main.piece.CheckState;
@@ -376,6 +375,15 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Get {@link #moves}
+	 * 
+	 * @return {@link #moves}
+	 */
+	public List<String> getMoves() {
+		return this.moves;
+	}
+
+	/**
 	 * Get {@link #nextPlayer}
 	 *
 	 * @return {@link #nextPlayer}
@@ -466,7 +474,7 @@ public final class Chessboard {
 	/**
 	 * Determine if the {@link King} moves itself into a Check
 	 *
-	 * @param tile    {@link Tile} to check
+	 * @param tile {@link Tile} to check
 	 *
 	 * @return true if the {@link King} moves itself into a check<br>
 	 *         false otherwise
@@ -1032,38 +1040,7 @@ public final class Chessboard {
 	 */
 	public void write() {
 		Chess.logger.info("Writing pgn started...");
-		final String date = Chess.now.format(Chess.format);
-
-		try (FileWriter writer = new FileWriter(Chess.pgn_file)) {
-			writer.write("[Event \"1v1\"]\n");
-			writer.write("[Site \"Chess.jar\"]\n");
-			writer.write("[Date " + date + "]\n");
-			writer.write("[Round \"-\"]\n");
-			writer.write("[White \"" + this.white.name + "\"]\n");
-			writer.write("[Black \"" + this.black.name + "\"]\n");
-			writer.write("[Result \"" + this.result + "\"]\n");
-			writer.write("\n");
-
-			for (int i = 0; i < this.moves.size(); i += 2) {
-				final String white = this.moves.get(i);
-				String black;
-				try {
-					black = this.moves.get(i + 1);
-				} catch (final IndexOutOfBoundsException ioobe) {
-					black = "";
-				}
-				final int move = i / 2 + 1;
-
-				writer.write(String.format("%d. %s %s", move, white, black));
-				writer.write(move % 7 == 0 ? "\n" : " ");
-			}
-
-			writer.write(this.result.isEmpty() ? "" : this.result);
-		} catch (final IOException e) {
-			Chess.logger.throwing("Chessboard", "write", e);
-			return;
-		}
-
+		PGNWriter.write(this);
 		Chess.logger.info("Writting pgn complete!\n\n");
 	}
 }
