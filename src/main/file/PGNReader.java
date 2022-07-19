@@ -108,11 +108,23 @@ public class PGNReader {
 	 * 
 	 * @return data extracted {@link String}
 	 */
-	private static String[] getData(String text) {
+	private static final String[] getData(String text) {
 		List<String> data = new ArrayList<>();
 		for (String string : getAllMatches(text, "\".*\""))
 			data.add(string.substring(1, string.length() - 1));
 		return data.toArray(new String[data.size()]);
+	}
+	
+	/**
+	 * Extract the first match of a regular expression
+	 * 
+	 * @param text {@link String} to search
+	 * @param regex {@link String} Regular Expression
+	 * @return first match
+	 */
+	public static final String getMatch(String text, String regex) {
+		final Matcher m = Pattern.compile(regex).matcher(text);
+		return m.find() ? m.group() : null;
 	}
 
 	/**
@@ -122,7 +134,7 @@ public class PGNReader {
 	 * @param regex {@link String} Regular Expression
 	 * @return list of matching {@link String}
 	 */
-	private static String[] getAllMatches(String text, String regex) {
+	private static final String[] getAllMatches(String text, String regex) {
 		List<String> matches = new ArrayList<>();
 		Matcher m = Pattern.compile(regex).matcher(text);
 		while (m.find())
