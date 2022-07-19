@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -163,13 +164,21 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * @param data PGN {@link File}.
 	 */
 	public Panel(final File data) {
+		Objects.requireNonNull(data, "Data file cannot be null");
+		if (!data.exists())
+			throw new IllegalArgumentException("Data file does not exist");
+		
 		this.mode = Mode.Debug;
 		PGNReader reader = new PGNReader(data);
 		reader.read();
 
 		this.board = new Chessboard(this.mode, reader.getWhite(), reader.getBlack());
 		this.keys = new Keys(this);
-		this.board.loadMoves(reader.getMoves());
+		try {
+			this.board.loadMoves(reader.getMoves());
+		} catch (ParseException e) {
+			Chess.logger.throwing("Panel", "Constructor", e);
+		}
 
 		this.init();
 	}
