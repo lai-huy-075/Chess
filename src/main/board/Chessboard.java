@@ -1,5 +1,6 @@
 package main.board;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import javax.swing.JOptionPane;
 
 import main.Chess;
+import main.file.PGNReader;
 import main.file.PGNWriter;
 import main.piece.Bishop;
 import main.piece.CastleState;
@@ -359,7 +361,7 @@ public final class Chessboard {
 	public Player getCurrentPlayer() {
 		return this.currentPlayer;
 	}
-	
+
 	/**
 	 * Get {@link #mode}
 	 * 
@@ -505,10 +507,40 @@ public final class Chessboard {
 	 * Load moves from a pre-set list of moves.
 	 * 
 	 * @param moves variable argument of moves to load in
+	 * @throws ParseException if loading moves fails.
 	 */
-	public void loadMoves(String... moves) {
-		this.moves.clear();
-		this.moves.addAll(List.of(moves));
+	public void loadMoves(String... moves) throws ParseException {
+		Objects.requireNonNull(moves, "Moves cannot be null");
+		this.reset();
+		for (int i = 0; i < moves.length; ++i) {
+			String move = moves[i];
+			if (move == null)
+				throw new ParseException("Illegal move", i);
+			
+			String tile = PGNReader.getMatch(move, "[a-h][1-8]");
+			switch (move.charAt(0)) {
+			case 'K':
+				Chess.logger.info("King:\t" + tile);
+				break;
+			case 'Q':
+				Chess.logger.info("Queen:\t" + tile);
+				break;
+			case 'R':
+				Chess.logger.info("Rook:\t" + tile);
+				break;
+			case 'N':
+				Chess.logger.info("Knight:\t" + tile);
+				break;
+			case 'B':
+				Chess.logger.info("Bishop:\t" + tile);
+				break;
+			default:
+				if (tile == null)
+					Chess.logger.info("Move:\t" + move);
+				else
+					Chess.logger.info("Pawn:\t" + tile);
+			}
+		}
 	}
 
 	/**
@@ -919,12 +951,12 @@ public final class Chessboard {
 
 		final Tile king_tile = king.getTile();
 
-		for (final Tile t : this.findPieces(king.color.opponent())) {
-			final Piece piece = t.getPiece();
-			if (!piece.isLegal(t, king_tile))
+		for (final Tile enemy : this.findPieces(king.color.opponent())) {
+			final Piece piece = enemy.getPiece();
+			if (!piece.isLegal(enemy, king_tile))
 				continue;
 
-			if (this.collide(t, king_tile, piece.getTileTraversed(this.board, t, king_tile)))
+			if (this.collide(enemy, king_tile, piece.getTileTraversed(this.board, enemy, king_tile)))
 				continue;
 
 			king.setCheck(CheckState.Check);

@@ -136,6 +136,19 @@ public class Player {
 	}
 
 	/**
+	 * Get this Player's {@link Knight}
+	 * 
+	 * @return primitive type array of {@link Pawn}
+	 */
+	public Knight[] getKnight() {
+		List<Knight> knight = new ArrayList<>();
+		for (Piece piece : this.pieces)
+			if (piece instanceof Knight)
+				knight.add((Knight) piece);
+		return knight.toArray(new Knight[knight.size()]);
+	}
+
+	/**
 	 * Get this Player's {@link Pawn}s
 	 * 
 	 * @return primitive type array of {@link Pawn}
@@ -146,6 +159,32 @@ public class Player {
 			if (piece instanceof Pawn)
 				pawn.add((Pawn) piece);
 		return pawn.toArray(new Pawn[pawn.size()]);
+	}
+
+	/**
+	 * Get this Player's {@link Queen}
+	 * 
+	 * @return primitive type array of {@link Queen}
+	 */
+	public Queen[] getQueen() {
+		List<Queen> queen = new ArrayList<>();
+		for (Piece piece : this.pieces)
+			if (piece instanceof Queen)
+				queen.add((Queen) piece);
+		return queen.toArray(new Queen[queen.size()]);
+	}
+
+	/**
+	 * Get this Player's {@link Rook}
+	 * 
+	 * @return primitive type array of {@link Rook}
+	 */
+	public Rook[] getRook() {
+		List<Rook> rook = new ArrayList<>();
+		for (Piece piece : this.pieces)
+			if (piece instanceof Rook)
+				rook.add((Rook) piece);
+		return rook.toArray(new Rook[rook.size()]);
 	}
 
 	/**
