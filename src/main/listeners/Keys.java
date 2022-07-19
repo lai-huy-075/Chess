@@ -47,6 +47,14 @@ public class Keys implements KeyListener {
 		case KeyEvent.VK_ESCAPE:
 			this.panel.displayMenu();
 			return;
+		case KeyEvent.VK_UP:
+			return;
+		case KeyEvent.VK_DOWN:
+			return;
+		case KeyEvent.VK_LEFT:
+			return;
+		case KeyEvent.VK_RIGHT:
+			return;
 		case 'c':
 			this.panel.controlsOption();
 			return;
