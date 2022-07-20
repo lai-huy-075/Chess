@@ -34,6 +34,24 @@ public class Keys implements KeyListener {
 
 	@Override
 	public void keyPressed(final KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			Chess.logger.info("Up arrow");
+			this.panel.board.loadInitialPosition();
+			break;
+		case KeyEvent.VK_DOWN:
+			Chess.logger.info("Down arrow");
+			this.panel.board.loadLastPosition();
+			break;
+		case KeyEvent.VK_LEFT:
+			Chess.logger.info("Left arrow");
+			this.panel.board.loadPreviousPosition();
+			break;
+		case KeyEvent.VK_RIGHT:
+			this.panel.board.loadNextPosition();
+			Chess.logger.info("Right arrow");
+			break;
+		}
 	}
 
 	@Override
@@ -46,14 +64,6 @@ public class Keys implements KeyListener {
 		switch (e.getKeyChar()) {
 		case KeyEvent.VK_ESCAPE:
 			this.panel.displayMenu();
-			return;
-		case KeyEvent.VK_UP:
-			return;
-		case KeyEvent.VK_DOWN:
-			return;
-		case KeyEvent.VK_LEFT:
-			return;
-		case KeyEvent.VK_RIGHT:
 			return;
 		case 'c':
 			this.panel.controlsOption();

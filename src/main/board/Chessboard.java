@@ -58,6 +58,11 @@ public final class Chessboard {
 	private Tile destination;
 
 	/**
+	 * Index in {@link #position}
+	 */
+	private int index;
+
+	/**
 	 * Determine if the game is over
 	 */
 	private Mode mode;
@@ -71,6 +76,11 @@ public final class Chessboard {
 	 * A reference to the next {@link Player}
 	 */
 	private Player nextPlayer;
+
+	/**
+	 * Position {@link List}
+	 */
+	private final List<String> position;
 
 	/**
 	 * {@link String} holding the result
@@ -100,6 +110,7 @@ public final class Chessboard {
 		this.black = Objects.requireNonNull(black, "Black player cannot be null");
 		this.board = new Tile[8][8];
 		this.moves = new ArrayList<>();
+		this.position = new ArrayList<>();
 
 		this.createBoard();
 		this.reset();
@@ -389,6 +400,14 @@ public final class Chessboard {
 		return this.nextPlayer;
 	}
 
+	private Tile getTile(String tile) {
+		if (tile == null)
+			return null;
+		int col = tile.charAt(0) - 'a';
+		int row = '8' - tile.charAt(1);
+		return this.board[row][col];
+	}
+
 	/**
 	 * Get a {@link Tile} that is offset from an inputed Tile
 	 *
@@ -504,6 +523,22 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Load the initial position of the {@link Chessboard}
+	 */
+	public void loadInitialPosition() {
+		this.index = 0;
+		this.loadPosition();
+	}
+
+	/**
+	 * Load last position in {@link #position}
+	 */
+	public void loadLastPosition() {
+		this.index = this.position.size() - 1;
+		this.loadPosition();
+	}
+
+	/**
 	 * Load moves from a pre-set list of moves.
 	 * 
 	 * @param moves variable argument of moves to load in
@@ -516,8 +551,8 @@ public final class Chessboard {
 			String move = moves[i];
 			if (move == null)
 				throw new ParseException("Illegal move", i);
-			
-			String tile = PGNReader.getMatch(move, "[a-h][1-8]");
+
+			Tile tile = this.getTile(PGNReader.getMatch(move, "[a-h][1-8]"));
 			switch (move.charAt(0)) {
 			case 'K':
 				Chess.logger.info("King:\t" + tile);
@@ -541,6 +576,29 @@ public final class Chessboard {
 					Chess.logger.info("Pawn:\t" + tile);
 			}
 		}
+	}
+
+	/**
+	 * Increment {@link #index} and load the position in {@link #position}
+	 */
+	public void loadNextPosition() {
+		++this.index;
+		this.loadPosition();
+	}
+
+	/**
+	 * Load position from {@link #position} at {@link #index}
+	 */
+	private void loadPosition() {
+		String position = this.position.get(this.index);
+	}
+
+	/**
+	 * Decrement {@link #index} and load the position in {@link #position}
+	 */
+	public void loadPreviousPosition() {
+		--this.index;
+		this.loadPosition();
 	}
 
 	/**
@@ -651,6 +709,7 @@ public final class Chessboard {
 		this.updateKing(ally_king);
 		this.updateCheck(enemy_king);
 		this.updateCheckMate(enemy_king);
+		this.position.add(this.toString());
 		this.appendMove(attack, promote);
 		this.updatePlayers();
 

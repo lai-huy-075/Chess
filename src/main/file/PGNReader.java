@@ -79,9 +79,9 @@ public class PGNReader {
 			String[] lines = data.split("\\n");
 			for (String line : lines) {
 				if (line.matches("\\[White \\\".*\\\"\\]"))
-					this.white = new Player(getData(line)[0], PieceColor.White);
+					this.white = new Player(getData(line), PieceColor.White);
 				else if (line.matches("\\[Black \\\".*\\\"\\]"))
-					this.black = new Player(getData(line)[0], PieceColor.Black);
+					this.black = new Player(getData(line), PieceColor.Black);
 			}
 
 			this.moves = getAllMatches(data, move);
@@ -108,11 +108,9 @@ public class PGNReader {
 	 * 
 	 * @return data extracted {@link String}
 	 */
-	private static final String[] getData(String text) {
-		List<String> data = new ArrayList<>();
-		for (String string : getAllMatches(text, "\".*\""))
-			data.add(string.substring(1, string.length() - 1));
-		return data.toArray(new String[data.size()]);
+	private static final String getData(String text) {
+		String data = getMatch(text, "\".*\"");
+		return data.substring(1, data.length() - 1);
 	}
 	
 	/**
