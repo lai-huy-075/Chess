@@ -8,7 +8,7 @@ package main.piece;
  */
 public enum PieceType {
 	King('\u2654', '\u265A', 'K'), Queen('\u2655', '\u265B', 'Q'), Rook('\u2656', '\u265C', 'R'),
-	Bishop('\u2657', '\u265D', 'B'), Knight('\u2658', '\u265E', 'N'), Pawn('\u2659', '\u265F', '\0');
+	Bishop('\u2657', '\u265D', 'B'), Knight('\u2658', '\u265E', 'N'), Pawn('\u2659', '\u265F', 'P');
 
 	public final char white;
 	public final char black;

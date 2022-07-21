@@ -230,6 +230,7 @@ public final class Chessboard {
 
 		Chess.logger.info("Appending move:\t" + move);
 		this.moves.add(move);
+		this.index++;
 	}
 
 	/**
@@ -399,7 +400,12 @@ public final class Chessboard {
 	public Player getNextPlayer() {
 		return this.nextPlayer;
 	}
-
+	
+	/**
+	 * Get {@link Tile} in a position specified by a {@link String}
+	 * @param tile {@link String} representation of the {@link Tile}
+	 * @return {@link Tile} from {@link #board}
+	 */
 	private Tile getTile(String tile) {
 		if (tile == null)
 			return null;
@@ -526,6 +532,8 @@ public final class Chessboard {
 	 * Load the initial position of the {@link Chessboard}
 	 */
 	public void loadInitialPosition() {
+		if (this.position.size() == 0)
+			return;
 		this.index = 0;
 		this.loadPosition();
 	}
@@ -534,6 +542,8 @@ public final class Chessboard {
 	 * Load last position in {@link #position}
 	 */
 	public void loadLastPosition() {
+		if (this.position.size() == 0)
+			return;
 		this.index = this.position.size() - 1;
 		this.loadPosition();
 	}
@@ -582,6 +592,8 @@ public final class Chessboard {
 	 * Increment {@link #index} and load the position in {@link #position}
 	 */
 	public void loadNextPosition() {
+		if (this.index + 1 >= this.position.size())
+			return;
 		++this.index;
 		this.loadPosition();
 	}
@@ -590,13 +602,79 @@ public final class Chessboard {
 	 * Load position from {@link #position} at {@link #index}
 	 */
 	private void loadPosition() {
-		String position = this.position.get(this.index);
+		final String position = this.position.get(this.index);
+		String piece;
+		int col = 0, row = 0;
+		for (final String line : position.split("/")) {
+			for (final char c : line.toCharArray()) {
+				switch (c) {
+				case 'k':
+					piece = String.valueOf(PieceType.King.black);
+					break;
+				case 'K':
+					piece = String.valueOf(PieceType.King.white);
+					break;
+				case 'q':
+					piece = String.valueOf(PieceType.Queen.black);
+					break;
+				case 'Q':
+					piece = String.valueOf(PieceType.Queen.white);
+					break;
+				case 'r':
+					piece = String.valueOf(PieceType.Rook.black);
+					break;
+				case 'R':
+					piece = String.valueOf(PieceType.Rook.white);
+					break;
+				case 'n':
+					piece = String.valueOf(PieceType.Knight.black);
+					break;
+				case 'N':
+					piece = String.valueOf(PieceType.Knight.white);
+					break;
+				case 'b':
+					piece = String.valueOf(PieceType.Bishop.black);
+					break;
+				case 'B':
+					piece = String.valueOf(PieceType.Bishop.white);
+					break;
+				case 'p':
+					piece = String.valueOf(PieceType.Pawn.black);
+					break;
+				case 'P':
+					piece = String.valueOf(PieceType.Pawn.white);
+					break;
+				default:
+					piece = "";
+					for (int i = '0'; i < c; ++i) {
+						this.board[row][col].setForeground(null);
+						this.board[row][col].setText(piece);
+						if (++col == 8) {
+							++row;
+							col = 0;
+						}
+					}
+					continue;
+				}
+
+				this.board[row][col]
+						.setForeground(Character.isLowerCase(c) ? PieceColor.Black.color : PieceColor.White.color);
+				this.board[row][col].setText(piece);
+				if (++col == 8) {
+					++row;
+					col = 0;
+				}
+			}
+		}
 	}
 
 	/**
 	 * Decrement {@link #index} and load the position in {@link #position}
 	 */
 	public void loadPreviousPosition() {
+		if (this.index - 1 < 0)
+			return;
+
 		--this.index;
 		this.loadPosition();
 	}
@@ -864,6 +942,9 @@ public final class Chessboard {
 		this.white.reset();
 		this.black.reset();
 		this.moves.clear();
+		this.position.clear();
+		this.position.add(this.toString());
+		this.index = 0;
 		this.currentPlayer = this.white;
 		this.nextPlayer = this.black;
 		Chess.logger.info("Reset Chess board\n\n");
@@ -960,6 +1041,7 @@ public final class Chessboard {
 					if (count != 0)
 						out += String.valueOf(count);
 					out += String.valueOf(piece.toFEN());
+					count = 0;
 				}
 			}
 			if (count != 0)
