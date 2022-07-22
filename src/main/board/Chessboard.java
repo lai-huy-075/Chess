@@ -957,7 +957,8 @@ public final class Chessboard {
 		this.appendMove(attack, promote);
 		this.updatePlayers();
 
-		if (enemy_king.getCheckState() == CheckState.Mate) {
+		switch (enemy_king.getCheckState()) {
+		case Mate:
 			switch (this.currentPlayer.color) {
 			case Black:
 				this.result = "1-0";
@@ -971,6 +972,12 @@ public final class Chessboard {
 			}
 
 			this.endGame();
+			break;
+		case Stale:
+			this.draw();
+			break;
+		default:
+			break;
 		}
 	}
 

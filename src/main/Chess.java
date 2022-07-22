@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.board.Mode;
 import main.board.Panel;
@@ -295,6 +296,7 @@ public class Chess {
 	private static final void test() {
 		Chess.logger.info("Test Mode");
 		JFileChooser fc = new JFileChooser(local);
+		fc.setFileFilter(new FileNameExtensionFilter("PGN files", "pgn"));
 		fc.showOpenDialog(fc);
 
 		final File file = fc.getSelectedFile();
