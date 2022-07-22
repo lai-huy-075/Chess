@@ -58,7 +58,7 @@ public class PGNReader {
 	/**
 	 * Extract the first match of a regular expression
 	 * 
-	 * @param text {@link String} to search
+	 * @param text  {@link String} to search
 	 * @param regex {@link String} Regular Expression
 	 * @return first match
 	 */
@@ -87,7 +87,7 @@ public class PGNReader {
 	 * {@link PieceColor#White} {@link Player} read from {@link #file}
 	 */
 	private Player white;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -95,10 +95,6 @@ public class PGNReader {
 	 */
 	public PGNReader(final File file) {
 		Objects.requireNonNull(file, "File cannot be null");
-		PGNFileFilter filter = new PGNFileFilter();
-		if (!filter.accept(file))
-			throw new IllegalArgumentException("Inputed file is not a PGN file");
-
 		this.file = file;
 	}
 
