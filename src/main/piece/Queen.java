@@ -78,6 +78,10 @@ public class Queen extends Piece {
 
 	@Override
 	public boolean isLegal(final Tile src, final Tile dest) {
+		Objects.requireNonNull(src, "Source file cannot be null");
+		Objects.requireNonNull(dest, "Destination tile cannot be null");
+		if (src.equals(dest))
+			return false;
 		this.rook = src.col == dest.col ^ src.row == dest.row;
 		this.bishop = Math.abs(src.col - dest.col) == Math.abs(src.row - dest.row);
 		return this.rook ^ this.bishop;

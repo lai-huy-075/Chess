@@ -138,6 +138,10 @@ public class King extends Piece {
 
 	@Override
 	public boolean isLegal(final Tile src, final Tile dest) {
+		Objects.requireNonNull(src, "Source file cannot be null");
+		Objects.requireNonNull(dest, "Destination tile cannot be null");
+		if (src.equals(dest))
+			return false;
 		final int dx = Math.abs(src.col - dest.col), dy = Math.abs(src.row - dest.row);
 		if (dy == 0 && !this.isCheck()) {
 			if (dest.col == 6 && this.king)
@@ -200,7 +204,7 @@ public class King extends Piece {
 
 	@Override
 	public String toString() {
-		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen + ", color="
-				+ this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
+		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen
+				+ ", color=" + this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

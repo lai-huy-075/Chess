@@ -44,9 +44,12 @@ public class Knight extends Piece {
 
 	@Override
 	public boolean isLegal(final Tile src, final Tile dest) {
+		Objects.requireNonNull(src, "Source file cannot be null");
+		Objects.requireNonNull(dest, "Destination tile cannot be null");
+		if (src.equals(dest))
+			return false;
 		final int dx = Math.abs(src.col - dest.col);
 		final int dy = Math.abs(src.row - dest.row);
-
 		return dx == 2 && dy == 1 || dx == 1 && dy == 2;
 	}
 

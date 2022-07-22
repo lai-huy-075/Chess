@@ -34,7 +34,8 @@ public final class Chessboard {
 	/**
 	 * Primitive type array of {@link String} holding the options of promotion
 	 */
-	private static final String[] pieces = { "Queen", "Knight", "Rook", "Bishop" };
+	private static final Character[] pieces = { PieceType.Queen.white, PieceType.Knight.white, PieceType.Rook.white,
+			PieceType.Bishop.white };
 
 	/**
 	 * {@link Player} with the {@link PieceColor#Black} pieces
@@ -1062,7 +1063,7 @@ public final class Chessboard {
 	 */
 	private PromoteState promote() {
 		final int piece = JOptionPane.showOptionDialog(null, "Select a piece", "Promotion", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, Chess.icon, pieces, "Queen");
+				JOptionPane.INFORMATION_MESSAGE, Chess.icon, pieces, pieces[0]);
 		final int file = ((Pawn) this.source.getPiece()).starting_File;
 		final PromoteState state;
 		switch (piece) {

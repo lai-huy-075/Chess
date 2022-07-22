@@ -88,8 +88,10 @@ public class Pawn extends Piece {
 
 	@Override
 	public boolean isLegal(final Tile src, final Tile dest) {
-		Objects.requireNonNull(src, "Pawn must have an origin");
-		Objects.requireNonNull(dest, "Pawn must have a destination.");
+		Objects.requireNonNull(src, "Source file cannot be null");
+		Objects.requireNonNull(dest, "Destination tile cannot be null");
+		if (src.equals(dest))
+			return false;
 
 		final Piece dest_piece = dest.getPiece();
 		final boolean dest_empty = dest_piece == null;

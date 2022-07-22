@@ -38,7 +38,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	/**
 	 * Arial {@link Font}
 	 */
-	public static final Font arial = new Font("Arial", Font.PLAIN, 30);
+	public static final Font arial = new Font("", Font.PLAIN, 30);
 
 	/**
 	 * Primitive type array of {@link String} holding column names
@@ -58,7 +58,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	/**
 	 * {@link Font} for {@link JLabel}
 	 */
-	private static final Font font = new Font("Arial", Font.PLAIN, 15);
+	private static final Font font = new Font("", Font.PLAIN, 15);
 
 	/**
 	 * Grid Layout
@@ -217,12 +217,10 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 */
 	private void createLabels() {
 		this.white = new JLabel(this.board.white.name, SwingConstants.CENTER);
-		this.white.setFont(
-				new Font("Arial", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.white.name.length() / 12.5f)));
+		this.white.setFont(new Font("", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.white.name.length() / 12.5f)));
 
 		this.black = new JLabel(this.board.black.name, SwingConstants.CENTER);
-		this.black.setFont(
-				new Font("Arial", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.black.name.length() / 12.5f)));
+		this.black.setFont(new Font("", Font.PLAIN, 20 - 3 * (int) Math.floor(this.board.black.name.length() / 12.5f)));
 
 		this.add(this.white, new GridBagConstraints(1, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, inset, 0, 0));
@@ -270,8 +268,8 @@ public final class Panel extends JLayeredPane implements ActionListener {
 				GridBagConstraints.CENTER, inset, 0, 0));
 		final JLabel blank = new JLabel("");
 		blank.setPreferredSize(Tile.dimension);
-		this.add(blank, new GridBagConstraints(9, 9, 1, 1, 0, 0, GridBagConstraints.CENTER,
-				GridBagConstraints.CENTER, inset, 0, 0));
+		this.add(blank, new GridBagConstraints(9, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.CENTER,
+				inset, 0, 0));
 		this.setLayer(menuButton, 0);
 	}
 
@@ -419,7 +417,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 	 * Set default GUI elements using {@link UIManager#put}
 	 */
 	private void setDefaultGUIElements() {
-		final Font font = new Font("Arial", Font.PLAIN, 20);
+		final Font font = new Font("", Font.PLAIN, 20);
 		UIManager.put("OptionPane.messageFont", font);
 		UIManager.put("OptionPane.buttonFont", font);
 		UIManager.put("Label.forground", Color.black);
