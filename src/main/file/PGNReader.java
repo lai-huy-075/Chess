@@ -29,14 +29,43 @@ public class PGNReader {
 	private static final String move = "[KQRNB]?[a-h]?x?[a-h][1-8](=[QRNB])?[+#]?|O\\-O(\\-O)?[+#]?";
 
 	/**
-	 * PGN {@link File}
+	 * Extract any {@link String} matching a regular expression
+	 * 
+	 * @param text  {@link String} line to extract from
+	 * @param regex {@link String} Regular Expression
+	 * @return list of matching {@link String}
 	 */
-	public final File file;
+	private static final String[] getAllMatches(String text, String regex) {
+		List<String> matches = new ArrayList<>();
+		Matcher m = Pattern.compile(regex).matcher(text);
+		while (m.find())
+			matches.add(m.group());
+		return matches.toArray(new String[matches.size()]);
+	}
 
 	/**
-	 * {@link PieceColor#White} {@link Player} read from {@link #file}
+	 * Remove quotes from data extracted by {@link #getAllMatches(String, String)}
+	 * 
+	 * @param text {@link String} line to extract from
+	 * 
+	 * @return data extracted {@link String}
 	 */
-	private Player white;
+	private static final String getData(String text) {
+		String data = getMatch(text, "\".*\"");
+		return data.substring(1, data.length() - 1);
+	}
+
+	/**
+	 * Extract the first match of a regular expression
+	 * 
+	 * @param text {@link String} to search
+	 * @param regex {@link String} Regular Expression
+	 * @return first match
+	 */
+	public static final String getMatch(String text, String regex) {
+		final Matcher m = Pattern.compile(regex).matcher(text);
+		return m.find() ? m.group() : null;
+	}
 
 	/**
 	 * {@link PieceColor#Black} {@link Player} read from {@link #file}
@@ -44,11 +73,21 @@ public class PGNReader {
 	private Player black;
 
 	/**
+	 * PGN {@link File}
+	 */
+	public final File file;
+
+	/**
 	 * Primitive type array of {@link String} holding the moves read from
 	 * {@link #file}
 	 */
 	private String[] moves;
 
+	/**
+	 * {@link PieceColor#White} {@link Player} read from {@link #file}
+	 */
+	private Player white;
+	
 	/**
 	 * Constructor
 	 * 
@@ -61,6 +100,33 @@ public class PGNReader {
 			throw new IllegalArgumentException("Inputed file is not a PGN file");
 
 		this.file = file;
+	}
+
+	/**
+	 * Get {@link #black}
+	 * 
+	 * @return {@link #black}
+	 */
+	public Player getBlack() {
+		return this.black;
+	}
+
+	/**
+	 * Get {@link #moves}
+	 * 
+	 * @return {@link #moves}
+	 */
+	public String[] getMoves() {
+		return this.moves;
+	}
+
+	/**
+	 * Get {@link #white}
+	 * 
+	 * @return {@link #white}
+	 */
+	public Player getWhite() {
+		return this.white;
 	}
 
 	/**
@@ -99,71 +165,5 @@ public class PGNReader {
 			return;
 		}
 		Chess.logger.info("Reading from file complete");
-	}
-
-	/**
-	 * Remove quotes from data extracted by {@link #getAllMatches(String, String)}
-	 * 
-	 * @param text {@link String} line to extract from
-	 * 
-	 * @return data extracted {@link String}
-	 */
-	private static final String getData(String text) {
-		String data = getMatch(text, "\".*\"");
-		return data.substring(1, data.length() - 1);
-	}
-	
-	/**
-	 * Extract the first match of a regular expression
-	 * 
-	 * @param text {@link String} to search
-	 * @param regex {@link String} Regular Expression
-	 * @return first match
-	 */
-	public static final String getMatch(String text, String regex) {
-		final Matcher m = Pattern.compile(regex).matcher(text);
-		return m.find() ? m.group() : null;
-	}
-
-	/**
-	 * Extract any {@link String} matching a regular expression
-	 * 
-	 * @param text  {@link String} line to extract from
-	 * @param regex {@link String} Regular Expression
-	 * @return list of matching {@link String}
-	 */
-	private static final String[] getAllMatches(String text, String regex) {
-		List<String> matches = new ArrayList<>();
-		Matcher m = Pattern.compile(regex).matcher(text);
-		while (m.find())
-			matches.add(m.group());
-		return matches.toArray(new String[matches.size()]);
-	}
-
-	/**
-	 * Get {@link #black}
-	 * 
-	 * @return {@link #black}
-	 */
-	public Player getBlack() {
-		return this.black;
-	}
-
-	/**
-	 * Get {@link #moves}
-	 * 
-	 * @return {@link #moves}
-	 */
-	public String[] getMoves() {
-		return this.moves;
-	}
-
-	/**
-	 * Get {@link #white}
-	 * 
-	 * @return {@link #white}
-	 */
-	public Player getWhite() {
-		return this.white;
 	}
 }

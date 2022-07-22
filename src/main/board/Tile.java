@@ -3,6 +3,7 @@ package main.board;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -119,6 +120,29 @@ public final class Tile extends JButton {
 		if (this.col != tile.col)
 			return false;
 		return true;
+	}
+
+	/**
+	 * Find the differing attribute between two Tiles
+	 * 
+	 * @param other {@link Tile} to compare against
+	 * @return integer on which attributes are different
+	 */
+	public TileDifference findDifferent(Tile other) {
+		Objects.requireNonNull(other, "Other tile cannot be null");
+		final int diff = (this.row == other.row ? 0b00 : 0b10) + (this.col == other.col ? 0b00 : 0b01);
+		switch (diff) {
+		case 0:
+			return TileDifference.None;
+		case 1:
+			return TileDifference.File;
+		case 2:
+			return TileDifference.Rank;
+		case 3:
+			return TileDifference.Both;
+		default:
+			throw new IllegalStateException("Illegal Tile difference:\t" + diff);
+		}
 	}
 
 	/**

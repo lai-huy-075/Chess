@@ -36,11 +36,6 @@ import main.player.Player;
  */
 public class Chess {
 	/**
-	 * Primitive type array of {@link String} holding game modes
-	 */
-	private static final String[] options = { "Standard Game", "Funny Game", "Test" };
-
-	/**
 	 * {@link DateTimeFormatter} of Pattern yyyy.MM.dd
 	 */
 	public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd");
@@ -56,6 +51,11 @@ public class Chess {
 	public static final Image icon_image;
 
 	/**
+	 * {@link File} in local directory
+	 */
+	private static final File local = new File("./");
+
+	/**
 	 * {@link Logger}
 	 */
 	public static final Logger logger;
@@ -66,6 +66,11 @@ public class Chess {
 	public static final LocalDateTime now = LocalDateTime.now();
 
 	/**
+	 * Primitive type array of {@link String} holding game modes
+	 */
+	private static final String[] options = { "Standard Game", "Funny Game", "Test" };
+
+	/**
 	 * File name for Portable Game Notation
 	 */
 	public static final String pgn = "out.pgn";
@@ -74,11 +79,6 @@ public class Chess {
 	 * Output {@link File} for Portable Game Notation
 	 */
 	public static final File pgn_file;
-
-	/**
-	 * {@link File} in local directory
-	 */
-	private static final File local = new File("./");
 
 	/**
 	 * Creates logger, icon, and files for the program

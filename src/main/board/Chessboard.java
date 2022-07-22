@@ -2,7 +2,6 @@ package main.board;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -172,18 +171,78 @@ public final class Chessboard {
 			move = "O-O-O";
 			break;
 		case Unattempted:
-			if (promote != PromoteState.Fail)
-				move += attack ? this.source.colToString() : "";
-			else {
-				final PieceType type = this.destination.getPiece().type;
-				switch (type) {
-				case Pawn:
-					move += attack ? this.source.colToString() : "";
+			final PieceType type = this.destination.getPiece().type;
+			move += promote == PromoteState.Fail
+					? (type == PieceType.Pawn ? (attack ? this.source.colToString() : "") : String.valueOf(type.an))
+					: (attack ? this.source.colToString() : "");
+
+			Tile[] tiles;
+			switch (type) {
+			case King:
+				tiles = new Tile[0];
+				break;
+			case Queen:
+				tiles = this.findQueens(this.currentPlayer.color);
+				break;
+			case Rook:
+				tiles = this.findRooks(this.currentPlayer.color);
+				break;
+			case Knight:
+				tiles = this.findKnights(this.currentPlayer.color);
+				break;
+			case Bishop:
+				tiles = this.findBishops(this.currentPlayer.color);
+				break;
+			case Pawn:
+				tiles = new Tile[0];
+				break;
+			default:
+				throw new IllegalStateException("Illegal PieceType:\t" + type.name());
+			}
+
+			List<Tile> valid_tiles = new ArrayList<>();
+			valid_tiles.add(this.source);
+			for (final Tile tile : tiles) {
+				final Piece piece = tile.getPiece();
+
+				if (!piece.isLegal(tile, this.destination))
+					continue;
+
+				if (this.collide(tile, this.destination, piece.getTileTraversed(this.board, tile, this.destination)))
+					continue;
+
+				if (!this.moveProtectKing(ally_king, tile, this.destination))
+					continue;
+
+				valid_tiles.add(tile);
+			}
+
+			switch (valid_tiles.size()) {
+			case 1:
+				break;
+			case 2:
+				final Tile other = valid_tiles.get(1);
+				switch (this.source.findDifferent(other)) {
+				case None:
+					break;
+				case File:
+					move += this.source.colToString();
+					break;
+				case Rank:
+					move += this.source.rowToString();
+					break;
+				case Both:
+					move += this.source.colToString();
+					move += this.source.rowToString();
 					break;
 				default:
-					move += String.valueOf(type.an);
-					break;
+					throw new IllegalStateException("Illegal TileDifference");
 				}
+				break;
+			default:
+				move += this.source.rowToString();
+				move += this.source.colToString();
+				break;
 			}
 
 			move += attack ? "x" : "";
@@ -234,27 +293,21 @@ public final class Chessboard {
 	}
 
 	/**
-	 * Determine if a piece collided with any other piece when moving from
-	 * {@link #source} to {@link #destination}
+	 * Determine if a piece collided with any other piece when moving from one
+	 * {@link Tile} to another
 	 *
-	 * @param traversed privative array of {@link Tile}
-	 * @return true if a piece collides with another. false otherwise.
+	 * @param source      source {@link Tile}
+	 * @param destination destination {@link Tile}
+	 * @param traversed   privative array of {@link Tile}
+	 * @return {@code true} if a piece collides with another. false otherwise.<br>
+	 *         {@code false} otherwise
 	 */
-	/**
-	 * Determine if a piece collided with any other piece when moving
-	 * 
-	 * @param source      The {@link Tile} the {@link Piece} is moving from
-	 * @param destination The {@link Tile} the {@link Piece} is moving to
-	 * @param traversed   primitive type array of {@link Tile} holding all
-	 *                    {@link Tile} a {@link Piece} traverses on its journey
-	 * @return {@code true} is collision is detected<br>
-	 *         {@code false} otherwise.
-	 */
-	private boolean collide(final Tile source, final Tile destination, final Tile[] traversed) {
+	private boolean collide(final Tile source, final Tile destination, List<Tile> traversed) {
 		Objects.requireNonNull(source, "Source tile cannnot be null");
 		Objects.requireNonNull(destination, "Destination tile cannot be null");
-		Objects.requireNonNull(traversed, "Traversal cannot be null");
+		Objects.requireNonNull(traversed, "Traversed tiles cannot be null");
 
+		Chess.logger.info("Traversed:\t" + traversed.toString());
 		for (final Tile tile : traversed) {
 			if (tile.equals(source))
 				continue;
@@ -322,6 +375,62 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Finds a specified {@link Player}'s {@link Bishop}
+	 * 
+	 * @param color {@link PieceColor} to find
+	 * @return location of all Bishops
+	 */
+	private Tile[] findBishops(final PieceColor color) {
+		Objects.requireNonNull(color, "PieceColor connot be null");
+
+		final Bishop[] p;
+		switch (color) {
+		case Black:
+			p = this.black.getBishop();
+			break;
+		case White:
+			p = this.white.getBishop();
+			break;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + color.name());
+		}
+
+		final Tile[] pieces = new Tile[p.length];
+		for (int i = 0; i < pieces.length; ++i)
+			pieces[i] = p[i].getTile();
+
+		return pieces;
+	}
+
+	/**
+	 * Finds a specified {@link Player}'s {@link Knight}
+	 * 
+	 * @param color {@link PieceColor} to find
+	 * @return location of all Knights
+	 */
+	private Tile[] findKnights(final PieceColor color) {
+		Objects.requireNonNull(color, "PieceColor connot be null");
+
+		final Knight[] p;
+		switch (color) {
+		case Black:
+			p = this.black.getKnight();
+			break;
+		case White:
+			p = this.white.getKnight();
+			break;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + color.name());
+		}
+
+		final Tile[] pieces = new Tile[p.length];
+		for (int i = 0; i < pieces.length; ++i)
+			pieces[i] = p[i].getTile();
+
+		return pieces;
+	}
+
+	/**
 	 * Find all pieces of a certain {@link PieceColor}
 	 *
 	 * @param color {@link PieceColor} to find
@@ -354,6 +463,60 @@ public final class Chessboard {
 		}
 
 		return pieces.toArray(new Tile[pieces.size()]);
+	}
+
+	/**
+	 * Finds a specified {@link Player}'s {@link Queen}
+	 * 
+	 * @param color {@link PieceColor} to find
+	 * @return location of all Queens
+	 */
+	private Tile[] findQueens(final PieceColor color) {
+		Objects.requireNonNull(color, "PieceColor cannot be null");
+
+		final Queen[] p;
+		switch (color) {
+		case Black:
+			p = this.black.getQueen();
+			break;
+		case White:
+			p = this.white.getQueen();
+			break;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + color.name());
+		}
+
+		final Tile[] pieces = new Tile[p.length];
+		for (int i = 0; i < pieces.length; ++i)
+			pieces[i] = p[i].getTile();
+
+		return pieces;
+	}
+
+	/**
+	 * Finds a specified {@link Player}'s {@link Rook}
+	 * 
+	 * @param color {@link PieceColor} to find
+	 * @return location of all Rooks
+	 */
+	private Tile[] findRooks(final PieceColor color) {
+		final Rook[] p;
+		switch (color) {
+		case Black:
+			p = this.black.getRook();
+			break;
+		case White:
+			p = this.white.getRook();
+			break;
+		default:
+			throw new IllegalStateException("Illegal PieceColor:\t" + color.name());
+		}
+
+		final Tile[] pieces = new Tile[p.length];
+		for (int i = 0; i < pieces.length; ++i)
+			pieces[i] = p[i].getTile();
+
+		return pieces;
 	}
 
 	/**
@@ -400,9 +563,10 @@ public final class Chessboard {
 	public Player getNextPlayer() {
 		return this.nextPlayer;
 	}
-	
+
 	/**
 	 * Get {@link Tile} in a position specified by a {@link String}
+	 * 
 	 * @param tile {@link String} representation of the {@link Tile}
 	 * @return {@link Tile} from {@link #board}
 	 */
@@ -510,12 +674,12 @@ public final class Chessboard {
 		this.source.reset();
 		this.destination.updatePiece(sp);
 
-		for (final Tile t : this.findPieces(sp.color.opponent())) {
-			final Piece piece = t.getPiece();
-			if (!piece.isLegal(t, tile))
+		for (final Tile enemy : this.findPieces(sp.color.opponent())) {
+			final Piece piece = enemy.getPiece();
+			if (!piece.isLegal(enemy, tile))
 				continue;
 
-			if (this.collide(t, tile, piece.getTileTraversed(this.board, t, tile)))
+			if (this.collide(enemy, tile, piece.getTileTraversed(board, enemy, tile)))
 				continue;
 
 			this.source.updatePiece(sp);
@@ -534,6 +698,7 @@ public final class Chessboard {
 	public void loadInitialPosition() {
 		if (this.position.size() == 0)
 			return;
+
 		this.index = 0;
 		this.loadPosition();
 	}
@@ -602,6 +767,7 @@ public final class Chessboard {
 	 * Load position from {@link #position} at {@link #index}
 	 */
 	private void loadPosition() {
+		Chess.logger.info("Loading position:\t" + this.index + "\n");
 		final String position = this.position.get(this.index);
 		String piece;
 		int col = 0, row = 0;
@@ -706,9 +872,8 @@ public final class Chessboard {
 		if (!legal)
 			return;
 
-		final Tile[] traversed = src_piece.getTileTraversed(this.board, this.source, this.destination);
-		Chess.logger.info("Traversed:\t" + Arrays.deepToString(traversed));
-		final boolean collide = this.collide(this.source, this.destination, traversed);
+		final boolean collide = this.collide(this.source, this.destination,
+				src_piece.getTileTraversed(this.board, this.source, this.destination));
 		Chess.logger.info(
 				src_piece.toFigure() + (collide ? " collided on its journey" : " did not collide on its journey"));
 		if (collide)
@@ -833,13 +998,13 @@ public final class Chessboard {
 
 		final Tile king_tile = sp instanceof King ? destination : king.getTile();
 
-		for (final Tile tile : this.findPieces(king.color.opponent())) {
-			final Piece piece = tile.getPiece();
+		for (final Tile enemy : this.findPieces(king.color.opponent())) {
+			final Piece piece = enemy.getPiece();
 
-			if (!piece.isLegal(tile, king_tile))
+			if (!piece.isLegal(enemy, king_tile))
 				continue;
 
-			if (this.collide(tile, king_tile, piece.getTileTraversed(this.board, tile, king_tile)))
+			if (this.collide(enemy, king_tile, piece.getTileTraversed(this.board, enemy, king_tile)))
 				continue;
 
 			source.updatePiece(sp);
@@ -1126,11 +1291,11 @@ public final class Chessboard {
 			if (!piece.isLegal(enemy, king_tile))
 				continue;
 
-			Tile[] traversed = piece.getTileTraversed(this.board, enemy, king_tile);
-			if (this.collide(enemy, king_tile, traversed))
+			traverse = piece.getTileTraversed(this.board, enemy, king_tile);
+			if (this.collide(enemy, king_tile, traverse))
 				continue;
 
-			traverse.addAll(List.of(traversed));
+			traverse.addAll(traverse);
 		}
 
 		// Determine if any ally piece can protect the king

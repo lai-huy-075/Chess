@@ -124,6 +124,19 @@ public class Player {
 	}
 
 	/**
+	 * Get the Player's {@link Bishop}
+	 * 
+	 * @return primitive type array of {@link Bishop}
+	 */
+	public Bishop[] getBishop() {
+		List<Bishop> bishop = new ArrayList<>();
+		for (Piece piece : this.pieces)
+			if (piece instanceof Bishop)
+				bishop.add((Bishop) piece);
+		return bishop.toArray(new Bishop[bishop.size()]);
+	}
+
+	/**
 	 * Get this {@link Player}'s {@link King}.
 	 * 
 	 * @return {@link King}

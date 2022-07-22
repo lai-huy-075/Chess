@@ -167,7 +167,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		Objects.requireNonNull(data, "Data file cannot be null");
 		if (!data.exists())
 			throw new IllegalArgumentException("Data file does not exist");
-		
+
 		this.mode = Mode.Debug;
 		PGNReader reader = new PGNReader(data);
 		reader.read();
@@ -226,9 +226,9 @@ public final class Panel extends JLayeredPane implements ActionListener {
 
 		this.add(this.white, new GridBagConstraints(1, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, inset, 0, 0));
-		this.add(vs, new GridBagConstraints(4, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+		this.add(vs, new GridBagConstraints(4, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 				inset, 0, 0));
-		this.add(this.black, new GridBagConstraints(5, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
+		this.add(this.black, new GridBagConstraints(6, 0, 3, 1, 0, 0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, inset, 0, 0));
 	}
 
@@ -256,12 +256,6 @@ public final class Panel extends JLayeredPane implements ActionListener {
 			}
 		}
 
-		menuButton.addActionListener(this);
-		menuButton.addKeyListener(this.keys);
-		this.add(menuButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER,
-				GridBagConstraints.CENTER, inset, 0, 0));
-		this.setLayer(menuButton, 0);
-
 		for (int i = 0; i < columns.length; ++i) {
 			final JLabel row = new JLabel(columns[i], SwingConstants.RIGHT);
 
@@ -269,6 +263,16 @@ public final class Panel extends JLayeredPane implements ActionListener {
 					GridBagConstraints.CENTER, inset, 0, 0));
 			this.setLayer(row, 2);
 		}
+
+		menuButton.addActionListener(this);
+		menuButton.addKeyListener(this.keys);
+		this.add(menuButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER,
+				GridBagConstraints.CENTER, inset, 0, 0));
+		final JLabel blank = new JLabel("");
+		blank.setPreferredSize(Tile.dimension);
+		this.add(blank, new GridBagConstraints(9, 9, 1, 1, 0, 0, GridBagConstraints.CENTER,
+				GridBagConstraints.CENTER, inset, 0, 0));
+		this.setLayer(menuButton, 0);
 	}
 
 	/**
