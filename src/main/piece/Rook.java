@@ -1,5 +1,7 @@
 package main.piece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import main.board.Tile;
@@ -27,7 +29,7 @@ public class Rook extends Piece {
 	}
 
 	@Override
-	public Tile[] getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
+	public List<Tile> getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
 		Objects.requireNonNull(board, "Rook must be on a board");
 		Objects.requireNonNull(src, "Source tile cannot be null");
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
@@ -37,10 +39,10 @@ public class Rook extends Piece {
 
 		final int mx = Math.abs(dx);
 		final int my = Math.abs(dy);
-		final Tile[] temp = new Tile[Math.max(mx, my)];
+		final List<Tile> temp = new ArrayList<>();
 
-		for (int i = 0; i < temp.length; ++i)
-			temp[i] = board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)];
+		for (int i = 0; i < Math.max(mx, my); ++i)
+			temp.add(board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)]);
 
 		return temp;
 	}

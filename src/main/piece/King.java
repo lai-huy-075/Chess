@@ -72,12 +72,6 @@ public class King extends Piece {
 		return this.queen;
 	}
 
-	@Override
-	public String toString() {
-		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen + ", color="
-				+ this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
-	}
-
 	/**
 	 * Get {@link #castle}
 	 * 
@@ -120,7 +114,7 @@ public class King extends Piece {
 	}
 
 	@Override
-	public Tile[] getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
+	public List<Tile> getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
 		Objects.requireNonNull(board, "King must be on a board");
 		Objects.requireNonNull(src, "Source tile cannot be null");
 		Objects.requireNonNull(dest, "Destinatino tile cannot be null");
@@ -202,5 +196,11 @@ public class King extends Piece {
 	public void setQueenside(final boolean bool) {
 		Chess.logger.info(String.format("Setting %s King.queen to %b", this.color.name(), bool));
 		this.queen = bool;
+	}
+
+	@Override
+	public String toString() {
+		return "King [castle=" + this.castle + ", check=" + this.check + ", king=" + this.king + ", queen=" + this.queen + ", color="
+				+ this.color + ", type=" + this.type + ", tile=" + this.tile + "]";
 	}
 }

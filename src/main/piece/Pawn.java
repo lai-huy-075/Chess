@@ -1,5 +1,6 @@
 package main.piece;
 
+import java.util.List;
 import java.util.Objects;
 
 import main.board.Tile;
@@ -65,16 +66,16 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public Tile[] getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
+	public List<Tile> getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
 		Objects.requireNonNull(board, "Pawn must be on board");
 		Objects.requireNonNull(src, "Pawn must have a source");
 		Objects.requireNonNull(dest, "Pawn must have a destinaiton");
 
 		switch (this.color) {
 		case Black:
-			return dest.row - src.row == 2 ? new Tile[] { board[src.row + 1][src.col] } : empty;
+			return dest.row - src.row == 2 ? List.of(src, board[src.row + 1][src.col]) : empty;
 		case White:
-			return src.row - dest.row == 2 ? new Tile[] { board[src.row - 1][src.col] } : empty;
+			return src.row - dest.row == 2 ? List.of(src, board[src.row - 1][src.col]) : empty;
 		default:
 			throw new IllegalStateException("Illegal PieceColor:\t" + this.color.name());
 		}

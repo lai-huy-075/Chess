@@ -1,5 +1,7 @@
 package main.piece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import main.board.Chessboard;
@@ -28,10 +30,10 @@ import main.board.Tile;
  */
 public abstract class Piece {
 	/**
-	 * Primitive type array of {@link Tile}.<br>
+	 * {@link List} of {@link Tile}.<br>
 	 * This holds no elements.
 	 */
-	protected static final Tile[] empty = {};
+	protected static final List<Tile> empty = new ArrayList<>(0);
 
 	/**
 	 * {@link PieceColor}
@@ -39,14 +41,14 @@ public abstract class Piece {
 	public final PieceColor color;
 
 	/**
-	 * {@link PieceType}
-	 */
-	public final PieceType type;
-
-	/**
 	 * {@link Tile} this is on
 	 */
 	protected Tile tile;
+
+	/**
+	 * {@link PieceType}
+	 */
+	public final PieceType type;
 
 	/**
 	 * Constructor
@@ -76,7 +78,7 @@ public abstract class Piece {
 	 * @param dest  destination {@link Tile}
 	 * @return {@link Tile}s traversed
 	 */
-	public abstract Tile[] getTileTraversed(Tile[][] board, Tile src, Tile dest);
+	public abstract List<Tile> getTileTraversed(Tile[][] board, Tile src, Tile dest);
 
 	/**
 	 * Return point value of each piece.<br>
@@ -151,9 +153,10 @@ public abstract class Piece {
 			throw new IllegalStateException("Illegal PieceColor:\t" + this.color);
 		}
 	}
-	
+
 	/**
 	 * Converts this into a {@link String} to display on the {@link Chessboard}
+	 * 
 	 * @return
 	 */
 	public final String toFigure() {

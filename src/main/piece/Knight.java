@@ -1,5 +1,6 @@
 package main.piece;
 
+import java.util.List;
 import java.util.Objects;
 
 import main.board.Tile;
@@ -28,7 +29,7 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public Tile[] getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
+	public List<Tile> getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
 		Objects.requireNonNull(board, "Knight must be on a board");
 		Objects.requireNonNull(src, "Source tile cannot be null");
 		Objects.requireNonNull(dest, "Destinatino tile cannot be null");

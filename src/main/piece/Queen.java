@@ -1,5 +1,7 @@
 package main.piece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import main.board.Tile;
@@ -38,12 +40,12 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public Tile[] getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
+	public List<Tile> getTileTraversed(final Tile[][] board, final Tile src, final Tile dest) {
 		Objects.requireNonNull(board, "Queen must be on a board");
 		Objects.requireNonNull(src, "Source tile cannot be null");
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 
-		Tile[] temp;
+		List<Tile> temp;
 		int dx, dy;
 		if (this.rook) {
 			dx = dest.col - src.col;
@@ -51,19 +53,19 @@ public class Queen extends Piece {
 
 			final int mx = Math.abs(dx);
 			final int my = Math.abs(dy);
-			temp = new Tile[Math.max(mx, my)];
+			temp = new ArrayList<>();
 
-			for (int i = 0; i < temp.length; ++i)
-				temp[i] = board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)];
+			for (int i = 0; i < Math.max(mx, my); ++i)
+				temp.add(board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)]);
 
 			return temp;
 		}
 		if (this.bishop) {
-			temp = new Tile[Math.abs(src.col - dest.col)];
+			temp = new ArrayList<>();
 			dx = dest.col < src.col ? -1 : 1;
 			dy = dest.row < src.row ? -1 : 1;
-			for (int i = 0; i < temp.length; ++i)
-				temp[i] = board[src.row + i * dy][src.col + i * dx];
+			for (int i = 0; i < Math.abs(src.col - dest.col); ++i)
+				temp.add(board[src.row + i * dy][src.col + i * dx]);
 			return temp;
 		}
 		throw new IllegalStateException("Queen has made an illegal move.");
