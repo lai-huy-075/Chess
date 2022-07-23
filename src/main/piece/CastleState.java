@@ -3,7 +3,7 @@ package main.piece;
 /**
  * Result of a Castle made by the {@link King}<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Castling">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */

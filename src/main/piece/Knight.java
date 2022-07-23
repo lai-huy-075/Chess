@@ -14,14 +14,14 @@ import main.player.Player;
  * Each {@link Player} starts the game with two knights on the b- and g-files,
  * each located between a {@link Rook} and a {@link Bishop}.<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Knight_(chess)">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
 public class Knight extends Piece {
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 */
 	public Knight(final PieceColor color) {

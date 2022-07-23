@@ -4,7 +4,7 @@ import java.awt.Color;
 
 /**
  * Enumerated type of the Piece Color
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -26,16 +26,16 @@ public enum PieceColor {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param rgb value of {@link #color} as an int
 	 */
-	private PieceColor(int rgb) {
+	private PieceColor(final int rgb) {
 		this.color = new Color(rgb);
 	}
 
 	/**
 	 * Get the opponent {@link PieceColor}
-	 * 
+	 *
 	 * @return opponent {@link PieceColor}
 	 */
 	public PieceColor opponent() {

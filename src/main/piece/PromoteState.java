@@ -12,7 +12,7 @@ import main.player.Player;
  * pawn cannot remain as a pawn.
  * </p>
  * Read more <a href="https://en.wikipedia.org/wiki/Promotion_(chess)">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 07 13
  */

@@ -1,7 +1,6 @@
 package main.player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,7 +17,7 @@ import main.piece.Rook;
 
 /**
  * Player class
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -55,7 +54,7 @@ public class Player {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param name  {@link String} name of this
 	 * @param color {@link PieceColor} this will control
 	 */
@@ -91,14 +90,14 @@ public class Player {
 
 	/**
 	 * Initializes {@link #pieces} but under Chess960 rules if parameter is true.
-	 * 
+	 *
 	 * @param random true if random, false if standard
 	 */
 	private void createPieces(final boolean random) {
 		this.createPawns();
-		if (random) {
+		if (random)
 			this.createRandom();
-		} else
+		else
 			this.createPieces();
 	}
 
@@ -111,12 +110,11 @@ public class Player {
 
 	/**
 	 * Log attributes using {@link Chess#logger}
-	 * 
+	 *
 	 * @return debug {@link String}
 	 */
 	public String debug() {
-		String str = "Player [color=" + this.color + ", name=" + this.name + ", pieces="
-				+ Arrays.deepToString(this.pieces) + ", score=" + this.score + "]\n";
+		String str = "Player [color=" + this.color + ", name=" + this.name + ", score=" + this.score + "]\n";
 		for (final Piece piece : this.pieces)
 			str += piece.toString() + "\n";
 
@@ -125,12 +123,12 @@ public class Player {
 
 	/**
 	 * Get the Player's {@link Bishop}
-	 * 
+	 *
 	 * @return primitive type array of {@link Bishop}
 	 */
 	public Bishop[] getBishop() {
-		List<Bishop> bishop = new ArrayList<>();
-		for (Piece piece : this.pieces)
+		final List<Bishop> bishop = new ArrayList<>();
+		for (final Piece piece : this.pieces)
 			if (piece instanceof Bishop)
 				bishop.add((Bishop) piece);
 		return bishop.toArray(new Bishop[bishop.size()]);
@@ -138,11 +136,11 @@ public class Player {
 
 	/**
 	 * Get this {@link Player}'s {@link King}.
-	 * 
+	 *
 	 * @return {@link King}
 	 */
 	public King getKing() {
-		for (Piece piece : this.pieces)
+		for (final Piece piece : this.pieces)
 			if (piece instanceof King)
 				return (King) piece;
 		throw new IllegalStateException("Player does not have a King");
@@ -150,12 +148,12 @@ public class Player {
 
 	/**
 	 * Get this Player's {@link Knight}
-	 * 
+	 *
 	 * @return primitive type array of {@link Pawn}
 	 */
 	public Knight[] getKnight() {
-		List<Knight> knight = new ArrayList<>();
-		for (Piece piece : this.pieces)
+		final List<Knight> knight = new ArrayList<>();
+		for (final Piece piece : this.pieces)
 			if (piece instanceof Knight)
 				knight.add((Knight) piece);
 		return knight.toArray(new Knight[knight.size()]);
@@ -163,12 +161,12 @@ public class Player {
 
 	/**
 	 * Get this Player's {@link Pawn}s
-	 * 
+	 *
 	 * @return primitive type array of {@link Pawn}
 	 */
 	public Pawn[] getPawn() {
-		List<Pawn> pawn = new ArrayList<>();
-		for (Piece piece : this.pieces)
+		final List<Pawn> pawn = new ArrayList<>();
+		for (final Piece piece : this.pieces)
 			if (piece instanceof Pawn)
 				pawn.add((Pawn) piece);
 		return pawn.toArray(new Pawn[pawn.size()]);
@@ -176,12 +174,12 @@ public class Player {
 
 	/**
 	 * Get this Player's {@link Queen}
-	 * 
+	 *
 	 * @return primitive type array of {@link Queen}
 	 */
 	public Queen[] getQueen() {
-		List<Queen> queen = new ArrayList<>();
-		for (Piece piece : this.pieces)
+		final List<Queen> queen = new ArrayList<>();
+		for (final Piece piece : this.pieces)
 			if (piece instanceof Queen)
 				queen.add((Queen) piece);
 		return queen.toArray(new Queen[queen.size()]);
@@ -189,12 +187,12 @@ public class Player {
 
 	/**
 	 * Get this Player's {@link Rook}
-	 * 
+	 *
 	 * @return primitive type array of {@link Rook}
 	 */
 	public Rook[] getRook() {
-		List<Rook> rook = new ArrayList<>();
-		for (Piece piece : this.pieces)
+		final List<Rook> rook = new ArrayList<>();
+		for (final Piece piece : this.pieces)
 			if (piece instanceof Rook)
 				rook.add((Rook) piece);
 		return rook.toArray(new Rook[rook.size()]);
@@ -202,7 +200,7 @@ public class Player {
 
 	/**
 	 * Get {@link #score}
-	 * 
+	 *
 	 * @return {@link #score}
 	 */
 	public int getScore() {
@@ -211,7 +209,7 @@ public class Player {
 
 	/**
 	 * Increment {@link #score} by {@link Piece#getValue()}
-	 * 
+	 *
 	 * @param piece {@link Piece} to increment score with
 	 */
 	public void incrementScore(final Piece piece) {
@@ -223,7 +221,7 @@ public class Player {
 
 	/**
 	 * Determine if this is moving an ally {@link Piece} on a {@link Tile}
-	 * 
+	 *
 	 * @param tile {@link Tile} this is attempting to interact with
 	 * @return true if this can move the piece on the tile false otherwise
 	 */

@@ -30,7 +30,7 @@ import main.player.Player;
 
 /**
  * All GUI elements
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -160,7 +160,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 
 	/**
 	 * Load a game from a {@link File}
-	 * 
+	 *
 	 * @param data PGN {@link File}.
 	 */
 	public Panel(final File data) {
@@ -169,14 +169,14 @@ public final class Panel extends JLayeredPane implements ActionListener {
 			throw new IllegalArgumentException("Data file does not exist");
 
 		this.mode = Mode.Debug;
-		PGNReader reader = new PGNReader(data);
+		final PGNReader reader = new PGNReader(data);
 		reader.read();
 
 		this.board = new Chessboard(this.mode, reader.getWhite(), reader.getBlack());
 		this.keys = new Keys(this);
 		try {
 			this.board.loadMoves(reader.getMoves());
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			Chess.logger.throwing("Panel", "Constructor", e);
 		}
 

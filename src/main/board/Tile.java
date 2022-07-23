@@ -12,7 +12,7 @@ import main.piece.Piece;
 
 /**
  * Individual Tiles on the {@link Chessboard}
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -115,20 +115,18 @@ public final class Tile extends JButton {
 		if (!(other instanceof Tile))
 			return false;
 		final Tile tile = (Tile) other;
-		if (this.row != tile.row)
-			return false;
-		if (this.col != tile.col)
+		if ((this.row != tile.row) || (this.col != tile.col))
 			return false;
 		return true;
 	}
 
 	/**
 	 * Find the differing attribute between two Tiles
-	 * 
+	 *
 	 * @param other {@link Tile} to compare against
 	 * @return integer on which attributes are different
 	 */
-	public TileDifference findDifferent(Tile other) {
+	public TileDifference findDifferent(final Tile other) {
 		Objects.requireNonNull(other, "Other tile cannot be null");
 		final int diff = (this.row == other.row ? 0b00 : 0b10) + (this.col == other.col ? 0b00 : 0b01);
 		switch (diff) {
@@ -147,7 +145,7 @@ public final class Tile extends JButton {
 
 	/**
 	 * Get {@link #down}
-	 * 
+	 *
 	 * @return {@link #down}
 	 */
 	public Tile getDown() {
@@ -165,7 +163,7 @@ public final class Tile extends JButton {
 
 	/**
 	 * Get {@link #up}
-	 * 
+	 *
 	 * @return {@link #up}
 	 */
 	public Tile getUp() {
@@ -192,19 +190,19 @@ public final class Tile extends JButton {
 
 	/**
 	 * Set {@link #down}
-	 * 
+	 *
 	 * @param down new Down {@link Tile}
 	 */
-	public void setDown(Tile down) {
+	public void setDown(final Tile down) {
 		this.down = down;
 	}
 
 	/**
 	 * Set {@link #up}
-	 * 
+	 *
 	 * @param up new Up {@link Tile}
 	 */
-	public void setUp(Tile up) {
+	public void setUp(final Tile up) {
 		this.up = up;
 	}
 

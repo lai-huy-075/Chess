@@ -17,14 +17,14 @@ import main.board.Tile;
  * {@link PieceColor#Black}, and it can be one of six types: {@link King},
  * {@link Queen}, {@link Rook}, {@link Bishop}, {@link Knight}, or {@link Pawn}.
  * </p>
- * 
+ *
  * <p>
  * Chess sets generally come with sixteen pieces of each color. Additional
  * pieces, usually an extra {@link Queen} per color, may be provided for use in
  * promotion.
  * </p>
  * Read more <a href="https://en.wikipedia.org/wiki/Chess_piece">here</a>
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -52,7 +52,7 @@ public abstract class Piece {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 */
 	protected Piece(final PieceColor color, final PieceType type) {
@@ -63,7 +63,7 @@ public abstract class Piece {
 
 	/**
 	 * Get {@link #tile}
-	 * 
+	 *
 	 * @return {@link #tile}i
 	 */
 	public Tile getTile() {
@@ -72,7 +72,7 @@ public abstract class Piece {
 
 	/**
 	 * Get a primitive type array of the tiles traversed from src to dest
-	 * 
+	 *
 	 * @param board 2d primitive type array holding the board
 	 * @param src   source {@link Tile}
 	 * @param dest  destination {@link Tile}
@@ -84,16 +84,16 @@ public abstract class Piece {
 	 * Return point value of each piece.<br>
 	 * Calling this method on the {@link King} will throw
 	 * {@link IllegalStateException}
-	 * 
+	 *
 	 * @return piece point value
 	 */
 	public abstract int getValue();
 
 	/**
 	 * Determine if a {@link Piece} is an <i>ally</i>.
-	 * 
+	 *
 	 * @param piece is the {@code Piece} to compare.
-	 * 
+	 *
 	 * @return {@code true} if {@code Piece} is an <i>ally</i>.<br>
 	 *         {@code false} if {@code Piece} is not an <i>ally</i> or is null.
 	 */
@@ -105,7 +105,7 @@ public abstract class Piece {
 
 	/**
 	 * Determine if a piece move is legal
-	 * 
+	 *
 	 * @param src  {@link Tile} where the piece came from
 	 * @param dest {@link Tile} where the piece is going
 	 * @return true is a legal move is done<br>
@@ -120,16 +120,16 @@ public abstract class Piece {
 
 	/**
 	 * Set {@link #tile}
-	 * 
+	 *
 	 * @param tile {@link Tile} to set
 	 */
-	public void setTile(Tile tile) {
+	public void setTile(final Tile tile) {
 		this.tile = tile;
 	}
 
 	/**
 	 * Converts this into a char for Algebraic Notation
-	 * 
+	 *
 	 * @return Algebraic Notation for this Piece
 	 */
 	@SuppressWarnings("unused")
@@ -140,7 +140,7 @@ public abstract class Piece {
 
 	/**
 	 * Converts this into a char for Forsyth-Edwards Notation
-	 * 
+	 *
 	 * @return Forsyth-Edwards Notation of this Piece
 	 */
 	public final char toFEN() {
@@ -156,7 +156,7 @@ public abstract class Piece {
 
 	/**
 	 * Converts this into a {@link String} to display on the {@link Chessboard}
-	 * 
+	 *
 	 * @return
 	 */
 	public final String toFigure() {

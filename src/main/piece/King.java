@@ -21,7 +21,7 @@ import main.player.Player;
  * Despite this, the king can become a strong offensive piece in the endgame or,
  * rarely, the middlegame.<br>
  * Read more <a href="https://en.wikipedia.org/wiki/King_(chess)">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -45,7 +45,7 @@ public class King extends Piece {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 */
 	public King(final PieceColor color) {
@@ -54,7 +54,7 @@ public class King extends Piece {
 
 	/**
 	 * Determine if the King can King-side castle
-	 * 
+	 *
 	 * @return true if King-side castle is possible<br>
 	 *         false if King-side castle is not possible
 	 */
@@ -64,7 +64,7 @@ public class King extends Piece {
 
 	/**
 	 * Determine if the King can Queen-side castle
-	 * 
+	 *
 	 * @return true if Queen-side castle is possible<br>
 	 *         false if Queen-side castle is not possible
 	 */
@@ -74,7 +74,7 @@ public class King extends Piece {
 
 	/**
 	 * Get {@link #castle}
-	 * 
+	 *
 	 * @return {@link #castle}
 	 */
 	public CastleState getCastle() {
@@ -83,7 +83,7 @@ public class King extends Piece {
 
 	/**
 	 * Getter method for {@link #check}
-	 * 
+	 *
 	 * @return {@link #check}
 	 */
 	public CheckState getCheckState() {
@@ -92,23 +92,22 @@ public class King extends Piece {
 
 	/**
 	 * Get the surrounding {@link Tile} of this
-	 * 
+	 *
 	 * @param board 2d primitive type array storing the board
 	 * @return surrounding {@link Tile}
 	 */
-	public Tile[] getSurround(Tile[][] board) {
+	public Tile[] getSurround(final Tile[][] board) {
 		final List<Tile> surround = new ArrayList<>();
 		final int x = this.tile.col, y = this.tile.row;
 		for (int dy = -1; dy < 2; ++dy)
-			for (int dx = -1; dx < 2; ++dx) {
+			for (int dx = -1; dx < 2; ++dx)
 				try {
-					Tile tile = board[y + dy][x + dx];
+					final Tile tile = board[y + dy][x + dx];
 					if (!this.isAlly(tile.getPiece()))
 						surround.add(tile);
-				} catch (ArrayIndexOutOfBoundsException aioobe) {
+				} catch (final ArrayIndexOutOfBoundsException aioobe) {
 					continue;
 				}
-			}
 
 		return surround.toArray(new Tile[surround.size()]);
 	}
@@ -128,7 +127,7 @@ public class King extends Piece {
 
 	/**
 	 * Determine if the King is in Check
-	 * 
+	 *
 	 * @return true if the King is in Check<br>
 	 *         false if the King is not in Check
 	 */
@@ -144,9 +143,7 @@ public class King extends Piece {
 			return false;
 		final int dx = Math.abs(src.col - dest.col), dy = Math.abs(src.row - dest.row);
 		if (dy == 0 && !this.isCheck()) {
-			if (dest.col == 6 && this.king)
-				return true;
-			if (dest.col == 2 && this.queen)
+			if ((dest.col == 6 && this.king) || (dest.col == 2 && this.queen))
 				return true;
 		}
 		return dx <= 1 && dy <= 1;
@@ -162,10 +159,10 @@ public class King extends Piece {
 
 	/**
 	 * Set {@link #castle}
-	 * 
+	 *
 	 * @param castle new {@link CastleState}
 	 */
-	public void setCastle(CastleState castle) {
+	public void setCastle(final CastleState castle) {
 		Objects.requireNonNull(castle, "CastleState cannot be null");
 		Chess.logger.info(String.format("Setting %s King.castle to %s", this.color.name(), castle.name()));
 		this.castle = castle;
@@ -173,7 +170,7 @@ public class King extends Piece {
 
 	/**
 	 * Set {@link #check}
-	 * 
+	 *
 	 * @param state new {@link #check} value
 	 */
 	public void setCheck(final CheckState state) {
@@ -184,7 +181,7 @@ public class King extends Piece {
 
 	/**
 	 * Set {@link #king}
-	 * 
+	 *
 	 * @param bool new {@link #king} value
 	 */
 	public void setKingside(final boolean bool) {
@@ -194,7 +191,7 @@ public class King extends Piece {
 
 	/**
 	 * Set {@link #queen}
-	 * 
+	 *
 	 * @param bool new {@link #queen} value
 	 */
 	public void setQueenside(final boolean bool) {

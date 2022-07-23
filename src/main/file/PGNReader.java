@@ -18,11 +18,11 @@ import main.player.Player;
 
 /**
  * Read from PGN {@link File}
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 18 15
  */
-public class PGNReader {
+public final class PGNReader {
 	/**
 	 * {@link String} holding regular expression of any valid chess move (hopefully)
 	 */
@@ -30,14 +30,14 @@ public class PGNReader {
 
 	/**
 	 * Extract any {@link String} matching a regular expression
-	 * 
+	 *
 	 * @param text  {@link String} line to extract from
 	 * @param regex {@link String} Regular Expression
 	 * @return list of matching {@link String}
 	 */
-	private static final String[] getAllMatches(String text, String regex) {
-		List<String> matches = new ArrayList<>();
-		Matcher m = Pattern.compile(regex).matcher(text);
+	private static final String[] getAllMatches(final String text, final String regex) {
+		final List<String> matches = new ArrayList<>();
+		final Matcher m = Pattern.compile(regex).matcher(text);
 		while (m.find())
 			matches.add(m.group());
 		return matches.toArray(new String[matches.size()]);
@@ -45,26 +45,38 @@ public class PGNReader {
 
 	/**
 	 * Remove quotes from data extracted by {@link #getAllMatches(String, String)}
-	 * 
+	 *
 	 * @param text {@link String} line to extract from
-	 * 
+	 *
 	 * @return data extracted {@link String}
 	 */
-	private static final String getData(String text) {
-		String data = getMatch(text, "\".*\"");
+	private static final String getData(final String text) {
+		final String data = getFirst(text, "\".*\"");
 		return data.substring(1, data.length() - 1);
 	}
 
 	/**
 	 * Extract the first match of a regular expression
-	 * 
+	 *
 	 * @param text  {@link String} to search
 	 * @param regex {@link String} Regular Expression
 	 * @return first match
 	 */
-	public static final String getMatch(String text, String regex) {
-		final Matcher m = Pattern.compile(regex).matcher(text);
-		return m.find() ? m.group() : null;
+	public static final String getFirst(final String text, final String regex) {
+		final String[] matches = getAllMatches(text, regex);
+		return matches.length == 0 ? null : matches[0];
+	}
+
+	/**
+	 * Extract the last match of a regular expression
+	 *
+	 * @param text  {@link String} to search
+	 * @param regex {@link String} Regular Expression
+	 * @return first match
+	 */
+	public static final String getLast(final String text, final String regex) {
+		final String[] matches = getAllMatches(text, regex);
+		return matches.length == 0 ? null : matches[matches.length - 1];
 	}
 
 	/**
@@ -90,7 +102,7 @@ public class PGNReader {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param file {@link File}
 	 */
 	public PGNReader(final File file) {
@@ -100,7 +112,7 @@ public class PGNReader {
 
 	/**
 	 * Get {@link #black}
-	 * 
+	 *
 	 * @return {@link #black}
 	 */
 	public Player getBlack() {
@@ -109,7 +121,7 @@ public class PGNReader {
 
 	/**
 	 * Get {@link #moves}
-	 * 
+	 *
 	 * @return {@link #moves}
 	 */
 	public String[] getMoves() {
@@ -118,7 +130,7 @@ public class PGNReader {
 
 	/**
 	 * Get {@link #white}
-	 * 
+	 *
 	 * @return {@link #white}
 	 */
 	public Player getWhite() {
@@ -138,25 +150,24 @@ public class PGNReader {
 				c = reader.read();
 			}
 
-			String[] lines = data.split("\\n");
-			for (String line : lines) {
+			final String[] lines = data.split("\\n");
+			for (final String line : lines)
 				if (line.matches("\\[White \\\".*\\\"\\]"))
 					this.white = new Player(getData(line), PieceColor.White);
 				else if (line.matches("\\[Black \\\".*\\\"\\]"))
 					this.black = new Player(getData(line), PieceColor.Black);
-			}
 
 			this.moves = getAllMatches(data, move);
 			Chess.logger.info("White Player:\t" + this.white.name);
 			Chess.logger.info("Black Player:\t" + this.black.name);
 			Chess.logger.info(Arrays.deepToString(this.moves));
-		} catch (FileNotFoundException fnfe) {
+		} catch (final FileNotFoundException fnfe) {
 			Chess.logger.throwing("PGNReader", "read", fnfe);
 			return;
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			Chess.logger.throwing("PGNReader", "read", ioe);
 			return;
-		} catch (NullPointerException npe) {
+		} catch (final NullPointerException npe) {
 			Chess.logger.throwing("PGNReader", "read", npe);
 			return;
 		}

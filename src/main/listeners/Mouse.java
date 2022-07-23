@@ -15,7 +15,7 @@ import main.board.TileColor;
 
 /**
  * {@link MouseListener} for each {@link Tile}
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -37,7 +37,7 @@ public class Mouse implements MouseListener {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param board {@link Chessboard} to interact with
 	 * @param tile  {@link Tile} to interact with
 	 */
@@ -97,7 +97,7 @@ public class Mouse implements MouseListener {
 		default:
 			throw new IllegalStateException("Illegal Mode:\t" + this.board.getMode());
 		}
-		
+
 		switch (e.getButton()) {
 		case MouseEvent.BUTTON1:
 			break;
@@ -124,7 +124,7 @@ public class Mouse implements MouseListener {
 		default:
 			throw new IllegalStateException("Illegal Mode:\t" + this.board.getMode());
 		}
-		
+
 		switch (e.getButton()) {
 		case MouseEvent.BUTTON1:
 			break;

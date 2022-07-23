@@ -31,7 +31,7 @@ import main.player.Player;
 
 /**
  * Main class
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 06 14
  */
@@ -100,26 +100,25 @@ public class Chess {
 		logger.setUseParentHandlers(false);
 		logger.addHandler(file);
 
-		String icon_name = "./src/resources/icon.png";
-		File icon_file = new File(icon_name);
+		final String icon_name = "./src/resources/icon.png";
+		final File icon_file = new File(icon_name);
 		if (!icon_file.exists()) {
 			Chess.logger.info(icon_file.getName() + " created");
 			try {
 				icon_file.mkdirs();
 				icon_file.createNewFile();
-				URL url = new URL(
+				final URL url = new URL(
 						"https://raw.githubusercontent.com/MrPineapple065/Chess/master/src/resources/icon.png");
-				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-				FileOutputStream fout = new FileOutputStream(icon_file);
+				final ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+				final FileOutputStream fout = new FileOutputStream(icon_file);
 				fout.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fout.close();
-			} catch (IOException ioe) {
+			} catch (final IOException ioe) {
 				Chess.logger.throwing("Chess", "static", ioe);
 			}
 
-		} else {
+		} else
 			Chess.logger.info(icon_file.getName() + " exists");
-		}
 		icon = new ImageIcon(icon_name);
 		icon_image = icon.getImage();
 
@@ -158,10 +157,7 @@ public class Chess {
 			white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 
-			if (white_name == null)
-				return;
-
-			if (white_name.isEmpty())
+			if ((white_name == null) || white_name.isEmpty())
 				return;
 		}
 
@@ -174,10 +170,7 @@ public class Chess {
 		while (black_name.length() > 49) {
 			black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-			if (black_name == null)
-				return;
-
-			if (black_name.isEmpty())
+			if ((black_name == null) || black_name.isEmpty())
 				return;
 		}
 
@@ -189,9 +182,9 @@ public class Chess {
 
 	/**
 	 * Create a {@link JFrame} and display it.
-	 * 
+	 *
 	 * @param panel {@link Panel} to add to created JFrame
-	 * 
+	 *
 	 * @return {@link JFrame} created
 	 */
 	private static final JFrame createFrame(final Panel panel) {
@@ -228,10 +221,7 @@ public class Chess {
 			white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 
-			if (white_name == null)
-				return;
-
-			if (white_name.isEmpty())
+			if ((white_name == null) || white_name.isEmpty())
 				return;
 		}
 
@@ -244,10 +234,7 @@ public class Chess {
 		while (black_name.length() > 49) {
 			black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-			if (black_name == null)
-				return;
-
-			if (black_name.isEmpty())
+			if ((black_name == null) || black_name.isEmpty())
 				return;
 		}
 
@@ -256,7 +243,7 @@ public class Chess {
 
 		final JFrame frame = createFrame(panel);
 		frame.dispose();
-		;
+
 	}
 
 	/**
@@ -295,7 +282,7 @@ public class Chess {
 	 */
 	private static final void test() {
 		Chess.logger.info("Test Mode");
-		JFileChooser fc = new JFileChooser(local);
+		final JFileChooser fc = new JFileChooser(local);
 		fc.setFileFilter(new FileNameExtensionFilter("PGN files", "pgn"));
 		fc.showOpenDialog(fc);
 

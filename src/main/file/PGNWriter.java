@@ -11,12 +11,12 @@ import main.board.Chessboard;
 
 /**
  * Write to PGN {@link File}
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 17 15
  */
 public class PGNWriter {
-	public static final void write(Chessboard board) {
+	public static final void write(final Chessboard board) {
 		Objects.requireNonNull(board, "Chessboard cannot be null");
 
 		Chess.logger.info("Writing pgn started...");

@@ -14,14 +14,14 @@ import main.board.Tile;
  * Each player starts the game with two rooks, one in each corner on their own
  * side of the board.<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Rook_(chess)">here</a>
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
 public class Rook extends Piece {
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 */
 	public Rook(final PieceColor color) {

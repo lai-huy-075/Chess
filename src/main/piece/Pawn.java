@@ -16,7 +16,7 @@ import main.board.Tile;
  * c2, d2, e2, f2, g2, h2; the black pawns start on a7, b7, c7, d7, e7, f7, g7,
  * h7.)<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Pawn_(chess)">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
@@ -38,18 +38,18 @@ public class Pawn extends Piece {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 * @param file  starting file of this
 	 */
-	public Pawn(final PieceColor color, int file) {
+	public Pawn(final PieceColor color, final int file) {
 		super(color, PieceType.Pawn);
 		this.starting_File = file;
 	}
 
 	/**
 	 * Determine {@link #en_passant}
-	 * 
+	 *
 	 * @return {@link #en_passant}
 	 */
 	public boolean en_passant() {
@@ -58,7 +58,7 @@ public class Pawn extends Piece {
 
 	/**
 	 * Get {@link #diagonal}
-	 * 
+	 *
 	 * @return {@link #diagonal}
 	 */
 	public boolean getDiagonal() {
@@ -107,7 +107,7 @@ public class Pawn extends Piece {
 						return false;
 
 					// En passant
-					Piece up = dest.getUp().getPiece();
+					final Piece up = dest.getUp().getPiece();
 					if (up instanceof Pawn)
 						return ((Pawn) up).en_passant();
 
@@ -139,7 +139,7 @@ public class Pawn extends Piece {
 						return false;
 
 					// En passant
-					Piece down = dest.getDown().getPiece();
+					final Piece down = dest.getDown().getPiece();
 					if (down instanceof Pawn)
 						return ((Pawn) down).en_passant();
 
@@ -171,10 +171,10 @@ public class Pawn extends Piece {
 
 	/**
 	 * Set {@link #en_passant}
-	 * 
+	 *
 	 * @param en_passant new {@link #en_passant} value
 	 */
-	public void setEnPassant(boolean en_passant) {
+	public void setEnPassant(final boolean en_passant) {
 		this.en_passant = en_passant;
 	}
 

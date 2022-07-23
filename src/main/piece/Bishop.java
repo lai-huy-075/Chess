@@ -18,14 +18,14 @@ import main.player.Player;
  * The starting squares are c1 and f1 for {@link PieceColor#White}'s bishops,
  * and c8 and f8 for {@link PieceColor#Black}'s bishops.<br>
  * Read more <a href="https://en.wikipedia.org/wiki/Bishop_(chess)">here</a>.
- * 
+ *
  * @author Mr. P&#x03B9;&#x03B7;&#x03B5;&#x03B1;&#x03C1;&#x03C1;l&#x03BE;
  * @version 2022 05 23
  */
 public class Bishop extends Piece {
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param color {@link PieceColor} of this
 	 */
 	public Bishop(final PieceColor color) {
