@@ -38,6 +38,21 @@ public final class Chessboard {
 			PieceType.Bishop.white };
 
 	/**
+	 * {@link String} for when the {@link PieceColor#White} {@link Player} wins.
+	 */
+	private static final String white_win = "1-0";
+
+	/**
+	 * {@link String} for when the {@link PieceColor#Black} {@link Player} wins.
+	 */
+	private static final String black_win = "0-1";
+
+	/**
+	 * {@link String} for when neither {@link Player} wins and the game ends
+	 */
+	private static final String draw = "1/2-1/2";
+
+	/**
 	 * {@link Player} with the {@link PieceColor#Black} pieces
 	 */
 	public final Player black;
@@ -132,8 +147,6 @@ public final class Chessboard {
 
 		for (final Pawn pawn : this.nextPlayer.getPawn())
 			pawn.setEnPassant(false);
-
-		Chess.logger.info(this.currentPlayer.debug());
 	}
 
 	/**
@@ -252,6 +265,7 @@ public final class Chessboard {
 		Chess.logger.info("Appending move:\t" + move);
 		this.moves.add(move);
 		this.index++;
+		ally_king.setCastle(CastleState.Unattempted);
 	}
 
 	/**
@@ -356,7 +370,7 @@ public final class Chessboard {
 	 * Draw the game
 	 */
 	public void draw() {
-		this.result = "1/2-1/2";
+		this.result = draw;
 		this.endGame();
 	}
 
@@ -785,9 +799,10 @@ public final class Chessboard {
 		for (final String move : moves) {
 			if (move == null)
 				throw new ParseException("Null Move", 0);
-			
+
 			Chess.logger.info("Parsing move:\t" + move);
 			final Tile tile = this.getTile(PGNReader.getLast(move, "[a-h][1-8]"));
+			this.destination = tile;
 			Tile src;
 			try {
 				src = this.getTile(move.substring(1, 3));
@@ -801,11 +816,9 @@ public final class Chessboard {
 				switch (this.currentPlayer.color) {
 				case Black:
 					this.source = this.black.getKing().getTile();
-					this.destination = tile;
 					break;
 				case White:
 					this.source = this.white.getKing().getTile();
-					this.destination = tile;
 					break;
 				default:
 					throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
@@ -818,7 +831,6 @@ public final class Chessboard {
 					this.source = queen;
 					break;
 				}
-				this.destination = tile;
 				break;
 			case 'R':
 				for (final Tile rook : this.findRooks(this.currentPlayer.color)) {
@@ -827,7 +839,6 @@ public final class Chessboard {
 					this.source = rook;
 					break;
 				}
-				this.destination = tile;
 				break;
 			case 'N':
 				for (final Tile knight : this.findKnights(this.currentPlayer.color)) {
@@ -836,7 +847,6 @@ public final class Chessboard {
 					this.source = knight;
 					break;
 				}
-				this.destination = tile;
 				break;
 			case 'B':
 				for (final Tile bishop : this.findBishops(this.currentPlayer.color)) {
@@ -845,7 +855,6 @@ public final class Chessboard {
 					this.source = bishop;
 					break;
 				}
-				this.destination = tile;
 				break;
 			default:
 				if (tile == null) {
@@ -899,11 +908,9 @@ public final class Chessboard {
 						switch (move.charAt(2) - move.charAt(0)) {
 						case -1:
 							this.source = this.board[tile.row + dx][tile.col + 1];
-							this.destination = tile;
 							break;
 						case 1:
 							this.source = this.board[tile.row + dx][tile.col - 1];
-							this.destination = tile;
 							break;
 						default:
 							throw new ParseException("Illegal Capture by the Pawn:\t" + move, 0);
@@ -913,7 +920,6 @@ public final class Chessboard {
 							final Piece piece = this.board[tile.row + dx * i][tile.col].getPiece();
 							if (piece instanceof Pawn) {
 								this.source = this.board[tile.row + dx * i][tile.col];
-								this.destination = tile;
 								break;
 							}
 						}
@@ -921,6 +927,16 @@ public final class Chessboard {
 				break;
 			}
 			this.movePiece();
+		}
+		switch (this.result.length()) {
+		case 3:
+			this.resign();
+			break;
+		case 5:
+			this.draw();
+			break;
+		default:
+			throw new IllegalStateException("Illegal result:\t" + this.result.toString());
 		}
 	}
 
@@ -1238,7 +1254,6 @@ public final class Chessboard {
 	private PromoteState promote() {
 		final int piece = JOptionPane.showOptionDialog(null, "Select a piece", "Promotion", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.INFORMATION_MESSAGE, Chess.icon, pieces, pieces[0]);
-		final int file = ((Pawn) this.source.getPiece()).starting_File;
 		final PromoteState state;
 		switch (piece) {
 		case 1:
@@ -1256,7 +1271,6 @@ public final class Chessboard {
 		}
 		Chess.logger.info("Promoted Pawn to " + state.name());
 		this.promote(state);
-		this.source.updatePiece(this.currentPlayer.pieces[file]);
 		return state;
 	}
 
@@ -1280,6 +1294,8 @@ public final class Chessboard {
 		default:
 			throw new IllegalStateException("Illegal PromoteState:\t" + state.name());
 		}
+
+		this.source.updatePiece(this.currentPlayer.pieces[file]);
 		return state;
 	}
 
@@ -1335,10 +1351,10 @@ public final class Chessboard {
 	public void resign() {
 		switch (this.currentPlayer.color) {
 		case Black:
-			this.result = "1-0";
+			this.result = white_win;
 			break;
 		case White:
-			this.result = "0-1";
+			this.result = black_win;
 			break;
 		default:
 			throw new IllegalStateException("Illegal current Player PieceColor:\t" + this.currentPlayer.color.name());
@@ -1385,6 +1401,15 @@ public final class Chessboard {
 
 		this.movePiece();
 		this.resetTiles();
+	}
+
+	/**
+	 * Set {@link #result}
+	 * 
+	 * @param result new {@link #result}
+	 */
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	@Override

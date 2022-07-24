@@ -175,6 +175,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 		this.board = new Chessboard(this.mode, reader.getWhite(), reader.getBlack());
 		this.keys = new Keys(this);
 		try {
+			this.board.setResult(reader.getResult());
 			this.board.loadMoves(reader.getMoves());
 		} catch (final ParseException e) {
 			Chess.logger.throwing("Panel", "Constructor", e);

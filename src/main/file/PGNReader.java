@@ -96,6 +96,11 @@ public final class PGNReader {
 	private String[] moves;
 
 	/**
+	 * {@link String} holding the result of the game read
+	 */
+	private String result;
+
+	/**
 	 * {@link PieceColor#White} {@link Player} read from {@link #file}
 	 */
 	private Player white;
@@ -129,6 +134,15 @@ public final class PGNReader {
 	}
 
 	/**
+	 * Get {@link #result}
+	 * 
+	 * @return {@link #result}
+	 */
+	public String getResult() {
+		return this.result;
+	}
+
+	/**
 	 * Get {@link #white}
 	 *
 	 * @return {@link #white}
@@ -156,6 +170,8 @@ public final class PGNReader {
 					this.white = new Player(getData(line), PieceColor.White);
 				else if (line.matches("\\[Black \\\".*\\\"\\]"))
 					this.black = new Player(getData(line), PieceColor.Black);
+				else if (line.matches("\\[Result \\\".*\\\"\\]"))
+					this.result = getData(line);
 
 			this.moves = getAllMatches(data, move);
 			Chess.logger.info("White Player:\t" + this.white.name);
