@@ -445,6 +445,45 @@ public final class Chessboard {
 	}
 
 	/**
+	 * Find a piece based off a move
+	 * 
+	 * @param search
+	 * @param type
+	 * @return
+	 */
+	private Tile findPiece(final String search, final PieceType type) {
+		if (search.length() != 2)
+			throw new IllegalArgumentException("Search query must be exactly two characters long");
+
+		final char first = search.charAt(0), second = search.charAt(1);
+		final boolean bool = Character.isAlphabetic(first);
+		if (bool && Character.isDigit(second)) {
+			return this.getTile(search);
+		} else if (bool) {
+			final int file = Character.toLowerCase(first) - 'a';
+			for (int row = 0; row < this.board.length; ++row) {
+				final Tile tile = this.board[row][file];
+				final Piece piece = tile.getPiece();
+				if (piece == null)
+					continue;
+				if (piece.type == type)
+					return tile;
+			}
+		} else if (Character.isDigit(first)) {
+			final int rank = first - '1';
+			for (int col = 0; col < this.board.length; ++col) {
+				final Tile tile = this.board[rank][col];
+				final Piece piece = tile.getPiece();
+				if (piece == null)
+					continue;
+				if (piece.type == type)
+					return tile;
+			}
+		}
+		throw new IllegalArgumentException("Illegal Search query:\t" + search);
+	}
+
+	/**
 	 * Find all pieces of a certain {@link PieceColor}
 	 *
 	 * @param color {@link PieceColor} to find
@@ -803,14 +842,22 @@ public final class Chessboard {
 			Chess.logger.info("Parsing move:\t" + move);
 			final Tile tile = this.getTile(PGNReader.getLast(move, "[a-h][1-8]"));
 			this.destination = tile;
+			String m;
+			try {
+				m = move.substring(1, 3);
+			} catch (StringIndexOutOfBoundsException sioobe) {
+				m = null;
+			}
+
 			Tile src;
 			try {
-				src = this.getTile(move.substring(1, 3));
+				src = this.getTile(m);
 			} catch (ArrayIndexOutOfBoundsException aioobe) {
 				src = null;
-			} catch (StringIndexOutOfBoundsException sioobe) {
-				src = null;
 			}
+			if (this.destination != null && this.destination.equals(src))
+				src = null;
+
 			switch (move.charAt(0)) {
 			case 'K':
 				switch (this.currentPlayer.color) {
@@ -825,36 +872,48 @@ public final class Chessboard {
 				}
 				break;
 			case 'Q':
-				for (final Tile queen : this.findQueens(this.currentPlayer.color)) {
-					if (!this.canMove(queen, tile))
-						continue;
-					this.source = queen;
-					break;
-				}
+				if (src == null)
+					for (final Tile queen : this.findQueens(this.currentPlayer.color)) {
+						if (!this.canMove(queen, tile))
+							continue;
+						this.source = queen;
+						break;
+					}
+				else
+					this.source = this.findPiece(m, PieceType.Queen);
 				break;
 			case 'R':
-				for (final Tile rook : this.findRooks(this.currentPlayer.color)) {
-					if (!this.canMove(rook, tile))
-						continue;
-					this.source = rook;
-					break;
-				}
+				if (src == null)
+					for (final Tile rook : this.findRooks(this.currentPlayer.color)) {
+						if (!this.canMove(rook, tile))
+							continue;
+						this.source = rook;
+						break;
+					}
+				else
+					this.source = this.findPiece(m, PieceType.Rook);
 				break;
 			case 'N':
-				for (final Tile knight : this.findKnights(this.currentPlayer.color)) {
-					if (!this.canMove(knight, tile))
-						continue;
-					this.source = knight;
-					break;
-				}
+				if (src == null)
+					for (final Tile knight : this.findKnights(this.currentPlayer.color)) {
+						if (!this.canMove(knight, tile))
+							continue;
+						this.source = knight;
+						break;
+					}
+				else
+					this.source = this.findPiece(m, PieceType.Knight);
 				break;
 			case 'B':
-				for (final Tile bishop : this.findBishops(this.currentPlayer.color)) {
-					if (!this.canMove(bishop, tile))
-						continue;
-					this.source = bishop;
-					break;
-				}
+				if (src == null)
+					for (final Tile bishop : this.findBishops(this.currentPlayer.color)) {
+						if (!this.canMove(bishop, tile))
+							continue;
+						this.source = bishop;
+						break;
+					}
+				else
+					this.source = this.findPiece(m, PieceType.Bishop);
 				break;
 			default:
 				if (tile == null) {
@@ -928,11 +987,12 @@ public final class Chessboard {
 			}
 			this.movePiece();
 		}
+
 		switch (this.result.length()) {
 		case 3:
 			this.resign();
 			break;
-		case 5:
+		case 7:
 			this.draw();
 			break;
 		default:
