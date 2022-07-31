@@ -73,9 +73,9 @@ public class Pawn extends Piece {
 
 		switch (this.color) {
 		case Black:
-			return dest.row - src.row == 2 ? List.of(src, board[src.row + 1][src.col]) : empty;
+			return dest.rank - src.rank == 2 ? List.of(src, board[src.rank + 1][src.file]) : empty;
 		case White:
-			return src.row - dest.row == 2 ? List.of(src, board[src.row - 1][src.col]) : empty;
+			return src.rank - dest.rank == 2 ? List.of(src, board[src.rank - 1][src.file]) : empty;
 		default:
 			throw new IllegalStateException("Illegal PieceColor:\t" + this.color.name());
 		}
@@ -99,8 +99,8 @@ public class Pawn extends Piece {
 		switch (this.color) {
 		case Black:
 			// Check if capturing diagonally
-			if (src.row - dest.row == -1) {
-				this.diagonal = Math.abs(src.col - dest.col) == 1;
+			if (src.rank - dest.rank == -1) {
+				this.diagonal = Math.abs(src.file - dest.file) == 1;
 				if (this.diagonal) {
 					// Normal Capturing
 					if (!dest_empty)
@@ -118,23 +118,23 @@ public class Pawn extends Piece {
 			}
 
 			// Moving two squares on the first move
-			if (src.row == 1) {
-				if (dest.row - src.row <= 2) {
-					this.en_passant = dest.row - src.row == 2;
-					return src.col == dest.col && dest_empty;
+			if (src.rank == 1) {
+				if (dest.rank - src.rank <= 2) {
+					this.en_passant = dest.rank - src.rank == 2;
+					return src.file == dest.file && dest_empty;
 				}
 				return false;
 			}
 
 			// Moving one square
-			if (dest.row - src.row == 1)
+			if (dest.rank - src.rank == 1)
 				return dest_empty;
 
 			return false;
 		case White:
 			// Check if capturing diagonally
-			if (src.row - dest.row == 1) {
-				this.diagonal = Math.abs(src.col - dest.col) == 1;
+			if (src.rank - dest.rank == 1) {
+				this.diagonal = Math.abs(src.file - dest.file) == 1;
 				if (this.diagonal) {
 					// Normal capturing
 					if (!dest_empty)
@@ -152,14 +152,14 @@ public class Pawn extends Piece {
 			}
 
 			// Moving two squares on the first move
-			if (src.row == 6)
-				if (src.row - dest.row <= 2) {
-					this.en_passant = src.row - dest.row == 2;
-					return src.col == dest.col && dest_empty;
+			if (src.rank == 6)
+				if (src.rank - dest.rank <= 2) {
+					this.en_passant = src.rank - dest.rank == 2;
+					return src.file == dest.file && dest_empty;
 				}
 
 			// Moving one square
-			if (src.row - dest.row == 1)
+			if (src.rank - dest.rank == 1)
 				return dest_empty;
 
 			return false;

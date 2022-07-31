@@ -34,15 +34,15 @@ public class Rook extends Piece {
 		Objects.requireNonNull(src, "Source tile cannot be null");
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 
-		final int dx = dest.col - src.col;
-		final int dy = dest.row - src.row;
+		final int dx = dest.file - src.file;
+		final int dy = dest.rank - src.rank;
 
 		final int mx = Math.abs(dx);
 		final int my = Math.abs(dy);
 		final List<Tile> temp = new ArrayList<>();
 
 		for (int i = 0; i < Math.max(mx, my); ++i)
-			temp.add(board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)]);
+			temp.add(board[src.rank + i * Integer.signum(dy)][src.file + i * Integer.signum(dx)]);
 
 		return temp;
 	}
@@ -58,7 +58,7 @@ public class Rook extends Piece {
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 		if (src.equals(dest))
 			return false;
-		return src.col == dest.col ^ src.row == dest.row;
+		return src.file == dest.file ^ src.rank == dest.rank;
 	}
 
 	@Override

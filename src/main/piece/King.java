@@ -98,7 +98,7 @@ public class King extends Piece {
 	 */
 	public Tile[] getSurround(final Tile[][] board) {
 		final List<Tile> surround = new ArrayList<>();
-		final int x = this.tile.col, y = this.tile.row;
+		final int x = this.tile.file, y = this.tile.rank;
 		for (int dy = -1; dy < 2; ++dy)
 			for (int dx = -1; dx < 2; ++dx)
 				try {
@@ -141,9 +141,9 @@ public class King extends Piece {
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 		if (src.equals(dest))
 			return false;
-		final int dx = Math.abs(src.col - dest.col), dy = Math.abs(src.row - dest.row);
+		final int dx = Math.abs(src.file - dest.file), dy = Math.abs(src.rank - dest.rank);
 		if (dy == 0 && !this.isCheck()) {
-			if ((dest.col == 6 && this.king) || (dest.col == 2 && this.queen))
+			if ((dest.file == 6 && this.king) || (dest.file == 2 && this.queen))
 				return true;
 		}
 		return dx <= 1 && dy <= 1;

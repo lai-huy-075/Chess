@@ -187,8 +187,8 @@ public final class Chessboard {
 			break;
 		case Unattempted:
 			move += promote == PromoteState.Fail
-					? type == PieceType.Pawn ? attack ? this.source.colToString() : "" : String.valueOf(type.an)
-					: attack ? this.source.colToString() : "";
+					? type == PieceType.Pawn ? attack ? this.source.fileToString() : "" : String.valueOf(type.an)
+					: attack ? this.source.fileToString() : "";
 
 			final List<Tile> valid_tiles = this.findValidTiles(ally_king, type);
 			switch (valid_tiles.size()) {
@@ -196,21 +196,12 @@ public final class Chessboard {
 				break;
 			case 2:
 				final Tile other = valid_tiles.get(1);
-				switch (this.source.findDifferent(other)) {
-				case None:
-					break;
-				case File:
-					move += this.source.colToString();
-					break;
-				case Rank:
-					move += this.source.rowToString();
-					break;
-				case Both:
+				if (this.source.file != other.file)
+					move += this.source.fileToString();
+				else if (this.source.rank != other.rank)
+					move += this.source.fileToString();
+				else
 					move += this.source.toString();
-					break;
-				default:
-					throw new IllegalStateException("Illegal TileDifference");
-				}
 				break;
 			default:
 				move += this.source.toString();
@@ -469,6 +460,7 @@ public final class Chessboard {
 	 */
 	private Tile[] findPieces(final PieceColor color) {
 		Objects.requireNonNull(color, "PieceColor cannot be null");
+		Chess.logger.info("Finding " + color.name() + " pieces");
 
 		final List<Tile> pieces = new ArrayList<>();
 		Tile tile;
@@ -560,19 +552,11 @@ public final class Chessboard {
 		case Pawn -> new Tile[0];
 		default -> throw new IllegalStateException("Illegal PieceType:\t" + type.name());
 		};
+
 		temp.add(this.source);
-		for (final Tile tile : tiles) {
-			final Piece piece = tile.getPiece();
-
-			if (!piece.isLegal(tile, this.destination))
-				continue;
-			if (this.collide(tile, this.destination, piece.getTileTraversed(this.board, tile, this.destination)))
-				continue;
-			if (!this.moveProtectKing(ally_king, tile, this.destination))
-				continue;
-
-			temp.add(tile);
-		}
+		for (final Tile tile : tiles)
+			if (this.canMove(tile, this.destination))
+				temp.add(tile);
 
 		return temp;
 	}
@@ -647,7 +631,7 @@ public final class Chessboard {
 	 */
 	public Tile getTileOffset(final Tile tile, final int x, final int y) throws ArrayIndexOutOfBoundsException {
 		Objects.requireNonNull(tile, "Origin tile cannot be null");
-		return this.board[tile.row + y][tile.col + x];
+		return this.board[tile.rank + y][tile.file + x];
 	}
 
 	/**
@@ -676,42 +660,42 @@ public final class Chessboard {
 
 		final King king = (King) this.source.getPiece();
 
-		if (this.destination.row != (king.color == PieceColor.White ? 7 : 0))
+		if (this.destination.rank != (king.color == PieceColor.White ? 7 : 0))
 			return CastleState.Unattempted;
 
 		Piece piece;
-		switch (this.destination.col) {
+		switch (this.destination.file) {
 		case 2:
 			if (!king.canQueensideCastle())
 				return CastleState.Fail;
 
-			for (int i = 1; i < this.source.col; ++i) {
-				if (this.board[this.source.row][i].getPiece() != null)
+			for (int i = 1; i < this.source.file; ++i) {
+				if (this.board[this.source.rank][i].getPiece() != null)
 					return CastleState.Fail;
-				if (this.kingMoveIntoCheck(this.board[this.source.row][i]))
+				if (this.kingMoveIntoCheck(this.board[this.source.rank][i]))
 					return CastleState.Fail;
 			}
 
-			piece = this.board[this.source.row][0].getPiece();
+			piece = this.board[this.source.rank][0].getPiece();
 
-			this.board[this.source.row][0].reset();
-			this.board[this.source.row][3].updatePiece(piece);
+			this.board[this.source.rank][0].reset();
+			this.board[this.source.rank][3].updatePiece(piece);
 			king.setCastle(CastleState.Queenside);
 			return CastleState.Queenside;
 		case 6:
 			if (!king.canKingsideCastle())
 				return CastleState.Fail;
 
-			for (int i = this.source.col + 1; i < 7; ++i) {
-				if (this.board[this.source.row][i].getPiece() != null)
+			for (int i = this.source.file + 1; i < 7; ++i) {
+				if (this.board[this.source.rank][i].getPiece() != null)
 					return CastleState.Fail;
-				if (this.kingMoveIntoCheck(this.board[this.source.row][i]))
+				if (this.kingMoveIntoCheck(this.board[this.source.rank][i]))
 					return CastleState.Fail;
 			}
 
-			piece = this.board[this.source.row][7].getPiece();
-			this.board[this.source.row][7].reset();
-			this.board[this.source.row][5].updatePiece(piece);
+			piece = this.board[this.source.rank][7].getPiece();
+			this.board[this.source.rank][7].reset();
+			this.board[this.source.rank][5].updatePiece(piece);
 			king.setCastle(CastleState.Kingside);
 			return CastleState.Kingside;
 		default:
@@ -911,19 +895,19 @@ public final class Chessboard {
 					if (move.charAt(1) == 'x')
 						switch (move.charAt(2) - move.charAt(0)) {
 						case -1:
-							this.source = this.board[tile.row + dx][tile.col + 1];
+							this.source = this.board[tile.rank + dx][tile.file + 1];
 							break;
 						case 1:
-							this.source = this.board[tile.row + dx][tile.col - 1];
+							this.source = this.board[tile.rank + dx][tile.file - 1];
 							break;
 						default:
 							throw new ParseException("Illegal Capture by the Pawn:\t" + move, 0);
 						}
 					else
 						for (int i = 1; i < 3; ++i) {
-							final Piece piece = this.board[tile.row + dx * i][tile.col].getPiece();
+							final Piece piece = this.board[tile.rank + dx * i][tile.file].getPiece();
 							if (piece instanceof Pawn) {
-								this.source = this.board[tile.row + dx * i][tile.col];
+								this.source = this.board[tile.rank + dx * i][tile.file];
 								break;
 							}
 						}
@@ -1120,7 +1104,7 @@ public final class Chessboard {
 					this.destination.getUp().reset();
 				}
 
-				if (this.destination.row == 7)
+				if (this.destination.rank == 7)
 					promote = this.mode == Mode.Debug ? this.promote(promote) : this.promote();
 				break;
 			case White:
@@ -1129,7 +1113,7 @@ public final class Chessboard {
 					this.destination.getDown().reset();
 				}
 
-				if (this.destination.row == 0)
+				if (this.destination.rank == 0)
 					promote = this.mode == Mode.Debug ? this.promote(promote) : this.promote();
 				break;
 			default:
@@ -1447,7 +1431,7 @@ public final class Chessboard {
 		}
 
 		if (piece instanceof Rook)
-			switch (this.source.col) {
+			switch (this.source.file) {
 			case 0:
 				king.setQueenside(false);
 				return;
@@ -1562,6 +1546,7 @@ public final class Chessboard {
 		this.updateCheck(king);
 		this.updateCheckMate(king);
 		this.updateCastle(king);
+		this.updateStalemate(king);
 	}
 
 	/**
@@ -1584,6 +1569,28 @@ public final class Chessboard {
 
 		if (this.source == null)
 			this.source = tile;
+	}
+
+	/**
+	 * Update {@link King#check} to {@link CheckState#Stale} if necessary.
+	 * 
+	 * @param king {@link King} to update.
+	 */
+	public void updateStalemate(final King king) {
+		Chess.logger.info("Updating " + king.color.name() + " King.check to CheckState.Stale");
+		if (king.getCheckState() != CheckState.Fail)
+			return;
+
+		final Tile[] pieces = this.findPieces(king.color);
+		for (final Tile[] row : this.board) {
+			for (final Tile tile : row) {
+				for (Tile piece : pieces)
+					if (this.canMove(piece, tile))
+						return;
+			}
+		}
+
+		king.setCheck(CheckState.Stale);
 	}
 
 	/**

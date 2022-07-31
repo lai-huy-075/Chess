@@ -39,9 +39,9 @@ public class Bishop extends Piece {
 		Objects.requireNonNull(dest, "Destinatino tile cannot be null");
 
 		final List<Tile> temp = new ArrayList<>();
-		final int dx = dest.col < src.col ? -1 : 1, dy = dest.row < src.row ? -1 : 1;
-		for (int i = 0; i < Math.abs(src.col - dest.col); ++i)
-			temp.add(board[src.row + i * dy][src.col + i * dx]);
+		final int dx = dest.file < src.file ? -1 : 1, dy = dest.rank < src.rank ? -1 : 1;
+		for (int i = 0; i < Math.abs(src.file - dest.file); ++i)
+			temp.add(board[src.rank + i * dy][src.file + i * dx]);
 
 		return temp;
 	}
@@ -57,7 +57,7 @@ public class Bishop extends Piece {
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 		if (src.equals(dest))
 			return false;
-		return Math.abs(src.col - dest.col) == Math.abs(src.row - dest.row);
+		return Math.abs(src.file - dest.file) == Math.abs(src.rank - dest.rank);
 	}
 
 	@Override

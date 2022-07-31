@@ -48,8 +48,8 @@ public class Knight extends Piece {
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 		if (src.equals(dest))
 			return false;
-		final int dx = Math.abs(src.col - dest.col);
-		final int dy = Math.abs(src.row - dest.row);
+		final int dx = Math.abs(src.file - dest.file);
+		final int dy = Math.abs(src.rank - dest.rank);
 		return dx == 2 && dy == 1 || dx == 1 && dy == 2;
 	}
 

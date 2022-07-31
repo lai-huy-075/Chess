@@ -83,7 +83,7 @@ public final class Panel extends JLayeredPane implements ActionListener {
 			"Scores" };
 
 	/**
-	 * Primitive type array of {@link String} holding row names
+	 * Primitive type array of {@link String} holding rank names
 	 */
 	private static final String[] rows = { "1", "2", "3", "4", "5", "6", "7", "8" };
 

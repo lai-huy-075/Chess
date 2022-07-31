@@ -38,11 +38,6 @@ public final class Tile extends JButton {
 	public static final Color text = new Color(0x333333);
 
 	/**
-	 * Column this is in
-	 */
-	public final int col;
-
-	/**
 	 * {@link TileColor} for the Background
 	 */
 	public final TileColor color;
@@ -53,6 +48,11 @@ public final class Tile extends JButton {
 	private Tile down;
 
 	/**
+	 * Column this is in
+	 */
+	public final int file;
+
+	/**
 	 * {@link Piece} this currently has on it.<br>
 	 * Null if there is no piece
 	 */
@@ -61,7 +61,7 @@ public final class Tile extends JButton {
 	/**
 	 * Row this is in
 	 */
-	public final int row;
+	public final int rank;
 
 	/**
 	 * {@link Tile} located directly up from this
@@ -71,21 +71,22 @@ public final class Tile extends JButton {
 	/**
 	 * Constructor
 	 *
-	 * @param row row that this tile is in
-	 * @param col column that this tile is in
+	 * @param rank rank that this tile is in
+	 * @param file column that this tile is in
 	 */
 	public Tile(final int row, final int col) {
 		super("", null);
 
 		if (col < 0 || col > 7)
 			throw new IndexOutOfBoundsException("Illegal column: " + col);
-		this.col = col;
+		this.file = col;
 
 		if (row < 0 || row > 7)
-			throw new IndexOutOfBoundsException("Illegal row: " + row);
-		this.row = row;
+			throw new IndexOutOfBoundsException("Illegal rank: " + row);
+		this.rank = row;
 
-		this.color = this.row % 2 == 0 && this.col % 2 == 0 || this.row % 2 == 1 && this.col % 2 == 1 ? TileColor.Light
+		this.color = this.rank % 2 == 0 && this.file % 2 == 0 || this.rank % 2 == 1 && this.file % 2 == 1
+				? TileColor.Light
 				: TileColor.Dark;
 
 		// Set GUI Elements
@@ -99,15 +100,6 @@ public final class Tile extends JButton {
 		this.setFocusable(true);
 	}
 
-	/**
-	 * Converts {@link #col} to {@link String}
-	 *
-	 * @return String representation of {@link #col}
-	 */
-	public String colToString() {
-		return String.valueOf((char) ('a' + this.col));
-	}
-
 	@Override
 	public boolean equals(final Object other) {
 		if (this == other)
@@ -115,32 +107,18 @@ public final class Tile extends JButton {
 		if (!(other instanceof Tile))
 			return false;
 		final Tile tile = (Tile) other;
-		if ((this.row != tile.row) || (this.col != tile.col))
+		if ((this.rank != tile.rank) || (this.file != tile.file))
 			return false;
 		return true;
 	}
 
 	/**
-	 * Find the differing attribute between two Tiles
+	 * Converts {@link #file} to {@link String}
 	 *
-	 * @param other {@link Tile} to compare against
-	 * @return integer on which attributes are different
+	 * @return String representation of {@link #file}
 	 */
-	public TileDifference findDifferent(final Tile other) {
-		Objects.requireNonNull(other, "Other tile cannot be null");
-		final int diff = (this.row == other.row ? 0b00 : 0b10) + (this.col == other.col ? 0b00 : 0b01);
-		switch (diff) {
-		case 0:
-			return TileDifference.None;
-		case 1:
-			return TileDifference.File;
-		case 2:
-			return TileDifference.Rank;
-		case 3:
-			return TileDifference.Both;
-		default:
-			throw new IllegalStateException("Illegal Tile difference:\t" + diff);
-		}
+	public String fileToString() {
+		return String.valueOf((char) ('a' + this.file));
 	}
 
 	/**
@@ -171,21 +149,21 @@ public final class Tile extends JButton {
 	}
 
 	/**
+	 * Converts {@link #rank} to {@link String}
+	 *
+	 * @return String representation of {@link #rank}
+	 */
+	public String rankToString() {
+		return String.valueOf(8 - this.rank);
+	}
+
+	/**
 	 * Reset the tile
 	 */
 	public void reset() {
 		this.piece = null;
 		this.setForeground(null);
 		this.setText("");
-	}
-
-	/**
-	 * Converts {@link #row} to {@link String}
-	 *
-	 * @return String representation of {@link #row}
-	 */
-	public String rowToString() {
-		return String.valueOf(8 - this.row);
 	}
 
 	/**
@@ -208,7 +186,7 @@ public final class Tile extends JButton {
 
 	@Override
 	public String toString() {
-		return this.colToString() + this.rowToString();
+		return this.fileToString() + this.rankToString();
 	}
 
 	/**

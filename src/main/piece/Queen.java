@@ -48,24 +48,24 @@ public class Queen extends Piece {
 		List<Tile> temp;
 		int dx, dy;
 		if (this.rook) {
-			dx = dest.col - src.col;
-			dy = dest.row - src.row;
+			dx = dest.file - src.file;
+			dy = dest.rank - src.rank;
 
 			final int mx = Math.abs(dx);
 			final int my = Math.abs(dy);
 			temp = new ArrayList<>();
 
 			for (int i = 0; i < Math.max(mx, my); ++i)
-				temp.add(board[src.row + i * Integer.signum(dy)][src.col + i * Integer.signum(dx)]);
+				temp.add(board[src.rank + i * Integer.signum(dy)][src.file + i * Integer.signum(dx)]);
 
 			return temp;
 		}
 		if (this.bishop) {
 			temp = new ArrayList<>();
-			dx = dest.col < src.col ? -1 : 1;
-			dy = dest.row < src.row ? -1 : 1;
-			for (int i = 0; i < Math.abs(src.col - dest.col); ++i)
-				temp.add(board[src.row + i * dy][src.col + i * dx]);
+			dx = dest.file < src.file ? -1 : 1;
+			dy = dest.rank < src.rank ? -1 : 1;
+			for (int i = 0; i < Math.abs(src.file - dest.file); ++i)
+				temp.add(board[src.rank + i * dy][src.file + i * dx]);
 			return temp;
 		}
 		throw new IllegalStateException("Queen has made an illegal move.");
@@ -82,8 +82,8 @@ public class Queen extends Piece {
 		Objects.requireNonNull(dest, "Destination tile cannot be null");
 		if (src.equals(dest))
 			return false;
-		this.rook = src.col == dest.col ^ src.row == dest.row;
-		this.bishop = Math.abs(src.col - dest.col) == Math.abs(src.row - dest.row);
+		this.rook = src.file == dest.file ^ src.rank == dest.rank;
+		this.bishop = Math.abs(src.file - dest.file) == Math.abs(src.rank - dest.rank);
 		return this.rook ^ this.bishop;
 	}
 
