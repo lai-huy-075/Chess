@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import main.Chess;
 import main.piece.PieceColor;
+import main.piece.PromoteState;
 import main.player.Player;
 
 /**
@@ -27,6 +28,27 @@ public final class PGNReader {
 	 * {@link String} holding regular expression of any valid chess move (hopefully)
 	 */
 	private static final String move = "[KQRNB]?[a-h]?x?[a-h][1-8](=[QRNB])?[+#]?|O\\-O(\\-O)?[+#]?";
+
+	/**
+	 * Determines a {@link PromoteState} from a move
+	 * 
+	 * @param move {@link String} of the move
+	 * @return {@link PromoteState}
+	 */
+	public static final PromoteState extractPromote(final String move) {
+		switch (move.charAt(move.lastIndexOf('=') + 1)) {
+		case 'Q':
+			return PromoteState.Queen;
+		case 'R':
+			return PromoteState.Rook;
+		case 'N':
+			return PromoteState.Knight;
+		case 'B':
+			return PromoteState.Bishop;
+		default:
+			return PromoteState.Fail;
+		}
+	}
 
 	/**
 	 * Extract any {@link String} matching a regular expression

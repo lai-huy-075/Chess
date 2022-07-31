@@ -840,6 +840,7 @@ public final class Chessboard {
 				throw new ParseException("Null Move", 0);
 
 			Chess.logger.info("Parsing move:\t" + move);
+			PromoteState promote = PromoteState.Fail;
 			final Tile tile = this.getTile(PGNReader.getLast(move, "[a-h][1-8]"));
 			this.destination = tile;
 			String m;
@@ -963,6 +964,7 @@ public final class Chessboard {
 						throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
 					}
 
+					promote = PGNReader.extractPromote(move);
 					if (move.charAt(1) == 'x')
 						switch (move.charAt(2) - move.charAt(0)) {
 						case -1:
@@ -985,7 +987,7 @@ public final class Chessboard {
 				}
 				break;
 			}
-			this.movePiece();
+			this.movePiece(promote);
 		}
 
 		switch (this.result.length()) {
@@ -1095,7 +1097,7 @@ public final class Chessboard {
 	 * Handling logic of moving a piece.<br>
 	 * Actual updating of the GUI is done in {@link #advancePiece()}
 	 */
-	private void movePiece() {
+	private void movePiece(PromoteState promote) {
 		final Piece src_piece = this.source.getPiece();
 		if (src_piece == null)
 			return;
@@ -1167,7 +1169,6 @@ public final class Chessboard {
 		}
 
 		boolean attack = this.destination.getPiece() != null;
-		PromoteState promote = PromoteState.Fail;
 		if (src_piece instanceof Pawn) {
 			final boolean diagonal = ((Pawn) src_piece).getDiagonal();
 			switch (src_piece.color) {
@@ -1178,7 +1179,7 @@ public final class Chessboard {
 				}
 
 				if (this.destination.row == 7)
-					promote = this.promote();
+					promote = this.mode == Mode.Debug ? this.promote(promote) : this.promote();
 				break;
 			case White:
 				if (diagonal && !attack) {
@@ -1187,7 +1188,7 @@ public final class Chessboard {
 				}
 
 				if (this.destination.row == 0)
-					promote = this.promote();
+					promote = this.mode == Mode.Debug ? this.promote(promote) : this.promote();
 				break;
 			default:
 				break;
@@ -1330,8 +1331,7 @@ public final class Chessboard {
 			break;
 		}
 		Chess.logger.info("Promoted Pawn to " + state.name());
-		this.promote(state);
-		return state;
+		return this.promote(state);
 	}
 
 	private PromoteState promote(final PromoteState state) {
@@ -1459,7 +1459,7 @@ public final class Chessboard {
 		if (this.destination == null)
 			return;
 
-		this.movePiece();
+		this.movePiece(PromoteState.Fail);
 		this.resetTiles();
 	}
 
