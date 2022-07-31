@@ -83,19 +83,14 @@ public final class Chessboard {
 	private Mode mode;
 
 	/**
-	 * Move {@link List}
+	 * {@link List} of {@link Move} made by the two {@link Player}s
 	 */
-	private final List<String> moves;
+	private final List<Move> moves;
 
 	/**
 	 * A reference to the next {@link Player}
 	 */
 	private Player nextPlayer;
-
-	/**
-	 * Position {@link List}
-	 */
-	private final List<String> position;
 
 	/**
 	 * {@link String} holding the result
@@ -125,7 +120,6 @@ public final class Chessboard {
 		this.black = Objects.requireNonNull(black, "Black player cannot be null");
 		this.board = new Tile[8][8];
 		this.moves = new ArrayList<>();
-		this.position = new ArrayList<>();
 
 		this.createBoard();
 		this.reset();
@@ -253,7 +247,7 @@ public final class Chessboard {
 		}
 
 		Chess.logger.info("Appending move:\t" + move);
-		this.moves.add(move);
+		this.moves.add(new Move(move, this.toString(), this.source, this.destination));
 		this.index++;
 		ally_king.setCastle(CastleState.Unattempted);
 	}
@@ -612,7 +606,7 @@ public final class Chessboard {
 	 *
 	 * @return {@link #moves}
 	 */
-	public List<String> getMoves() {
+	public List<Move> getMoves() {
 		return this.moves;
 	}
 
@@ -761,7 +755,7 @@ public final class Chessboard {
 	 * Load the initial position of the {@link Chessboard}
 	 */
 	public void loadInitialPosition() {
-		if (this.position.size() == 0)
+		if (this.moves.size() == 0)
 			return;
 
 		this.index = 0;
@@ -772,9 +766,9 @@ public final class Chessboard {
 	 * Load last position in {@link #position}
 	 */
 	public void loadLastPosition() {
-		if (this.position.size() == 0)
+		if (this.moves.size() == 0)
 			return;
-		this.index = this.position.size() - 1;
+		this.index = this.moves.size() - 1;
 		this.loadPosition();
 	}
 
@@ -952,7 +946,7 @@ public final class Chessboard {
 	 * Increment {@link #index} and load the position in {@link #position}
 	 */
 	public void loadNextPosition() {
-		if (this.index + 1 >= this.position.size())
+		if (this.index + 1 >= this.moves.size())
 			return;
 		++this.index;
 		this.loadPosition();
@@ -963,7 +957,7 @@ public final class Chessboard {
 	 */
 	private void loadPosition() {
 		Chess.logger.info("Loading position:\t" + this.index + "\n");
-		final String position = this.position.get(this.index);
+		final String position = this.moves.get(this.index).position;
 		String piece;
 		int col = 0, row = 0;
 		for (final String line : position.split("/"))
@@ -1145,7 +1139,6 @@ public final class Chessboard {
 		this.updateCheck(enemy_king);
 		this.updateCheckMate(enemy_king);
 		this.updateStalemate(enemy_king);
-		this.position.add(this.toString());
 		this.appendMove(attack, promote);
 		this.updatePlayers();
 
@@ -1315,8 +1308,6 @@ public final class Chessboard {
 		this.white.reset();
 		this.black.reset();
 		this.moves.clear();
-		this.position.clear();
-		this.position.add(this.toString());
 		this.index = 0;
 		this.currentPlayer = this.white;
 		this.nextPlayer = this.black;

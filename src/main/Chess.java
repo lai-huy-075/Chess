@@ -144,8 +144,8 @@ public class Chess {
 	/**
 	 * Create a standard game of chess
 	 */
-	private static final void createChessBoard() {
-		logger.info("Normal Game");
+	private static final void normalMode() {
+		logger.info("Normal Game\n");
 
 		String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
 				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
@@ -209,7 +209,7 @@ public class Chess {
 	 * Create a game of Chess with altered rules
 	 */
 	private static final void funny() {
-		Chess.logger.info("Funny Mode");
+		Chess.logger.info("Funny Mode\n");
 
 		String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
 				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
@@ -263,7 +263,7 @@ public class Chess {
 		switch (JOptionPane.showOptionDialog(null, "Pick an option", "Welcome to Chess!", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.QUESTION_MESSAGE, icon, options, options[0])) {
 		case 0:
-			createChessBoard();
+			normalMode();
 			return;
 		case 1:
 			funny();
@@ -281,7 +281,7 @@ public class Chess {
 	 * Create a game of Chess to allow the user to Place Pieces
 	 */
 	private static final void test() {
-		Chess.logger.info("Test Mode");
+		Chess.logger.info("Test Mode\n");
 		final JFileChooser fc = new JFileChooser(local);
 		fc.setFileFilter(new FileNameExtensionFilter("PGN files", "pgn"));
 		fc.showOpenDialog(fc);

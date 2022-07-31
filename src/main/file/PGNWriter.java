@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import main.Chess;
 import main.board.Chessboard;
+import main.board.Move;
 
 /**
  * Write to PGN {@link File}
@@ -31,19 +32,13 @@ public class PGNWriter {
 			writer.write("[Result \"" + result + "\"]\n");
 			writer.write("\n");
 
-			final List<String> moves = board.getMoves();
+			final List<Move> moves = board.getMoves();
 
 			for (int i = 0; i < moves.size(); i += 2) {
-				final String white = moves.get(i);
-				String black;
-				try {
-					black = moves.get(i + 1);
-				} catch (final IndexOutOfBoundsException ioobe) {
-					black = "";
-				}
+				final Move white = moves.get(i);
+				final Move black = i + 1 < moves.size() ? moves.get(i + 1) : null;
 				final int move = i / 2 + 1;
-
-				writer.write(String.format("%d. %s %s", move, white, black));
+				writer.write(String.valueOf(move) + ". " + white.move + (black == null ? "" : " " + black.move));
 				writer.write(move % 7 == 0 ? "\n" : " ");
 			}
 
