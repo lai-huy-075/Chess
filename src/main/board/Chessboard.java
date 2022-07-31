@@ -904,7 +904,8 @@ public final class Chessboard {
 					final int dx = switch (this.currentPlayer.color) {
 					case Black -> -1;
 					case White -> 1;
-					default -> throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
+					default ->
+						throw new IllegalStateException("Illegal PieceColor:\t" + this.currentPlayer.color.name());
 					};
 					promote = PGNReader.extractPromote(move);
 					if (move.charAt(1) == 'x')
