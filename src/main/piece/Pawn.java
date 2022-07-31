@@ -99,9 +99,10 @@ public class Pawn extends Piece {
 		switch (this.color) {
 		case Black:
 			// Check if capturing diagonally
-			if (src.rank - dest.rank == -1) {
-				this.diagonal = Math.abs(src.file - dest.file) == 1;
-				if (this.diagonal) {
+
+			this.diagonal = Math.abs(src.file - dest.file) == 1;
+			if (this.diagonal) {
+				if (src.rank - dest.rank == -1) {
 					// Normal Capturing
 					if (!dest_empty)
 						return !this.isAlly(dest_piece);
@@ -115,11 +116,12 @@ public class Pawn extends Piece {
 
 					return false;
 				}
+				return false;
 			}
 
 			// Moving two squares on the first move
 			if (src.rank == 1) {
-				if (dest.rank - src.rank <= 2) {
+				if (dest.rank - src.rank == 1 || dest.rank - src.rank == 2) {
 					this.en_passant = dest.rank - src.rank == 2;
 					return src.file == dest.file && dest_empty;
 				}
@@ -127,15 +129,15 @@ public class Pawn extends Piece {
 			}
 
 			// Moving one square
-			if (dest.rank - src.rank == 1)
+			if (src.rank - dest.rank == -1 && src.file == dest.file)
 				return dest_empty;
 
 			return false;
 		case White:
 			// Check if capturing diagonally
-			if (src.rank - dest.rank == 1) {
-				this.diagonal = Math.abs(src.file - dest.file) == 1;
-				if (this.diagonal) {
+			this.diagonal = Math.abs(src.file - dest.file) == 1;
+			if (this.diagonal) {
+				if (src.rank - dest.rank == 1) {
 					// Normal capturing
 					if (!dest_empty)
 						return !this.isAlly(dest_piece);
@@ -149,17 +151,19 @@ public class Pawn extends Piece {
 
 					return false;
 				}
+
+				return false;
 			}
 
 			// Moving two squares on the first move
 			if (src.rank == 6)
-				if (src.rank - dest.rank <= 2) {
+				if (src.rank - dest.rank == 1 || src.rank - dest.rank == 2) {
 					this.en_passant = src.rank - dest.rank == 2;
 					return src.file == dest.file && dest_empty;
 				}
 
 			// Moving one square
-			if (src.rank - dest.rank == 1)
+			if (src.rank - dest.rank == 1 && src.file == dest.file)
 				return dest_empty;
 
 			return false;

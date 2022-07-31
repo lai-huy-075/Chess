@@ -3,7 +3,6 @@ package main.board;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;

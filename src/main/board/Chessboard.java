@@ -271,6 +271,8 @@ public final class Chessboard {
 		final Piece piece = source.getPiece();
 		if (piece == null)
 			return false;
+		if (piece.isAlly(dest.getPiece()))
+			return false;
 
 		final King king = switch (piece.color) {
 		case Black -> this.black.getKing();
@@ -361,6 +363,23 @@ public final class Chessboard {
 	 * Sets {@link #mode} to {@link Mode#Over} and calls {@link #write}
 	 */
 	private void endGame() {
+		switch (this.currentPlayer.getKing().getCheckState()) {
+		case Check:
+			Chess.logger.info("Game ended by resignation.\n");
+			break;
+		case Fail:
+			Chess.logger.info("Game ended by resignation.\n");
+			break;
+		case Mate:
+			Chess.logger.info("Game ended by checkmate.\n");
+			break;
+		case Stale:
+			Chess.logger.info("Game ended by stalemate.\n");
+			break;
+		default:
+			throw new IllegalStateException("Illegal CheckState");
+		}
+
 		this.mode = Mode.Over;
 		this.write();
 	}
@@ -1125,6 +1144,7 @@ public final class Chessboard {
 		this.updateKing(ally_king);
 		this.updateCheck(enemy_king);
 		this.updateCheckMate(enemy_king);
+		this.updateStalemate(enemy_king);
 		this.position.add(this.toString());
 		this.appendMove(attack, promote);
 		this.updatePlayers();
@@ -1546,7 +1566,6 @@ public final class Chessboard {
 		this.updateCheck(king);
 		this.updateCheckMate(king);
 		this.updateCastle(king);
-		this.updateStalemate(king);
 	}
 
 	/**
@@ -1585,8 +1604,10 @@ public final class Chessboard {
 		for (final Tile[] row : this.board) {
 			for (final Tile tile : row) {
 				for (Tile piece : pieces)
-					if (this.canMove(piece, tile))
+					if (this.canMove(piece, tile)) {
+						Chess.logger.info("Move from " + piece + " to " + tile);
 						return;
+					}
 			}
 		}
 
