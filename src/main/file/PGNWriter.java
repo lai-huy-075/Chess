@@ -47,6 +47,6 @@ public class PGNWriter {
 			Chess.logger.throwing("PGNWriter", "write", e);
 			return;
 		}
-		Chess.logger.info("Writting pgn complete!\n");
+		Chess.logger.info("Writting pgn complete!");
 	}
 }

@@ -1056,7 +1056,7 @@ public final class Chessboard {
 			return;
 
 		final boolean legal = src_piece.isLegal(this.source, this.destination);
-		Chess.logger.info(legal ? "Move is legal\n" : "Move is not legal\n");
+		Chess.logger.info(legal ? "Move is legal" : "Move is not legal");
 		if (!legal)
 			return;
 
@@ -1135,10 +1135,13 @@ public final class Chessboard {
 		}
 
 		this.advancePiece();
-		this.updateKing(ally_king);
+		
+		this.updateCastle(ally_king);
+
 		this.updateCheck(enemy_king);
 		this.updateCheckMate(enemy_king);
 		this.updateStalemate(enemy_king);
+		
 		this.appendMove(attack, promote);
 		this.updatePlayers();
 
@@ -1432,7 +1435,7 @@ public final class Chessboard {
 	 */
 	private void updateCastle(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating CastleState for %s King%n", king.color.name()));
+		Chess.logger.info(String.format("Updating %s King.king and King.queen", king.color.name()));
 		final Piece piece = this.destination.getPiece();
 
 		if (piece instanceof King) {
@@ -1461,7 +1464,7 @@ public final class Chessboard {
 	 */
 	private void updateCheck(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating CheckState for %s King", king.color.name()));
+		Chess.logger.info(String.format("Updating %s King.check", king.color.name()));
 
 		final Tile king_tile = king.getTile();
 
@@ -1488,7 +1491,7 @@ public final class Chessboard {
 	 */
 	private void updateCheckMate(final King king) {
 		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating CheckState for %s King to Mate if necessary", king.color.name()));
+		Chess.logger.info("Updating CheckState for " + king.color + " King to CheckState.Mate");
 		if (king.getCheckState() == CheckState.Fail)
 			return;
 
@@ -1539,24 +1542,10 @@ public final class Chessboard {
 	 */
 	public void updateDestination(final Tile tile) {
 		Objects.requireNonNull(tile, "New destination tile cannot be null");
-		Chess.logger.info("Updating destination:\t" + tile.toString());
+		Chess.logger.info("Updating destination:\t" + tile.toString() + "\n\n");
 
 		if (this.destination == null)
 			this.destination = tile;
-	}
-
-	/**
-	 * Update {@link King#check}, {@link King#king}, and {@link King#queen}
-	 *
-	 * @param king {@link King} being updated
-	 */
-	private void updateKing(final King king) {
-		Objects.requireNonNull(king, "King cannot be null");
-		Chess.logger.info(String.format("Updating %s King", king.color.name()));
-
-		this.updateCheck(king);
-		this.updateCheckMate(king);
-		this.updateCastle(king);
 	}
 
 	/**

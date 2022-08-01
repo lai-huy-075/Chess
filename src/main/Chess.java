@@ -100,12 +100,15 @@ public class Chess {
 		logger.setUseParentHandlers(false);
 		logger.addHandler(file);
 
+		final File rsc_dir = new File("./src/resources/");
+		if (!rsc_dir.exists())
+			rsc_dir.mkdir();
+
 		final String icon_name = "./src/resources/icon.png";
 		final File icon_file = new File(icon_name);
 		if (!icon_file.exists()) {
 			Chess.logger.info(icon_file.getName() + " created");
 			try {
-				icon_file.mkdirs();
 				icon_file.createNewFile();
 				final URL url = new URL(
 						"https://raw.githubusercontent.com/MrPineapple065/Chess/master/src/resources/icon.png");
@@ -116,7 +119,6 @@ public class Chess {
 			} catch (final IOException ioe) {
 				Chess.logger.throwing("Chess", "static", ioe);
 			}
-
 		} else
 			Chess.logger.info(icon_file.getName() + " exists");
 		icon = new ImageIcon(icon_name);
@@ -147,36 +149,13 @@ public class Chess {
 	private static final void normalMode() {
 		logger.info("Normal Game\n");
 
-		String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
-				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-
-		if (white_name == null || white_name.isEmpty())
+		final Panel panel;
+		try {
+			panel = createPanel(Mode.Normal);
+		} catch (InstantiationException ie) {
+			Chess.logger.throwing("Chess", "normalMode", ie);
 			return;
-
-		while (white_name.length() > 49) {
-			white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
-					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-
-			if ((white_name == null) || white_name.isEmpty())
-				return;
 		}
-
-		String black_name = (String) JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
-				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-
-		if (black_name == null || black_name.isEmpty())
-			return;
-
-		while (black_name.length() > 49) {
-			black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
-					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
-			if ((black_name == null) || black_name.isEmpty())
-				return;
-		}
-
-		final Panel panel = new Panel(Mode.Normal, new Player(white_name, PieceColor.White),
-				new Player(black_name, PieceColor.Black));
-
 		createFrame(panel);
 	}
 
@@ -205,45 +184,53 @@ public class Chess {
 		return frame;
 	}
 
-	/**
-	 * Create a game of Chess with altered rules
-	 */
-	private static final void funny() {
-		Chess.logger.info("Funny Mode\n");
-
+	private static final Panel createPanel(Mode mode) throws InstantiationException {
 		String white_name = (String) JOptionPane.showInputDialog(null, "White, enter you name", "White",
 				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 
 		if (white_name == null || white_name.isEmpty())
-			return;
+			throw new InstantiationException("White's name is empty");
 
 		while (white_name.length() > 49) {
 			white_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 
 			if ((white_name == null) || white_name.isEmpty())
-				return;
+				throw new InstantiationException("White's name is empty");
 		}
 
 		String black_name = (String) JOptionPane.showInputDialog(null, "Black, enter you name", "Black",
 				JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 
 		if (black_name == null || black_name.isEmpty())
-			return;
+			throw new InstantiationException("Black's name is empty");
 
 		while (black_name.length() > 49) {
 			black_name = (String) JOptionPane.showInputDialog(null, "Name is too long. Try Again", "White",
 					JOptionPane.INFORMATION_MESSAGE, Chess.icon, null, null);
 			if ((black_name == null) || black_name.isEmpty())
-				return;
+				throw new InstantiationException("Black's name is empty");
 		}
 
-		final Panel panel = new Panel(Mode.Funny, new Player(white_name, PieceColor.White),
+		return new Panel(Mode.Normal, new Player(white_name, PieceColor.White),
 				new Player(black_name, PieceColor.Black));
+	}
 
+	/**
+	 * Create a game of Chess with altered rules
+	 */
+	private static final void funnyMode() {
+		Chess.logger.info("Funny Mode\n");
+
+		final Panel panel;
+		try {
+			panel = createPanel(Mode.Normal);
+		} catch (InstantiationException ie) {
+			Chess.logger.throwing("Chess", "funnyMode", ie);
+			return;
+		}
 		final JFrame frame = createFrame(panel);
 		frame.dispose();
-
 	}
 
 	/**
@@ -266,10 +253,10 @@ public class Chess {
 			normalMode();
 			return;
 		case 1:
-			funny();
+			funnyMode();
 			return;
 		case 2:
-			test();
+			testMode();
 			return;
 		default:
 			Chess.logger.info("Picked Illegal Option");
@@ -280,7 +267,7 @@ public class Chess {
 	/**
 	 * Create a game of Chess to allow the user to Place Pieces
 	 */
-	private static final void test() {
+	private static final void testMode() {
 		Chess.logger.info("Test Mode\n");
 		final JFileChooser fc = new JFileChooser(local);
 		fc.setFileFilter(new FileNameExtensionFilter("PGN files", "pgn"));
