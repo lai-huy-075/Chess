@@ -1,0 +1,371 @@
+[INFO] C:\MrPineapple\TAMU\Chess\pgn\game.pgn
+[INFO] Test Mode
+[INFO] Reading from file started...
+[INFO] Resetting Black
+[INFO] Resetting White
+[INFO] Resetting ?
+[INFO] Resetting ?
+[INFO] White Player:	?
+[INFO] Black Player:	?
+[INFO] [e4, d5, exd5, Nf6, Bb5+, c6, dxc6, Qb6, cxb7+, Qxb5, bxc8=Q#]
+[INFO] Reading from file complete
+[INFO] Creating board
+[INFO] Reset board array
+[INFO] Resetting Tiles
+
+[INFO] Placing pieces on the Chess board
+[INFO] Resetting ?
+[INFO] Resetting ?
+[INFO] Reset Chess board
+
+
+[INFO] Reset board array
+[INFO] Resetting Tiles
+
+[INFO] Placing pieces on the Chess board
+[INFO] Resetting ?
+[INFO] Resetting ?
+[INFO] Reset Chess board
+
+
+[INFO] Parsing move:	e4
+[INFO] Moving ♙ from e2 to e4
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[e2, e3]
+[INFO] ♙ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Setting Black King.check to Fail
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Finding Black pieces
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Move from a7 to a6
+[INFO] Appending move:	e4
+[INFO] Setting White King.castle to Unattempted
+[INFO] Parsing move:	d5
+[INFO] Moving ♟ from d7 to d5
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[d7, d6]
+[INFO] ♟ did not collide on its journey
+[INFO] Finding White pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating Black King.king and King.queen
+[INFO] Updating White King.check
+[INFO] Finding Black pieces
+[INFO] Setting White King.check to Fail
+[INFO] Updating CheckState for White King to CheckState.Mate
+[INFO] Updating White King.check to CheckState.Stale
+[INFO] Finding White pieces
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6, a7]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6, d7]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6, h7]
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6]
+[INFO] Traversed:	[a1, a2, a3, a4, a5]
+[INFO] Traversed:	[f1, e2, d3, c4, b5]
+[INFO] Finding Black pieces
+[INFO] Move from f1 to a6
+[INFO] Appending move:	d5
+[INFO] Setting Black King.castle to Unattempted
+[INFO] Parsing move:	exd5
+[INFO] Moving ♙ from e4 to d5
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♙ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Capturing ♟
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Setting Black King.check to Fail
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Finding Black pieces
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Move from b8 to d7
+[INFO] Appending move:	exd5
+[INFO] Setting White King.castle to Unattempted
+[INFO] Parsing move:	Nf6
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Moving ♞ from g8 to f6
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♞ did not collide on its journey
+[INFO] Finding White pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating Black King.king and King.queen
+[INFO] Updating White King.check
+[INFO] Finding Black pieces
+[INFO] Setting White King.check to Fail
+[INFO] Updating CheckState for White King to CheckState.Mate
+[INFO] Updating White King.check to CheckState.Stale
+[INFO] Finding White pieces
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6, a7]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6, d7]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6, h7]
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6]
+[INFO] Traversed:	[a1, a2, a3, a4, a5]
+[INFO] Traversed:	[f1, e2, d3, c4, b5]
+[INFO] Finding Black pieces
+[INFO] Move from f1 to a6
+[INFO] Appending move:	Nf6
+[INFO] Setting Black King.castle to Unattempted
+[INFO] Parsing move:	Bb5+
+[INFO] Traversed:	[f1, e2, d3, c4]
+[INFO] Finding Black pieces
+[INFO] Moving ♗ from f1 to b5
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[f1, e2, d3, c4]
+[INFO] ♗ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Setting Black King.check to Check
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Finding Black pieces
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Found defending piece:	♟
+[INFO] Move from c7 to c6
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Appending move:	Bb5+
+[INFO] Setting White King.castle to Unattempted
+[INFO] Parsing move:	c6
+[INFO] Moving ♟ from c7 to c6
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♟ did not collide on its journey
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating Black King.king and King.queen
+[INFO] Updating White King.check
+[INFO] Finding Black pieces
+[INFO] Setting White King.check to Fail
+[INFO] Updating CheckState for White King to CheckState.Mate
+[INFO] Updating White King.check to CheckState.Stale
+[INFO] Finding White pieces
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6, a7]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6, d7]
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6, h7]
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6]
+[INFO] Traversed:	[b5, c6]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6]
+[INFO] Traversed:	[a1, a2, a3, a4, a5]
+[INFO] Traversed:	[b5]
+[INFO] Finding Black pieces
+[INFO] Move from b5 to a6
+[INFO] Appending move:	c6
+[INFO] Setting Black King.castle to Unattempted
+[INFO] Parsing move:	dxc6
+[INFO] Moving ♙ from d5 to c6
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♙ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Capturing ♟
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Setting Black King.check to Fail
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Finding Black pieces
+[INFO] Traversed:	[a8, b8, c8, d8, e8, f8]
+[INFO] Traversed:	[d8, e8, f8]
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Move from e8 to g8
+[INFO] Appending move:	dxc6
+[INFO] Setting White King.castle to Unattempted
+[INFO] Parsing move:	Qb6
+[INFO] Traversed:	[d8, c7]
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Moving ♛ from d8 to b6
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[d8, c7]
+[INFO] ♛ did not collide on its journey
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Updating Black King.king and King.queen
+[INFO] Updating White King.check
+[INFO] Finding Black pieces
+[INFO] Setting White King.check to Fail
+[INFO] Updating CheckState for White King to CheckState.Mate
+[INFO] Updating White King.check to CheckState.Stale
+[INFO] Finding White pieces
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6, a7]
+[INFO] Traversed:	[d1, d2, d3, d4, d5, d6, d7]
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Traversed:	[h1, h2, h3, h4, h5, h6, h7]
+[INFO] Traversed:	[a1, a2, a3, a4, a5, a6]
+[INFO] Traversed:	[]
+[INFO] Finding Black pieces
+[INFO] Move from c6 to b7
+[INFO] Appending move:	Qb6
+[INFO] Setting Black King.castle to Unattempted
+[INFO] Parsing move:	cxb7+
+[INFO] Moving ♙ from c6 to b7
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♙ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Capturing ♟
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Setting Black King.check to Check
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Finding Black pieces
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Traversed:	[b5, c6, d7]
+[INFO] Found defending piece:	♞
+[INFO] Move from b8 to c6
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Appending move:	cxb7+
+[INFO] Setting White King.castle to Unattempted
+[INFO] Parsing move:	Qxb5
+[INFO] Traversed:	[b6]
+[INFO] Finding White pieces
+[INFO] Moving ♛ from b6 to b5
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[b6]
+[INFO] ♛ did not collide on its journey
+[INFO] Finding White pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Capturing ♗
+[INFO] Updating Black King.king and King.queen
+[INFO] Updating White King.check
+[INFO] Finding Black pieces
+[INFO] Setting White King.check to Fail
+[INFO] Updating CheckState for White King to CheckState.Mate
+[INFO] Updating White King.check to CheckState.Stale
+[INFO] Finding White pieces
+[INFO] Traversed:	[]
+[INFO] Finding Black pieces
+[INFO] Move from b7 to a8
+[INFO] Appending move:	Qxb5
+[INFO] Setting Black King.castle to Unattempted
+[INFO] Parsing move:	bxc8=Q#
+[INFO] Moving ♙ from b7 to c8
+[INFO] Capturing enemy or moving to empty tile
+[INFO] Move is legal
+[INFO] Traversed:	[]
+[INFO] ♙ did not collide on its journey
+[INFO] Finding Black pieces
+[INFO] Move protects the King
+[INFO] Advancing piece
+[INFO] Capturing ♝
+[INFO] Updating White King.king and King.queen
+[INFO] Updating Black King.check
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8, d8]
+[INFO] Setting Black King.check to Check
+[INFO] Updating CheckState for Black King to CheckState.Mate
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8, d8]
+[INFO] Finding Black pieces
+[INFO] Traversed:	[a8, b8]
+[INFO] Traversed:	[a8, b8, c8]
+[INFO] Traversed:	[a8, b8]
+[INFO] Traversed:	[a8, b8, c8]
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8]
+[INFO] Traversed:	[]
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8]
+[INFO] Traversed:	[h8, g8, f8, e8, d8]
+[INFO] Traversed:	[h8, g8, f8, e8]
+[INFO] Traversed:	[h8, g8, f8, e8, d8]
+[INFO] Traversed:	[h8, g8, f8, e8]
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8]
+[INFO] Finding White pieces
+[INFO] Traversed:	[c8]
+[INFO] Setting Black King.check to Mate
+[INFO] Updating Black King.check to CheckState.Stale
+[INFO] Appending move:	bxc8=Q#
+[INFO] Setting White King.castle to Unattempted
+[INFO] Game ended by checkmate.
+
+[INFO] Writing pgn started...
+[INFO] Writting pgn complete!
+[INFO] Game ended by checkmate.
+
+[INFO] Writing pgn started...
+[INFO] Writting pgn complete!
+[INFO] Key pressed: UP
+[INFO] Up arrow
+[INFO] Loading position:	0
+
+[INFO] Key pressed: RIGHT
+[INFO] Loading position:	1
+
+[INFO] Right arrow
+[INFO] Key pressed: RIGHT
+[INFO] Loading position:	2
+
+[INFO] Right arrow
+[INFO] Key pressed: LEFT
+[INFO] Left arrow
+[INFO] Loading position:	1
+
+[INFO] Key pressed: LEFT
+[INFO] Left arrow
+[INFO] Loading position:	0
+
+[INFO] Key pressed: LEFT
+[INFO] Left arrow
+[INFO] Key pressed: LEFT
+[INFO] Left arrow
+[INFO] Key pressed: LEFT
+[INFO] Left arrow

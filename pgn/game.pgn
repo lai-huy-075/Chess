@@ -1,0 +1,9 @@
+[Event "1v1"]
+[Site "ChessApplication.jar"]
+[Date 2025.02.25]
+[Round "-"]
+[White "?"]
+[Black "?"]
+[Result "1-0"]
+
+1. e4 d5 2. exd5 Nf6 3. Bb5+ c6 4. dxc6 Qb6 5. cxb7+ Qxb5 6. bxc8=Q# 1-0
